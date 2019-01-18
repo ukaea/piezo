@@ -1,0 +1,5 @@
+db_password: DBpassword
+
+clair_db_password: ClairPassword
+
+harbor_admin_password: HarborAdminPassword

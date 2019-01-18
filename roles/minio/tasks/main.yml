@@ -1,0 +1,72 @@
+---
+- name: Add user
+  user:
+    name: minio
+    shell: /sbin/nologin
+    home: /opt/minio
+  become: true
+
+- name: Make binary directory
+  file:
+    path: /opt/minio/bin
+    state: directory
+  become: true
+
+- name: Make data directory
+  file:
+    path: /opt/minio/data
+    state: directory
+    mode: '0777'
+  become: true
+
+- name: Download Minio server
+  get_url:
+    url: https://dl.minio.io/server/minio/release/linux-amd64/minio
+    dest: /opt/minio/bin/minio
+  become: true
+
+- name: Make binary executable
+  file:
+    path: /opt/minio/bin/minio
+    mode: 0755
+  become: true
+
+- name: Copy Minio configuration file
+  copy:
+    src: /vagrant/roles/minio/files/minio.conf
+    dest: /opt/minio/minio.conf
+    owner: minio
+    group: minio
+    mode: 0444
+  become: true
+
+- name: Grant Minio ownership of all files in /opt/minio
+  file:
+    path: /opt/minio
+    owner: minio
+    group: minio
+    recurse: yes
+    mode: '0707'
+  become: true
+
+- name: Copy Minio service file
+  copy:
+    src: /vagrant/roles/minio/files/minio.service
+    dest: /etc/systemd/system/minio.service
+    owner: minio
+    group: minio
+    mode: 0444
+  become: true
+
+- name: Enable Minio service
+  systemd:
+    name: minio
+    enabled: yes
+  become: true
+
+- name: Start Minio service
+  systemd:
+    name: minio
+    state: started
+  become: true
+    

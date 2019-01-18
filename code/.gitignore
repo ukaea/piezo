@@ -1,0 +1,6 @@
+join_token
+logs.txt
+*.zip
+admin.conf
+config
+minio*

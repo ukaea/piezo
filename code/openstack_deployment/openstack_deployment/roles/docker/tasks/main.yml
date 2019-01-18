@@ -1,0 +1,81 @@
+---
+- name: Add Docker repo
+  get_url:
+    url: https://download.docker.com/linux/centos/docker-ce.repo
+    dest: /etc/yum.repos.d/docer-ce.repo
+
+- name: Enable Docker Edge repo
+  ini_file:
+    dest: /etc/yum.repos.d/docer-ce.repo
+    section: 'docker-ce-edge'
+    option: enabled
+    value: 0
+
+- name: Enable Docker Test repo
+  ini_file:
+    dest: /etc/yum.repos.d/docer-ce.repo
+    section: 'docker-ce-test'
+    option: enabled
+    value: 0
+
+- name: Install Docker
+  package:
+    name: docker-ce
+    state: latest
+
+- name: Start Docker service
+  service:
+    name: docker
+    state: started
+    enabled: true
+
+- name: Add user vagrant to docker group
+  user:
+    name: vagrant
+    groups: docker
+    append: true
+
+- name: Download and install Docker Compose
+  get_url:
+    url: https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-Linux-x86_64
+    dest: /usr/bin/docker-compose
+    mode: 0755
+
+- name: Make ssl directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - /etc/ssl/private/
+    - /etc/ssl/public/
+    - /etc/ssl/ca/
+    - /etc/ssl/csr/
+    - /etc/docker/certs.d/172.28.128.10/
+  when: use_https
+
+- name: Generate CA
+  shell: openssl req -newkey rsa:4096 -nodes \
+          -sha256 -keyout /etc/ssl/ca/ca.key -x509 \
+          -days 365 -out /etc/ssl/ca/ca.crt \
+          -subj "/C=UK/ST=OXF/L=Harwell/O=SCD/CN=172.28.128.10"
+  when: use_https
+
+- name: Generate CSR from CA
+  shell: openssl req -newkey rsa:4096 -nodes -sha256 \
+          -keyout /etc/ssl/private/172.28.128.10.key \
+          -out /etc/ssl/csr/172.28.128.10.csr \
+          -subj "/C=UK/ST=OXF/L=Harwell/O=SCD/CN=172.28.128.10"
+  when: use_https
+
+- name: Generate self signed certificate from CSR
+  shell: openssl x509 -req -days 365 -in /etc/ssl/csr/172.28.128.10.csr \
+          -CA /etc/ssl/ca/ca.crt -CAkey /etc/ssl/ca/ca.key \
+          -CAcreateserial -out /etc/ssl/public/172.28.128.10.crt 
+  when: use_https
+
+- name: Add ca.crt in autorised Docker CA
+  copy: 
+    src: /etc/ssl/ca/ca.crt
+    dest: /etc/docker/certs.d/172.28.128.10/ca.crt
+    remote_src: yes
+  when: use_https

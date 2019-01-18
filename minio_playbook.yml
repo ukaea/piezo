@@ -1,0 +1,5 @@
+---
+- hosts: all
+  become_method: sudo
+  roles:
+    - minio
