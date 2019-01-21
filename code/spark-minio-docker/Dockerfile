@@ -62,6 +62,9 @@ ADD http://central.maven.org/maven2/org/apache/hadoop/hadoop-yarn-common/3.0.3/h
 ADD http://central.maven.org/maven2/org/apache/hadoop/hadoop-yarn-server-common/3.0.3/hadoop-yarn-server-common-3.0.3.jar $SPARK_HOME/jars
 ADD http://central.maven.org/maven2/org/apache/hadoop/hadoop-yarn-server-web-proxy/3.0.3/hadoop-yarn-server-web-proxy-3.0.3.jar $SPARK_HOME/jars
 
+ADD http://central.maven.org/maven2/com/fasterxml/woodstox/woodstox-core/5.2.0/woodstox-core-5.2.0.jar $SPARK_HOME/jars
+ADD http://central.maven.org/maven2/org/codehaus/woodstox/stax2-api/3.0.1/stax2-api-3.0.1.jar $SPARK_HOME/jars
+
 ADD http://central.maven.org/maven2/org/apache/hadoop/hadoop-aws/3.0.3/hadoop-aws-3.0.3.jar $SPARK_HOME/jars
 ADD http://central.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.3/httpclient-4.5.3.jar $SPARK_HOME/jars
 ADD http://central.maven.org/maven2/joda-time/joda-time/2.9.9/joda-time-2.9.9.jar $SPARK_HOME/jars
@@ -72,9 +75,10 @@ ADD http://central.maven.org/maven2/com/amazonaws/aws-java-sdk-s3/1.11.234/aws-j
 
 
 
+
 # Install hadoop 3.0.3
 
-RUN echo "<?xml version="1.0" encoding="UTF-8"?>\n\
+RUN echo $'<?xml version="1.0" encoding="UTF-8"?>\n\
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>\n\
 \n\
 <configuration>\n\
@@ -112,7 +116,7 @@ RUN echo "<?xml version="1.0" encoding="UTF-8"?>\n\
     <value>org.apache.hadoop.fs.s3a.S3AFileSystem</value>\n\
     <description>The implementation class of the S3A Filesystem</description>\n\
   </property>\n\
-</configuration>" > /Hadoop/hadoop-3.0.3/etc/hadoop/core-site.xml
+</configuration>' > /Hadoop/hadoop-3.0.3/etc/hadoop/core-site.xml
 
 
 ENV PATH=$PATH:$HADOOP_HOME/bin
@@ -136,4 +140,4 @@ ENV AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 # #COPY conf/metrics.properties /etc/metrics/conf
 # #COPY conf/prometheus.yaml /etc/metrics/conf
 
-# ENTRYPOINT ["/opt/entrypoint.sh"]
+ENTRYPOINT ["/opt/entrypoint.sh"]

@@ -1,5 +1,5 @@
 #
-# Copyright 2017 Google LLC
+# Copyright 2018 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,18 +22,12 @@ metadata:
 spec:
   type: Scala
   mode: cluster
-  image: "172.28.128.10/library/spark-test:latest"
-  #image: "gcr.io/spark-operator/spark:v2.4.0"
+  image: "gcr.io/spark-operator/spark:v2.4.0-gcs-prometheus"
   imagePullPolicy: Always
-  mainClass: org.apache.spark.examples.SparkPi  
-  volumes:   # what volume to mount
-    - name: "task-pv-storage"
-      persistentVolumeClaim:
-        claimName: task-pv-claim
-  mainApplicationFile: "local:///tmp/spark-examples_2.11-2.4.0.jar"
+  mainClass: org.apache.spark.examples.SparkPi
+  mainApplicationFile: "local:///opt/spark/examples/jars/spark-examples_2.11-2.4.0.jar"
   restartPolicy:
     type: Never
-
   driver:
     cores: 0.1
     coreLimit: "200m"
@@ -41,22 +35,15 @@ spec:
     labels:
       version: 2.4.0
     serviceAccount: spark
-    volumeMounts: #where to mount it
-      - name: "task-pv-storage"
-        mountPath: "/mnt/data"
-
   executor:
     cores: 1
-    instances: 2
+    instances: 1
     memory: "512m"
     labels:
       version: 2.4.0
-    volumeMounts:
-      - name: "task-pv-storage"
-        mountPath: "/mnt/data"
-    monitoring:
+  monitoring:
     exposeDriverMetrics: true
     exposeExecutorMetrics: true
     prometheus:
       jmxExporterJar: "/prometheus/jmx_prometheus_javaagent-0.3.1.jar"
-      port: 8090 
+      port: 8080 

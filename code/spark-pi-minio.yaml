@@ -23,7 +23,7 @@ spec:
   type: Scala
   mode: cluster
   #image: gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.0-hadoop3.1
-  image: 172.28.128.10/library/spark-minio:latest
+  image: 172.28.128.10/library/spark-minio-docker:latest
   # deps:
   #   jars:
   #     - http://central.maven.org/maven2/org/apache/hadoop/hadoop-auth/2.7.3/hadoop-auth-2.7.3.jar
