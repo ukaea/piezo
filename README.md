@@ -132,9 +132,9 @@ Note when using s3 access then it is required to use one of the latest versions 
 
 ### Running the job
 With accessible code and the applications yaml file created, the job can be run by passing kubernetes the following command.
-'''
+```
 kubectl apply -f path/to/spark_application.yaml
-'''
+```
 The progress of the application can then be monitored in a few ways.
 
 The pods can be listed by using `kubectl get pods --all-namespaces` and then looking for the applications pods. Alternatively you can use `kubectl logs pod_name` and `kubectl describe sparkapplications application_name` to get more detailed information about the applications progress. 
