@@ -16,13 +16,13 @@ This will initiate 3 VMs running centos 7. These will be be called `master-k8s` 
 #### Install spark operator
 Log into the kubernetes master node `vagrant ssh master-k8s` and run `kubectl get pods --all-namespaces`. Wait for the `tiller` pod to have the status of running and then run:
 ```./install_spark_operator.sh```
+Note: Ensure the enableWebhooks is set to true to allow for volumes to be mounted to pods.
 
 At this stage kubernetes is running and you have the spark operator installed. This can then be used to initate spark jobs by specifying the spark operators api in an applications yaml file. (See `spark-pi.yaml` for an example)
 
 
 ## Running a spark job
-To run a spark job you need to insert the code and data into the kubernetes cluster. There are a few ways this can be done. Once onto the cluster you can specify the location of the data in the applications yaml file and it will then be included in the spark job.
-
+To run a spark job you need to insert the code and data into the kubernetes cluster. There are a few ways this can be done. Once onto the cluster you can specify the location of the data in the application's yaml file and it will then be included in the spark job.
 ### Getting code onto the cluster
 There are three main routes by which this can be achieved 
 
@@ -118,3 +118,25 @@ When building your custom docker images it is reccomended to start with the base
 
 #### Connecting to external storage (e.g. S3)
 Spark applications can also be configured so that they can communicate with external storage systems directly. 
+
+This can be achieved by including the following few lines in your applications yaml file
+
+```
+  hadoopConf:
+    fs.s3a.endpoint: http://172.28.128.10:9000 # Ip address and port of the storage 
+    fs.s3a.access.key: AKIAIOSFODNN7EXAMPLE # Access key (Note purely for development purposes don't use in production)
+    fs.s3a.secret.key: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY # Secret key (Note purely for development purposes don't use in production)
+``` 
+
+Note when using s3 access then it is required to use one of the latest versions of hadoop (atleast > 2.8.0.). This does not come as standard with the base spark docker images and as such it is unsuitable. Instead we recommend using (at least as a base image) the docker image from Cern: `gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.0-hadoop3.1`. Additional requirements can then be added ontop of this image to meet the requirements of your application. 
+
+### Running the job
+With accessible code and the applications yaml file created, the job can be run by passing kubernetes the following command.
+'''
+kubectl apply -f path/to/spark_application.yaml
+'''
+The progress of the application can then be monitored in a few ways.
+
+The pods can be listed by using `kubectl get pods --all-namespaces` and then looking for the applications pods. Alternatively you can use `kubectl logs pod_name` and `kubectl describe sparkapplications application_name` to get more detailed information about the applications progress. 
+
+Once completed the spark executor pods will be cleaned up however the driver will remain in completed state from which the logs can be pulled. 

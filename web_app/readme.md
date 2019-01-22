@@ -1,1 +1,0 @@
-Need to be careful with line endings for scripts to create file as need to submit to kubectl with the same line endings as the machine being run from.

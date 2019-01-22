@@ -38,27 +38,27 @@ Vagrant.configure("2") do |config|
 
     control.vm.provision "ansible_local" do |ansible|
       ansible.playbook = "playbook.yml"
-      ansible.playbook = "minio_playbook.yml"
+      #ansible.playbook = "minio_playbook.yml"
     end
   end
 
-  config.vm.define "node1-k8s" do |worker1|
-    worker1.vm.box = "gugek/scientific-linux-7"
-    worker1.vm.box_version = "7.2.0"
+  #config.vm.define "node1-k8s" do |worker1|
+  #  worker1.vm.box = "gugek/scientific-linux-7"
+  #  worker1.vm.box_version = "7.2.0"
 
-    worker1.vm.synced_folder "code", "/home/vagrant/code"
-    worker1.vm.network :private_network, ip: "172.28.128.11"
-    worker1.vm.hostname = "node1-k8s"
+  #  worker1.vm.synced_folder "code", "/home/vagrant/code"
+  #  worker1.vm.network :private_network, ip: "172.28.128.11"
+  #  worker1.vm.hostname = "node1-k8s"
 
-    worker1.vm.provider "virtualbox" do |vb|
-      vb.memory = 2048
-      vb.cpus = 2
-    end
+  #  worker1.vm.provider "virtualbox" do |vb|
+  #    vb.memory = 2048
+  #    vb.cpus = 2
+  #  end
 
-    worker1.vm.provision "ansible_local" do |ansible|
-      ansible.playbook = "playbook.yml"
-    end
-  end
+  #  worker1.vm.provision "ansible_local" do |ansible|
+  #    ansible.playbook = "playbook.yml"
+  #  end
+  #end
 
   config.vm.define "node2-k8s" do |worker2|
     worker2.vm.box = "gugek/scientific-linux-7"
@@ -69,8 +69,8 @@ Vagrant.configure("2") do |config|
     worker2.vm.hostname = "node2-k8s"
 
     worker2.vm.provider "virtualbox" do |vb|
-      vb.memory = 2048
-      vb.cpus = 2
+      vb.memory = 4096
+      vb.cpus = 4
     end
 
     worker2.vm.provision "ansible_local" do |ansible|

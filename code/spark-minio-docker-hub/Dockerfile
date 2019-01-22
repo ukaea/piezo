@@ -37,7 +37,7 @@ RUN echo $'<?xml version="1.0" encoding="UTF-8"?>\n\
       provided in the AWS Documentation: regions and endpoints. Without this\n\
       property, the standard region (s3.amazonaws.com) is assumed.\n\
     </description>\n\
-    <value>http://127.0.0.1:9000</value>\n\
+    <value>http://172.28.128.10:9000/</value>\n\
   </property>\n\
 \n\
   <property>\n\
@@ -70,11 +70,11 @@ RUN bash -c "cat $HADOOP_HOME/etc/hadoop/core-site.xml"
 # SPARK
 ENV SPARK_VERSION 2.4.0
 ENV SPARK_PACKAGE spark-${SPARK_VERSION}-bin-without-hadoop
-ENV SPARK_HOME /usr/spark-${SPARK_VERSION}
+ENV SPARK_HOME /usr/spark-${SPARK_VERSION}-bin-without-hadoop
 ENV SPARK_DIST_CLASSPATH="$HADOOP_HOME/etc/hadoop/*:$HADOOP_HOME/share/hadoop/common/lib/*:$HADOOP_HOME/share/hadoop/common/*:$HADOOP_HOME/share/hadoop/hdfs/*:$HADOOP_HOME/share/hadoop/hdfs/lib/*:$HADOOP_HOME/share/hadoop/hdfs/*:$HADOOP_HOME/share/hadoop/yarn/lib/*:$HADOOP_HOME/share/hadoop/yarn/*:$HADOOP_HOME/share/hadoop/mapreduce/lib/*:$HADOOP_HOME/share/hadoop/mapreduce/*:$HADOOP_HOME/share/hadoop/tools/lib/*"
 ENV PATH $PATH:${SPARK_HOME}/bin
 ADD https://archive.apache.org/dist/spark/spark-2.4.0/spark-2.4.0-bin-without-hadoop.tgz /usr/
-RUN cd /usr/ && tar xzf spark-2.4.0-bin-without-hadoop.tgz && mv $SPARK_PACKAGE $SPARK_HOME && rm spark-2.4.0-bin-without-hadoop.tgz && chown -R root:root $SPARK_HOME
+RUN cd /usr/ && tar xzf spark-2.4.0-bin-without-hadoop.tgz && rm spark-2.4.0-bin-without-hadoop.tgz && chown -R root:root $SPARK_HOME
 
 
 ADD http://central.maven.org/maven2/org/apache/hadoop/hadoop-aws/3.0.3/hadoop-aws-3.0.3.jar $SPARK_HOME/jars
@@ -85,10 +85,12 @@ ADD http://central.maven.org/maven2/com/amazonaws/aws-java-sdk/1.11.234/aws-java
 ADD http://central.maven.org/maven2/com/amazonaws/aws-java-sdk-kms/1.11.234/aws-java-sdk-kms-1.11.234.jar $SPARK_HOME/jars
 ADD http://central.maven.org/maven2/com/amazonaws/aws-java-sdk-s3/1.11.234/aws-java-sdk-s3-1.11.234.jar $SPARK_HOME/jars
 
+ADD http://central.maven.org/maven2/org/slf4j/slf4j-api/1.7.21/slf4j-api-1.7.21.jar $SPARK_HOME/jars
 
 ENV AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE 
 ENV AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 
+RUN bash -c  'export PATH=$PATH:$HADOOP_HOME/bin && export SPARK_DIST_CLASSPATH=$(hadoop classpath)'
 
 RUN echo $'#!/bin/bash\n\
 #\n\
@@ -226,5 +228,7 @@ exec /sbin/tini -s -- "${CMD[@]}"' > /opt/entrypoint.sh
 
 
 WORKDIR $SPARK_HOME
-#CMD ["bin/spark-class", "org.apache.spark.deploy.master.Master"]
-#ENTRYPOINT ["/opt/entrypoint.sh"]
+CMD ["bin/spark-class", "org.apache.spark.deploy.master.Master"]
+RUN chmod +x /opt/entrypoint.sh
+RUN chmod 777 /opt/entrypoint.sh
+ENTRYPOINT ["/opt/entrypoint.sh"]

@@ -161,3 +161,9 @@
 
     - name: Join Kubernetes cluster
       command: kubeadm join --discovery-token-unsafe-skip-ca-verification --token={{ kubeadm_token.stdout  }} 172.28.128.10:6443
+
+- hosts:
+    - master-k8s
+    become_method: sudo
+    roles:
+      - minio

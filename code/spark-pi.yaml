@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 
-apiVersion: "sparkoperator.k8s.io/v1alpha1"
+apiVersion: "sparkoperator.k8s.io/v1beta1"
 kind: SparkApplication
 metadata:
   name: spark-pi
@@ -22,15 +22,15 @@ metadata:
 spec:
   type: Scala
   mode: cluster
-  image: "172.28.128.10/library/spark-test:latest"
-  #image: "gcr.io/spark-operator/spark:v2.4.0"
+  #image: "172.28.128.10/library/spark-test:latest"
+  image: "gcr.io/spark-operator/spark:v2.4.0"
   imagePullPolicy: Always
   mainClass: org.apache.spark.examples.SparkPi  
   volumes:   # what volume to mount
     - name: "task-pv-storage"
       persistentVolumeClaim:
         claimName: task-pv-claim
-  mainApplicationFile: "local:///tmp/spark-examples_2.11-2.4.0.jar"
+  mainApplicationFile: "local:///mnt/data/spark-examples_2.11-2.4.0.jar"
   restartPolicy:
     type: Never
 

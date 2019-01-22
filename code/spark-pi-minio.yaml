@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 
-apiVersion: "sparkoperator.k8s.io/v1alpha1"
+apiVersion: "sparkoperator.k8s.io/v1beta1"
 kind: SparkApplication
 metadata:
   name: spark-pi
@@ -22,8 +22,8 @@ metadata:
 spec:
   type: Scala
   mode: cluster
-  #image: gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.0-hadoop3.1
-  image: 172.28.128.10/library/spark-minio-docker:latest
+  image: gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.0-hadoop3.1
+  #image: 172.28.128.10/library/spark-minio-docker:latest
   # deps:
   #   jars:
   #     - http://central.maven.org/maven2/org/apache/hadoop/hadoop-auth/2.7.3/hadoop-auth-2.7.3.jar
@@ -32,16 +32,22 @@ spec:
   #image: "gcr.io/spark-operator/spark:v2.4.0"
   imagePullPolicy: Always
   mainClass: org.apache.spark.examples.SparkPi  
+  # hadoopConf:
+  #   #spark.jars.packages: http://central.maven.org/maven2/org/apache/hadoop/hadoop-auth/2.7.3/hadoop-auth-2.7.3.jar,http://central.maven.org/maven2/com/amazonaws/aws-java-sdk/1.10.65/aws-java-sdk-1.10.65.jar,http://search.maven.org/remotecontent?filepath=org/apache/hadoop/hadoop-aws/2.7.3/hadoop-aws-2.7.3.jar
+  #   spark.hadoop.fs.s3a.endpoint: http://172.28.128.10:9000/minio/
+  #   #spark.hadoop.fs.s3a.path.style.access: true
+  #   spark.hadoop.fs.s3a.access.key: AKIAIOSFODNN7EXAMPLE
+  #   spark.hadoop.fs.s3a.secret.key: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+  #   spark.hadoop.fs.s3a.impl: org.apache.hadoop.fs.s3a.S3AFileSystem
+  #   spark.driver.extraClassPath: /opt/spark/jars/aws-java-sdk-1.7.4.jar,/opt/spark/jars/hadoop-aws-2.7.3.jar
+  #   spark.executor.extraClassPath: /opt/spark/jars/aws-java-sdk-1.7.4.jar,/opt/spark/jars/hadoop-aws-2.7.3.jar,$(${HADOOP_HOME}/bin/hadoop classpath)
+
   hadoopConf:
     #spark.jars.packages: http://central.maven.org/maven2/org/apache/hadoop/hadoop-auth/2.7.3/hadoop-auth-2.7.3.jar,http://central.maven.org/maven2/com/amazonaws/aws-java-sdk/1.10.65/aws-java-sdk-1.10.65.jar,http://search.maven.org/remotecontent?filepath=org/apache/hadoop/hadoop-aws/2.7.3/hadoop-aws-2.7.3.jar
-    spark.hadoop.fs.s3a.endpoint: http://127.0.0.1:9000
+    fs.s3a.endpoint: http://172.28.128.10:9000
     #spark.hadoop.fs.s3a.path.style.access: true
-    spark.hadoop.fs.s3a.access.key: AKIAIOSFODNN7EXAMPLE
-    spark.hadoop.fs.s3a.secret.key: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-    spark.hadoop.fs.s3a.impl: org.apache.hadoop.fs.s3a.S3AFileSystem
-    # spark.driver.extraClassPath: /opt/spark/jars/aws-java-sdk-1.7.4.jar,/opt/spark/jars/hadoop-aws-2.7.3.jar
-    # spark.executor.extraClassPath: /opt/spark/jars/aws-java-sdk-1.7.4.jar,/opt/spark/jars/hadoop-aws-2.7.3.jar
-
+    fs.s3a.access.key: AKIAIOSFODNN7EXAMPLE
+    fs.s3a.secret.key: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 
   #mainApplicationFile: "local:///opt/spark/examples/jars/spark-examples_2.11-2.4.0.jar"
   mainApplicationFile: "s3a://kubernetes/spark-examples_2.11-2.4.0.jar"
@@ -62,7 +68,7 @@ spec:
     # #     mountPath: "/tmp"
   executor:
     cores: 1
-    instances: 2
+    instances: 1
     memory: "512m"
     labels:
       version: 2.4.0
