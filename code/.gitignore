@@ -12,3 +12,4 @@ spark-on-k8s-operator
 sparkctl
 spark-docker-hub-v2
 Dockerfile
+spark-pi-minio_old.yaml
