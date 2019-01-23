@@ -1,0 +1,31 @@
+---
+- name: Copy Kubernetes repo file
+  copy:
+    src: /vagrant/roles/install_k8s/files/kubernetes.repo
+    dest: /etc/yum.repos.d/kubernetes.repo
+    owner: vagrant
+    group: vagrant
+    mode: 0444
+  become: true
+
+- name: Install Kubernetes packages
+  yum:
+    name: "{{ packages }}"
+    state: present
+  become: true
+  vars:
+    packages:
+    - kubelet
+    - kubeadm
+    - kubectl
+    - kubernetes-cni
+
+- name: Turn swap off
+  shell: "swapoff -a && sed -i '/ swap / s/^/#/' /etc/fstab"
+  become: true
+
+- name: Start and enable kubelet
+  service:
+    name: kubelet
+    state: started
+    enabled: true
