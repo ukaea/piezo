@@ -15,7 +15,10 @@ This will initiate 3 VMs running centos 7. These will be be called `master-k8s` 
 
 #### Install spark operator
 Log into the kubernetes master node `vagrant ssh master-k8s` and run `kubectl get pods --all-namespaces`. Wait for the `tiller` pod to have the status of running and then run:
-```./install_spark_operator.sh```
+```
+cd code
+./install_spark_operator.sh
+```
 Note: Ensure the enableWebhooks is set to true to allow for volumes to be mounted to pods.
 
 At this stage kubernetes is running and you have the spark operator installed. This can then be used to initate spark jobs by specifying the spark operators api in an applications yaml file. (See `spark-pi.yaml` for an example)
@@ -140,3 +143,16 @@ The progress of the application can then be monitored in a few ways.
 The pods can be listed by using `kubectl get pods --all-namespaces` and then looking for the applications pods. Alternatively you can use `kubectl logs pod_name` and `kubectl describe sparkapplications application_name` to get more detailed information about the applications progress. 
 
 Once completed the spark executor pods will be cleaned up however the driver will remain in completed state from which the logs can be pulled. 
+
+
+## Accessing the cluster from outside the virtual machines
+
+To access the cluster from outside the VMs, which allows you to access prometheus and Grafana dahsboards as well as running all kubectl commands, you need to copy the kubernetes config to your local machine. This can be achieved by running the following lines:
+
+```
+# On your kubernetes master
+cp ~/.kube/config ~/code # or to other shared location
+# On local machine 
+cp path/to/shared/folder/config ~/.kube/
+```
+Note you will need kubectl installed on your local machine first. 

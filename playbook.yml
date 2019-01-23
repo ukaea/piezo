@@ -164,6 +164,6 @@
 
 - hosts:
     - master-k8s
-    become_method: sudo
-    roles:
-      - minio
+  become_method: sudo
+  roles:
+    - minio

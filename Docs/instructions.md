@@ -28,7 +28,7 @@
  get requests to `http://172.28.128.10:8888/{runexample, getlogs, deleteexample}`
 
 
-## Sparkctl
+## Sparkctl 
 
 `go get k8s.io/client-go/...`
 
