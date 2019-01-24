@@ -1,0 +1,9 @@
+---
+- name: Install basic dev packages
+  yum:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+    - zip
+    - unzip

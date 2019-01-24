@@ -1,0 +1,15 @@
+---
+- name: Download Helm install script
+  get_url:
+    url: https://raw.githubusercontent.com/helm/helm/master/scripts/get
+    dest: /home/vagrant/get_helm.sh
+    mode: 0700
+    owner: vagrant
+    group: vagrant
+  become: true
+
+- name: Install helm
+  command: sh /home/vagrant/get_helm.sh
+
+- name: Initiate helm
+  shell: "helm init"
