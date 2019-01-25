@@ -36,4 +36,4 @@ Now navigate in your browser to `http://http:localhost:3000` where you will see 
 ### Note
 To run kubectl commands from outside your kubernetes cluster you first must copy the clusters config file to you local machine to do this it is easiest it use a shared folder. 
 Then you can run:
-`cp ~/.kube/config /shared/location/`. Then on your local machine run `mkdir ~/.kube` and copy the config file into this new directory
+`cp ~/.kube/config /shared/location/`. Then on your local machine run `mkdir ~/.kube` and copy the config file into this new directory.

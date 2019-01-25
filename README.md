@@ -1,17 +1,9 @@
 # ALC Kubernetes Spark
 A kubernetes cluster configured to run spark jobs
 
-## Initialising the cluster
-The following instructions will initiate a 3 node kubernetes cluster with all component needed for running spark installed.
+## Initialising a cluster for development
 
-#### Requirments
-* `Vagrant`
-* `VirtualBox`
-
-#### Vagrant
-In a console on your local machine, navigate to this directory and run:
-```vagrant up``` 
-This will initiate 3 VMs running centos 7. These will be be called `master-k8s` (configured as the kubernetes master node), `node1-k8s` and `node2-k8s` (configured as the kubernetes worker nodes). The machines will be provisioned with ansible and connected to produce a running kubernetes cluster. 
+To setup a small Kubernetes cluster on a single development machine, please follow the [Setup Kubernetes cluster](Docs/setup-kubernetes-cluster.md) guide in the Docs directory.
 
 #### Install spark operator
 Log into the kubernetes master node `vagrant ssh master-k8s` and run `kubectl get pods --all-namespaces`. Wait for the `tiller` pod to have the status of running and then run:
