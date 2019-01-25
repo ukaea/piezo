@@ -7,8 +7,7 @@
 * To deal with certificate issues run (on each node):
     - `sudo echo '{"insecure-registries": ["172.28.128.10"]}' > ~/daemon.json`
     - `sudo mv ~/daemon.json /etc/docker/`
-    - `sudo systemctl stop docker`
-    - `sudo systemctl start docker`
+    - `sudo systemctl restart docker`
 * On local machine `sudo docker login 172.28.128.10`
 * Enter credentials of user created
 * Create a docker file and put it in a directory (use the template [here](https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/blob/master/spark-docker/Dockerfile))
