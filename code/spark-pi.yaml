@@ -33,6 +33,8 @@ spec:
   mainApplicationFile: "local:///mnt/data/spark-examples_2.11-2.4.0.jar"
   restartPolicy:
     type: Never
+  arguments:
+    - "1000"
 
   driver:
     cores: 0.1
@@ -58,5 +60,7 @@ spec:
     exposeDriverMetrics: true
     exposeExecutorMetrics: true
     prometheus:
-      jmxExporterJar: "/prometheus/jmx_prometheus_javaagent-0.3.1.jar"
+      jmxExporterJar: "http://central.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.3.1/jmx_prometheus_javaagent-0.3.1.jar"
+
+      #jmxExporterJar: "/prometheus/jmx_prometheus_javaagent-0.3.1.jar"
       port: 8090 
