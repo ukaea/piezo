@@ -19,6 +19,8 @@ kind: SparkApplication
 metadata:
   name: py-wordcount
   namespace: default
+  lables: 
+    release: prometheus-operator
 spec:
   type: Python
   pythonVersion: "2"
@@ -38,6 +40,7 @@ spec:
     # - /tmp
   arguments:
     - "s3a://kubernetes/big.txt"
+    - "s3a://kubernetes/output"
 
 
 
@@ -56,6 +59,7 @@ spec:
     memory: "512m"
     labels:
       version: 2.4.0
+      release: prometheus-operator
     serviceAccount: spark
 
   executor:
@@ -64,6 +68,7 @@ spec:
     memory: "512m"
     labels:
       version: 2.4.0
+      release: prometheus-operator
  
   monitoring:
     exposeDriverMetrics: true

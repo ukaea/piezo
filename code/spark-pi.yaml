@@ -22,8 +22,7 @@ metadata:
 spec:
   type: Scala
   mode: cluster
-  #image: "172.28.128.10/library/spark-test:latest"
-  image: "gcr.io/spark-operator/spark:v2.4.0"
+  image: "gcr.io/spark-operator/spark:v2.4.0-gcs-prometheus"
   imagePullPolicy: Always
   mainClass: org.apache.spark.examples.SparkPi  
   volumes:   # what volume to mount
@@ -46,6 +45,9 @@ spec:
     volumeMounts: #where to mount it
       - name: "task-pv-storage"
         mountPath: "/mnt/data"
+  arguments:
+  - "1000000"
+
 
   executor:
     cores: 1
@@ -56,7 +58,7 @@ spec:
     volumeMounts:
       - name: "task-pv-storage"
         mountPath: "/mnt/data"
-    monitoring:
+  monitoring:
     exposeDriverMetrics: true
     exposeExecutorMetrics: true
     prometheus:

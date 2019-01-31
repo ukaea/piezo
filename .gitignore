@@ -2,3 +2,4 @@
 *.retry
 local_docs
 minio/*
+code/test_monitoring
