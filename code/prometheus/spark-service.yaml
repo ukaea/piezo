@@ -1,0 +1,14 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: spark-monitor-service
+  # namespace: default
+  labels:
+    spark-role: monitor
+spec:
+  selector:
+    test: monitor
+    # spark-role: driver
+  ports:
+  - name: web
+    port: 8090
