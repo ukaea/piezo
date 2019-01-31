@@ -34,7 +34,7 @@
 10. While running move on to Spark UI
 
 # Spark UI
-1. In powersheel on local machine run `kubectl proxy`
+1. In powershell on local machine run `kubectl proxy`
 2. In new powershell window on local machine run `kubectl port-forward py-wordcount-driver 4040:4040`
 3. In browser navigate to `localhost:4040`
 
@@ -47,7 +47,8 @@
 # Grafana
 1. Explain concept of Grafana
 2. powershell `kubectl port-forward $(kubectl get  pods --selector=app=grafana -n  monitoring --output=jsonpath="{.items..metadata.name}") -n monitoring  3000`
-3. Browser `127.28.128.10:3000`
+3. login: username: 'admin' password: 'prom-operator'
+4. Browser `127.28.128.10:3000`
 
 
 # Check results
