@@ -21,7 +21,6 @@ rules:
   # These come from the application driver if it's a streaming application
   # Example: default/streaming.driver.com.example.ClassName.StreamingMetrics.streaming.lastCompletedBatch_schedulingDelay
   - pattern: metrics<name=(\S+)-(\S+)\.driver\.(\S+)\.StreamingMetrics\.streaming\.(\S+)><>Value
-  # - pattern: metrics<name=(\S+)/(\S+)\.driver\.(\S+)\.StreamingMetrics\.streaming\.(\S+)><>Value
     name: spark_streaming_driver_$4
     labels:
       app_namespace: "$1"
