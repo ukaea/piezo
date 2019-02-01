@@ -42,18 +42,7 @@ if __name__ == "__main__":
     counts.saveAsTextFile(sys.argv[2])
 
     output = counts.collect()
-    # string = ""
-    # for (word, count) in output:
-    #     string += ("%s: %i\n" % (word, count))
-
-    # with open(sys.argv[2], 'w+') as output_file:
-    #     output_file.write(string)
- 
-        
-    # print(sys.argv[2])
-    # output.map(lambda row: str(row[0]) + "\t" + str(row[1])).saveAsTextFile(sys.argv[2])
-    #output.saveAsTextFile(sys.argv[2])
-
+    
     for (word, count) in output:
         print("%s: %i\n" % (word, count))
         
