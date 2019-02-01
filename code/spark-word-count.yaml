@@ -21,7 +21,7 @@ metadata:
   namespace: default
 spec:
   type: Python
-  #pythonVersion: "2"
+  pythonVersion: "2"
   mode: cluster
   image: 172.28.128.10/library/spark-prom:latest
 
