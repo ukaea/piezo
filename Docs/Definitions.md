@@ -14,6 +14,10 @@ AppArmor is a Linux kernel security module that supplements the standard Linux u
 ## CNI
 CNI (Container Network Interface), a Cloud Native Computing Foundation project, consists of a specification and libraries for writing plugins to configure network interfaces in Linux containers, along with a number of supported plugins. CNI concerns itself only with network connectivity of containers and removing allocated resources when the container is deleted.
 
+## DAG (Directed Acyclic Graph)
+DAG (Directed Acyclic Graph) is a programming style for distributed systems - You can think of it as an alternative to Map Reduce. While MR has just two steps (map and reduce), DAG can have multiple levels that can form a tree structure. Say if you want to execute a SQL query, DAG is more flexible with more functions like map, filter, union etc.
+
+
 ## DNS
 The Domain Name System (DNS) is a hierarchical decentralized naming system for computers, services, or other resources connected to the Internet or a private network. It associates various information with domain names assigned to each of the participating entities. Most prominently, it translates more readily memorized domain names to the numerical IP addresses needed for locating and identifying computer services and devices with the underlying network protocols.
 
@@ -41,6 +45,9 @@ Enables developers to extend and add new functionalities, replace existent ones 
 
 An Operator is nothing more than a set of application-specific custom controllers.
 
+## RDD (Resilient distributed dataset)
+A collection of elements partitioned across the nodes of the cluster that can be operated on in parallel. RDDs are distributed data sets that can stay in memory and fallback to disk gracefully. RDDs if lost can be easily rebuilt using a graph that says how to reconstruct.
+
 ## Sidecar pattern
 
 Extends the functionality of the main container with a strong coupling to a sidecar container. A sidecar is a utility container in a pod with the purpose to support the main container. Standalone sidecars don't serve any purpose, must be paired with one or more containers. Generally are reusable and can be paired with numerous types of main containers.
@@ -60,14 +67,3 @@ The different types are:
 ## Weave (an example of a CNI plugin)
 Weave Net creates a virtual network that connects Docker containers deployed across multiple hosts. To application containers, the network established by Weave resembles a giant Ethernet switch, where all containers are connected and can easily access services from one another.
 
-## Types of volume mounts
-    * hostPath: A hostPath volume mounts a file or directory from the host node’s filesystem into your Pod.
-    * emptyDir: Loads an empty directory for storage onto a pod when it is created
-    * Persistent volume: PersistentVolumes are a way for users to “claim” durable storage (such as a GCE PersistentDisk or an iSCSI volume) without knowing the details of the particular cloud environment.
-    * Volumes can be ReadWriteOnce (read write accessible from a single node), ReadOnlyOnce (read only from a single node) or ReadWriteMany (read write accessible from multiple nodes)
-
-## RDD (Resilient distributed dataset)
-A collection of elements partitioned across the nodes of the cluster that can be operated on in parallel. RDDs are distributed data sets that can stay in memory and fallback to disk gracefully. RDDs if lost can be easily rebuilt using a graph that says how to reconstruct.
-
-## DAG (Directed Acyclic Graph)
-DAG (Directed Acyclic Graph) is a programming style for distributed systems - You can think of it as an alternative to Map Reduce. While MR has just two steps (map and reduce), DAG can have multiple levels that can form a tree structure. Say if you want to execute a SQL query, DAG is more flexible with more functions like map, filter, union etc.
