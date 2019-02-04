@@ -45,6 +45,14 @@ Enables developers to extend and add new functionalities, replace existent ones 
 
 An Operator is nothing more than a set of application-specific custom controllers.
 
+## MapReduce
+
+MapReduce is the heart of Apache Hadoop. It is a programming paradigm that enables massive scalability across hundreds or thousands of servers in a Hadoop cluster. The MapReduce concept is fairly simple to understand for those who are familiar with clustered scale-out data processing solutions.
+
+The term "MapReduce" actually refers to two separate and distinct tasks that Hadoop programs perform. The first is the map job, which takes a set of data and converts it into another set of data, where individual elements are broken down into tuples (key/value pairs).
+
+The reduce job takes the output from a map as input and combines those data tuples into a smaller set of tuples. As the sequence of the name MapReduce implies, the reduce job is always performed after the map job.
+
 ## RDD (Resilient distributed dataset)
 A collection of elements partitioned across the nodes of the cluster that can be operated on in parallel. RDDs are distributed data sets that can stay in memory and fallback to disk gracefully. RDDs if lost can be easily rebuilt using a graph that says how to reconstruct.
 
