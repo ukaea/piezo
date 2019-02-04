@@ -1,0 +1,25 @@
+---
+- name: Install Python 3
+  yum:
+    name: "{{ packages }}"
+    state: present
+  become: true
+  vars:
+    packages:
+    - python36
+    - python36-devel
+    - python36-setuptools
+
+- name: Copy requirements file
+  copy:
+    src: ./files/requirements.txt
+    dest: ~/requirements.txt
+    mode: 0444
+  become: true
+
+- name: Install Python dependencies for system tests
+  pip:
+    requirements: ~/requirements.txt
+    virtualenv: ~/SystemTests/venv
+    virtualenv_command: /usr/bin/python3.6 -m venv
+  become: true

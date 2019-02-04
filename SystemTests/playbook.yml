@@ -1,0 +1,10 @@
+---
+- name: Setup System Test Infrastructure
+
+  hosts: all
+
+  become_method: sudo
+  become: true
+
+  roles:
+    - python
