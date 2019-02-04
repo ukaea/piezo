@@ -1,44 +1,19 @@
-# apiVersion: monitoring.coreos.com/v1
-# kind: ServiceMonitor
-# metadata:
-#   name: spark-application-monitor
-#   labels:
-#     prometheus: spark-application-monitor
-# spec:
-#   selector:
-#     matchLabels:
-#       spark-role: driver
-#   endpoints:
-#       # works for different port numbers as long as the name matches
-#     - interval: 10s   
-
-
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  # namespace: monitoring
+  namespace: monitoring
   namespace: default
   name: spark-application-monitor
   labels:
-    #component: ingress-nginx
-    # app: prometheus-operator
     release: prometheus-operator # What is matched by the prometheus crd def (kubectl get prometheus -o yaml --all-namespaces)
 spec:
   endpoints:
   - port: web
-    # - interval: 10s
-    #   targetPort: 8090
-    #   path: /metrics
-  # jobLabel: jobLabel
-  # namespaceSelector:
-  #   matchNames:
-  #   - default
+  namespaceSelector:
+    matchNames:
+    - default
   selector:
-    # matchLabels:
-      # release: prometheus-operator
     spark-role: monitor
-      # sparkoperator.k8s.io/app-name: py-wordcount
-      # app.kubernetes.io/instance: open-joey
-      # app.kubernetes.io/name: sparkoperator
+
     
     
