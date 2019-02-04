@@ -14,6 +14,10 @@ AppArmor is a Linux kernel security module that supplements the standard Linux u
 ## CNI
 CNI (Container Network Interface), a Cloud Native Computing Foundation project, consists of a specification and libraries for writing plugins to configure network interfaces in Linux containers, along with a number of supported plugins. CNI concerns itself only with network connectivity of containers and removing allocated resources when the container is deleted.
 
+## DAG (Directed Acyclic Graph)
+DAG (Directed Acyclic Graph) is a programming style for distributed systems - You can think of it as an alternative to Map Reduce. While MR has just two steps (map and reduce), DAG can have multiple levels that can form a tree structure. Say if you want to execute a SQL query, DAG is more flexible with more functions like map, filter, union etc.
+
+
 ## DNS
 The Domain Name System (DNS) is a hierarchical decentralized naming system for computers, services, or other resources connected to the Internet or a private network. It associates various information with domain names assigned to each of the participating entities. Most prominently, it translates more readily memorized domain names to the numerical IP addresses needed for locating and identifying computer services and devices with the underlying network protocols.
 
@@ -41,6 +45,17 @@ Enables developers to extend and add new functionalities, replace existent ones 
 
 An Operator is nothing more than a set of application-specific custom controllers.
 
+## MapReduce
+
+MapReduce is the heart of Apache Hadoop. It is a programming paradigm that enables massive scalability across hundreds or thousands of servers in a Hadoop cluster. The MapReduce concept is fairly simple to understand for those who are familiar with clustered scale-out data processing solutions.
+
+The term "MapReduce" actually refers to two separate and distinct tasks that Hadoop programs perform. The first is the map job, which takes a set of data and converts it into another set of data, where individual elements are broken down into tuples (key/value pairs).
+
+The reduce job takes the output from a map as input and combines those data tuples into a smaller set of tuples. As the sequence of the name MapReduce implies, the reduce job is always performed after the map job.
+
+## RDD (Resilient distributed dataset)
+A collection of elements partitioned across the nodes of the cluster that can be operated on in parallel. RDDs are distributed data sets that can stay in memory and fallback to disk gracefully. RDDs if lost can be easily rebuilt using a graph that says how to reconstruct.
+
 ## Sidecar pattern
 
 Extends the functionality of the main container with a strong coupling to a sidecar container. A sidecar is a utility container in a pod with the purpose to support the main container. Standalone sidecars don't serve any purpose, must be paired with one or more containers. Generally are reusable and can be paired with numerous types of main containers.
@@ -59,3 +74,4 @@ The different types are:
 
 ## Weave (an example of a CNI plugin)
 Weave Net creates a virtual network that connects Docker containers deployed across multiple hosts. To application containers, the network established by Weave resembles a giant Ethernet switch, where all containers are connected and can easily access services from one another.
+
