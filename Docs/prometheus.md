@@ -4,7 +4,7 @@ Kubernetes allows for monitoring using prometheus and Grafana interfaces.
 
 To install Prometheus on your working cluster run:
 ```
-helm install stable/prometheus-operator --name prometheus-operator --namespace monitoring
+helm install stable/prometheus-operator --name prometheus-operator --namespace default
 ```
 This will install a prometheus operator than extends the kubernetes api. All the pods related to the prometheus operator are then included in the namespace monitoring.
 

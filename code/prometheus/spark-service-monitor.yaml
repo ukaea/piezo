@@ -1,17 +1,12 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  namespace: monitoring
-  namespace: default
   name: spark-application-monitor
   labels:
     release: prometheus-operator # What is matched by the prometheus crd def (kubectl get prometheus -o yaml --all-namespaces)
 spec:
   endpoints:
   - port: web
-  namespaceSelector:
-    matchNames:
-    - default
   selector:
     spark-role: monitor
 
