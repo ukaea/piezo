@@ -5,8 +5,8 @@
   register: stat_result
 
 - name: Initiate kubernetes
-#   shell: "kubeadm init --apiserver-advertise-address=172.28.128.10 --apiserver-cert-extra-sans=172.28.128.10 --node-name master-k8s"
-  shell: "kubeadm init --config=/home/vagrant/code/kubeadm.conf --apiserver-advertise-address=172.28.128.10 --apiserver-cert-extra-sans=172.28.128.10"
+  shell: "kubeadm init --apiserver-advertise-address=172.28.128.10 --apiserver-cert-extra-sans=172.28.128.10 --node-name master-k8s"
+#   shell: "kubeadm init --config=/home/vagrant/code/kubeadm.conf --apiserver-advertise-address=172.28.128.10 --apiserver-cert-extra-sans=172.28.128.10"
   become: true
   when: stat_result.stat.exists == False
 
