@@ -1,0 +1,14 @@
+---
+- name: Create test script directory
+  file:
+    path: /home/robot/test_scripts/
+    state: directory
+    mode: 0777
+
+- name: Copy test script file
+  copy:
+    src: "{{ item }}"
+    dest: /home/robot/test_scripts/
+    mode: 0777
+  with_fileglob:
+    - ./files/*.robot

@@ -10,16 +10,22 @@
     - python36-devel
     - python36-setuptools
 
+- name: Create robot directory
+  file:
+    path: /home/robot/
+    state: directory
+    mode: 0777
+
 - name: Copy requirements file
   copy:
     src: ./files/requirements.txt
-    dest: ~/requirements.txt
+    dest: /home/robot/requirements.txt
     mode: 0444
   become: true
 
 - name: Install Python dependencies for system tests
   pip:
-    requirements: ~/requirements.txt
-    virtualenv: ~/SystemTests/venv
+    requirements: /home/robot/requirements.txt
+    virtualenv: /home/robot/SystemTests/venv
     virtualenv_command: /usr/bin/python3.6 -m venv
   become: true
