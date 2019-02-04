@@ -17,3 +17,12 @@
 * Push the image `sudo docker push 172.28.128.10/library/name-for-image:tag`
 * Can check image is in the browser
 * when writing the spark application's yaml file now use the argument `image: 172.28.128.10/library/name-for-image:tag`
+
+
+### Note if failing to log in
+
+Try running:
+```
+cd /usr/local/harbor/
+sudo docker-compose restart # Until all have successfully restarted
+```
