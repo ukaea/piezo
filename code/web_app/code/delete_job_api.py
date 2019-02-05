@@ -2,7 +2,7 @@ import requests
 from kubernetes.client.rest import ApiException
 
 
-url = 'http://localhost:8001/apis/sparkoperator.k8s.io/v1alpha1/namespaces/default/sparkapplications/spark-pi'
+url = 'http://localhost:8001/apis/sparkoperator.k8s.io/v1beta1/namespaces/default/sparkapplications/spark-pi'
 
 def delete():
     try: 

@@ -52,7 +52,7 @@ spec:\n\
 
 namespace = 'default'
 type_of_request = 'POST'
-url = 'http://localhost:8001/apis/sparkoperator.k8s.io/v1alpha1/namespaces/default/sparkapplications'
+url = 'http://localhost:8001/apis/sparkoperator.k8s.io/v1beta1/namespaces/default/sparkapplications'
 headers = {'Content-Type': 'application/yaml'}
 
 def run_job():
