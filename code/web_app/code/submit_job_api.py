@@ -23,7 +23,7 @@ dry_run = 'dry_run_example' # str | When present, indicates that modifications s
 
 
 
-body = str('apiVersion: \"sparkoperator.k8s.io/v1alpha1\"\n\
+body = str('apiVersion: \"sparkoperator.k8s.io/v1beta1\"\n\
 kind: SparkApplication\nmetadata:\n\
   name: spark-pi\n\
   namespace: default\n\
