@@ -12,8 +12,8 @@ define("port", default=8888, help="run on the given port", type=int)
 
 class RunExample(tornado.web.RequestHandler):
     def get(self):
-        import submit_job_api as submit_job
-        #import submit_job_client as submit_job
+        # import submit_job_api as submit_job
+        import submit_job_client as submit_job
         print("Running spark example")
         submit_job.run_job()
         self.write("Running spark example")
