@@ -73,16 +73,16 @@ body = {"apiVersion": "sparkoperator.k8s.io/v1beta1",\
     "instances": 2,\
     "memory": "512m",\
     "labels": {\
-      "version": "2.4.0"}}}} #  The JSON schema of the Resource to create.
+      "version": "2.4.0"}}}} #  The JSON schema of the Resource to create. 
 pretty = True # str | If 'true', then the output is pretty printed. (optional)
 
 def run_job():
     try: 
         api_response = api_instance.create_namespaced_custom_object(group, version, namespace, plural, body, pretty=pretty)
         pprint(api_response)
-        print(api_response.status_code)
-        print(api_response.content)
-        return api_response.content
+        # print(api_response.status_code)
+        # print(api_response.content)
+        return api_response
     except ApiException as e:
         print("Exception when calling CustomObjectsApi->create_namespaced_custom_object: %s\n" % e)
 

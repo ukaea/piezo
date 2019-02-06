@@ -41,4 +41,5 @@ Currently you can then interact with the web app by running `port forward {name 
 
 #### Note ingress rules will be set up to run the web app without port forwarding 
 
-
+* Body now seems to be requied in jsonb format as opposed to strings being allowed
+* Use `configuraion = kubernetes.config.load_incluster_config()` to use the configuration file of the cluster where the code is run
