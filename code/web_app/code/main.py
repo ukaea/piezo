@@ -29,9 +29,9 @@ class GetLogs(tornado.web.RequestHandler):
 
 class DeleteExample(tornado.web.RequestHandler):
     def get(self):
-        import delete_job
+        import delete_job_client as delete_job
 
-        result = delete_job.delete()
+        result = delete_job.delete_job()
         print(result)
         #os.system("kubectl logs spark-pi-driver")
         self.write(json.dumps(result))
