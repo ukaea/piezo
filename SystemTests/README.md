@@ -2,6 +2,10 @@
 
 The System Test framework is intended for use on a cloud computing environment (e.g. OpenStack) where there is also a cluster of the main system provisioned on separate VMs.
 
+## Test environment
+
+An instance of [Minio](https://www.minio.io/) is running on the VM that hosts the system test environment. The test Spark jobs that are submitted to the Kubernetes cluster are configured to use this Minio instance for their S3 storage, allowing easy inspection of the files generated.
+
 ## Setup
 
 Setup requires a Unix OS (tested with Scientific Linux 7). If your local machine runs Windows, it is recommended that you set up a Linux VM.
