@@ -33,3 +33,17 @@ Navigate back to this directory, then run the Ansible playbook to install all th
 ```
 ansible-playbook --inventory=hosts playbook.yml
 ```
+
+## Running tests
+
+SSH into the VM and navigate to `/home/robot/`.
+
+Source the Python virtual environments:
+```
+source SystemTests/venv/bin/activate
+```
+
+Run the system test scripts:
+```
+robot test_scripts/piezo.robot
+```
