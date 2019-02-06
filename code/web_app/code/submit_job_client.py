@@ -7,7 +7,8 @@ from pprint import pprint
 import json
 
 # Configure API key authorization: BearerToken
-configuration = config.load_kube_config()
+configuration = config.load_incluster_config()
+# configuration = config.load_kube_config()
 # Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
 # configuration.api_key_prefix['authorization'] = 'Bearer'
 

@@ -7,7 +7,8 @@ from kubernetes import config
 from pprint import pprint
 
 # Configure API key authorization: BearerToken
-configuration = config.load_kube_config()
+# configuration = config.load_kube_config()
+configuration = config.load_incluster_config()
 #configuration.api_key['authorization'] = 'YOUR_API_KEY'
 # Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
 # configuration.api_key_prefix['authorization'] = 'Bearer'
