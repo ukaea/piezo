@@ -25,3 +25,20 @@ Or via the python client `delete_namespaced_custom_object`
 ## Mounting volumes
 * To mount volumes to spark driver and executors need to have spark 2.4  Can only mount volumes of type: `hostPath`, `emptyDir`, `persistentVolumeClaim`
 * Need to have the mutating admission webhook (done by default when spark operator is installed but can be disabled)
+
+
+## Launching the web app on the kubernetes cluster
+
+To launch the web app in a kubernetes pod you first need to build the code into a docker image. First ensure you have a docker registory that can be pushed and pulled from by the machine where you are going to deploy the web app.
+
+
+
+Next run `./launching_web_app.sh`, the first stage of which is to run `/containerise.sh`. The docker registory may need to be configured first within this file to match the docker registory that you are pushing to. Running this script will package the web app into a docker container and push the container to the registory ready to be pushed to the kubernetes cluster.
+
+Once packeged the script will create a pod on your kubernetes cluster (again the ip address may need configuring) and expose the relevant port for access from outside the container.
+
+Currently you can then interact with the web app by running `port forward {name of test-app-pod} 8888` and then communicating via `localhost:8888` in your browser.
+
+#### Note ingress rules will be set up to run the web app without port forwarding 
+
+
