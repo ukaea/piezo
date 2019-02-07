@@ -1,0 +1,9 @@
+[run]
+branch = True
+omit=PiezoWebApp/tests/*
+
+[report]
+sort=Cover
+
+[html]
+directory=piezo_web_app_code_coverage_html

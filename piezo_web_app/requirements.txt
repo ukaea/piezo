@@ -1,0 +1,11 @@
+flake8
+json
+kubernetes
+mock
+pylint
+pytest
+pytest-cov
+pytest-mock
+pytest-tornado
+tornado
+wheel
