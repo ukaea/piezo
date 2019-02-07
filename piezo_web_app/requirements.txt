@@ -8,4 +8,5 @@ pytest-mock
 pytest-tornado
 requests
 tornado
+tornado-json
 wheel
