@@ -1,17 +1,15 @@
 ###############################################################################
 *** Settings ***
-Documentation     A test suite with a single test for valid login.
-Library           RequestsLibrary
-Resource          resource.robot
-resource          s3methods.robot
+Documentation     A test suite with for the Piezo system.
+Resource          s3methods.robot
+Resource          k8s_methods.robot
 
 ###############################################################################
 *** Test Cases ***
-Successful ping
-    Create Session  google	http://www.google.com
-    Confirm 200 Response	google
-
-S3 File Exists
-    File Should Exist In S3 Bucket    test-bucket   test1.txt
-    File Should Not Exist In S3 Bucket    non-bucket   test1.txt
-    File Should Not Exist In S3 Bucket    test-bucket   no-file.txt
+Word Count Example
+    # Check that the correct files are in S3
+    File Should Exist In S3 Bucket    kubernetes   wordcount.py
+    File Should Exist In S3 Bucket    kubernetes   big.txt
+    File Should Not Exist In S3 Bucket    kubernetes  output
+    # Launch k8s
+    Check k8s Connection

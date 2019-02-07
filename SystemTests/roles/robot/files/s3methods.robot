@@ -1,6 +1,6 @@
 ###############################################################################
 *** Settings ***
-Documentation     A test suite with a single test for valid login.
+Documentation     Test resources for interacting with the S3 storage.
 Library           OperatingSystem
 
 ###############################################################################
