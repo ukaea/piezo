@@ -6,5 +6,6 @@ pytest
 pytest-cov
 pytest-mock
 pytest-tornado
+requests
 tornado
 wheel
