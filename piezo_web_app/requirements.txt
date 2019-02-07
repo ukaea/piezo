@@ -1,5 +1,4 @@
 flake8
-json
 kubernetes
 mock
 pylint
