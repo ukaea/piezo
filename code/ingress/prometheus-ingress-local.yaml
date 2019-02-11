@@ -7,7 +7,6 @@ metadata:
   name: prometheus-ingress
 spec:
   rules:
-    # - host: host-172-16-113-146.nubes.stfc.ac.uk
     - host: prometheus.piezo.ac.uk
       http:
         paths:
@@ -15,9 +14,6 @@ spec:
               serviceName: prometheus-operator-prometheus
               servicePort: web
             path: /prometheus/
-    #- host: monitoring.piezo.ac.uk
-    #  http:
-    #    paths:
           - backend:
               serviceName: prometheus-operator-grafana
               servicePort: service
