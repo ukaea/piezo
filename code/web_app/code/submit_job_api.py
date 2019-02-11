@@ -6,11 +6,8 @@ from kubernetes.client.rest import ApiException
 from kubernetes import config
 from pprint import pprint
 
-# Configure API key authorization: BearerToken
-configuration = config.load_kube_config()
-#configuration.api_key['authorization'] = 'YOUR_API_KEY'
-# Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-# configuration.api_key_prefix['authorization'] = 'Bearer'
+# Configure API 
+configuration = config.load_incluster_config()
 
 # create an instance of the API class
 api_instance = kubernetes.client.CoreV1Api()
@@ -23,8 +20,9 @@ dry_run = 'dry_run_example' # str | When present, indicates that modifications s
 
 
 
-body = str('apiVersion: \"sparkoperator.k8s.io/v1alpha1\"\n\
-kind: SparkApplication\nmetadata:\n\
+body = str('apiVersion: \"sparkoperator.k8s.io/v1beta1\"\n\
+kind: SparkApplication\n\
+  metadata:\n\
   name: spark-pi\n\
   namespace: default\n\
 spec:\n\
@@ -52,7 +50,7 @@ spec:\n\
 
 namespace = 'default'
 type_of_request = 'POST'
-url = 'http://localhost:8001/apis/sparkoperator.k8s.io/v1alpha1/namespaces/default/sparkapplications'
+url = 'http://localhost:8001/apis/sparkoperator.k8s.io/v1beta1/namespaces/default/sparkapplications'
 headers = {'Content-Type': 'application/yaml'}
 
 def run_job():

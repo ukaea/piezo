@@ -1,1 +1,0 @@
-harbor_release_url: https://storage.googleapis.com/harbor-releases/release-{{ harbor_offline_installer_version }}/harbor-offline-installer-v{{ harbor_offline_installer_version }}.tgz
