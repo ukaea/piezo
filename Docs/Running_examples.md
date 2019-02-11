@@ -8,7 +8,7 @@ All jobs are run by using the command: `kubectl apply -f {spark-applications-nam
 
 ### spark-pi.yaml
 `spark-pi.yaml` demonstrates running the spark-pi job from a mounted persistent volume using the base docker image from the spark operator. 
-To run this job you must have first copy the spark pi example jar from `/code` to `/tmp` by running: `cp ~/code/spark-examples_2.11-2.4.0.jar /tmp/`. This needs to be perfomed on the node where the persistent volume claim is made as it is set to use a hostPath to create the persistent volume. As it is not known which node the volume will be made on it is suggested to copy the file on both of the kubernetes worker nodes. With the data in the right place return to the master node and run `persistent_volume.sh` which will generate the persistent volume and persistent volume claim required by this job.
+To run this job you must have first copy the spark pi example jar from `/code` to `/tmp` by running: `cp ~/code/spark-examples_2.11-2.4.0.jar /tmp/`. This needs to be perfomed on the node where the persistent volume claim is made as it is set to use a hostPath to create the persistent volume. As it is not known which node the volume will be made on it is suggested to copy the file on both of the kubernetes worker nodes. With the data in the right place return to the master node and run `volumes/persistent_volume.sh` which will generate the persistent volume and persistent volume claim required by this job.
 
 ### spark-pi-host-path.yaml
 `spark-pi-host-path.yaml` demonstrates running the spark-pi job from a mounted host path using the base docker image from the spark operator.
