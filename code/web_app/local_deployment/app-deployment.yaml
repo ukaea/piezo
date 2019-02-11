@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-app-deployment
+  labels:
+    run: test-app
+spec:
+  replicas: 1
+  selector: # which pods to manage
+    matchLabels:
+      run: test-app
+  template: # Defining the pods
+    metadata:
+      labels:
+        run: test-app
+    spec:
+      containers:
+      - name: piezo
+        image: 172.28.128.10/library/web_app:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8888
