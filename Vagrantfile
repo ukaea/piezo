@@ -69,7 +69,7 @@ Vagrant.configure("2") do |config|
 
     worker2.vm.provider "virtualbox" do |vb|
       vb.memory = 2048
-      vb.cpus = 2
+      vb.cpus = 3
     end
 
     worker2.vm.provision "ansible_local" do |ansible|

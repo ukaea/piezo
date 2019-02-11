@@ -11,8 +11,8 @@ spark-minio-docker-hub
 spark-on-k8s-operator
 sparkctl
 spark-docker-hub-v2
-Dockerfile
-spark-jobs/spark-pi-minio_old.yaml
+spark-pi-minio_old.yaml
+prometheus
 spark-jobs/custom
 spark-jobs/PySpark-Boilerplate
 kubeadm.conf
