@@ -21,7 +21,8 @@
 
 # Ingress rules and monitoring with Prometheus and Grafana
 1. Explain what ingress does (allows access into the cluster and control of pods but is the only way into the cluster and all other pods remain secure)
-2. Show `~/code/ingress/...` and run `kubectl apply -f ~/code/ingress/prometheus-ingress.yaml` This install nginx ingress (ingress controller) with helm and applies ingress rules for prometheus and Grafana
+2. Explain used helm to install the ingress controller `helm install stable/nginx-ingress`
+2. Show `~/code/ingress/...` and run `kubectl apply -f ~/code/ingress/prometheus-ingress-openstack.yaml` which defines ingress rules for accessing prometheus and Grafana
 3. In your browser navigate to `http://host-172-16-113-146.nubes.stfc.ac.uk:31924/` to show Grafana
 4. Also navigate to `http://host-172-16-113-146.nubes.stfc.ac.uk:31924/prometheus/graph` to show Prometheus
 5. Remind about use of service to select which parts to monitor
