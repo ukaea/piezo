@@ -1,10 +1,11 @@
 from __future__ import print_function
 import time
 import kubernetes.client
+from kubernetes import config
 from kubernetes.client.rest import ApiException
 from pprint import pprint
 
-configuration = kubernetes.config.load_kube_config()
+configuration = config.load_incluster_config()
 api_instance = kubernetes.client.CoreV1Api(kubernetes.client.ApiClient(configuration))
 name = 'spark-pi-driver'
 namespace = 'default'
