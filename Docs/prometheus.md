@@ -2,36 +2,43 @@
 The following information approximately follows what can be found in this [blog](https://itnext.io/kubernetes-monitoring-with-prometheus-in-15-minutes-8e54d1de2e13)
 Kubernetes allows for monitoring using prometheus and Grafana interfaces.
 
-To install Prometheus on your working cluster run:
+Before installing prometheus we will first install ingress allowing us to access the prometheus dashboard outside of the kubernetes cluster.
+
+To install the ingress controller run:
 ```
-helm install stable/prometheus-operator --name prometheus-operator --namespace default
+helm install stable/nginx-ingress
 ```
-This will install a prometheus operator than extends the kubernetes api. All the pods related to the prometheus operator are then included in the namespace monitoring.
+Once installed check the port on which ingress is exposed on a note this down. (I will refer to this as {ingress port})
+
+Add the following line to your local machine's host file as this will allow you to access the dashboards in your browser:
+```
+172.28.128.10 prometheus.piezo.ac.uk
+```
+subsituting the Ip for whatever your cluster IP address is.
+
+
+Next install Prometheus on your working cluster by first running:
+```
+helm install stable/prometheus-operator --name piezo-monitor --set prometheus.prometheusSpec.routePrefix=/prometheus/ --set prometheus.prometheusSpec.externalUrl=prometheus.piezo.ac.uk:{ingress port}/prometheus/ 
+```
+This will install a prometheus operator than extends the kubernetes api as well as providing the relevant prefix to be configured later to assign ingress rules to. All the pods related to the prometheus operator are then included in the namespace monitoring.
 
 Check that all pods are running by using the command:
 ```
 kubectl get pods  -n monitoring
 ```
 
-Once all pods are up and running you can access the prometheus dashboard by portfowarding the `prometheus-prometheus-operator-prometheus-0` pod.
+Finally apply the ingress rules to access the prometheus dashboard by running:
+```
+kubectl apply -f ~/code/ingress/prometheus-ingress-local.yaml
+```
+This will also have configure ingress rules for Grafana (see below).
 
-To do this, on your local machine (where you want to run the dashboard) run:
-```
-kubectl proxy
-```
-Then in a new command window on the same machine, run:
-```
-kubectl port-forward -n monitoring prometheus-prometheus-operator-prometheus-0 9090
-```
-Now in a browser on your machine you should be able to navigate to `http://http:localhost:9090` where you will see the prometheus dashboard
+Once all pods are up and running and ingress rules are set you can access the prometheus dashboard navigating to `prometheus.piezo.ac.uk:{ingress port}/prometheus/graph` in your local browser.
+
 
 ## Linking with Grafana
-Grafana provides a better looking dashboard whilst hooking into the prometheus datasource for you. To access the Grafana dashboard on your machine you once again need to use port forwarding. Once again ensure the proxy is running and then run the command:
-```
-kubectl port-forward $(kubectl get  pods --selector=app=grafana -n  monitoring --output=jsonpath="{.items..metadata.name}") -n monitoring  3000
-```
-
-Now navigate in your browser to `http://http:localhost:3000` where you will see ther Grafana dashboard
+Grafana provides a better looking dashboard whilst hooking into the prometheus datasource for you. Following the instructions above for prometheus will have installed all requirments for Grafana for you and will have set the ingress rules required to access the dashboard. To access the Grafana dashboard on your machine just open up a browser and navigate to: `prometheus.piezo.ac.uk:{ingress port}/` where you will see the Grafana dashboard. On your first visit you will be required to login using the credentials `username: admin`, `password: prom-operator`.
 
 
 # Monitoring spark applications with prometheus
