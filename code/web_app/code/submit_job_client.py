@@ -6,11 +6,9 @@ from kubernetes import config
 from pprint import pprint
 import json
 
-# Configure API key authorization: BearerToken
+# Configure API 
 configuration = config.load_incluster_config()
-# configuration = config.load_kube_config()
-# Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-# configuration.api_key_prefix['authorization'] = 'Bearer'
+
 
 # create an instance of the API class
 api_instance = kubernetes.client.CustomObjectsApi(kubernetes.client.ApiClient(configuration))
@@ -53,8 +51,6 @@ def run_job():
     try: 
         api_response = api_instance.create_namespaced_custom_object(group, version, namespace, plural, body, pretty=pretty)
         pprint(api_response)
-        # print(api_response.status_code)
-        # print(api_response.content)
         return api_response
     except ApiException as e:
         print("Exception when calling CustomObjectsApi->create_namespaced_custom_object: %s\n" % e)
