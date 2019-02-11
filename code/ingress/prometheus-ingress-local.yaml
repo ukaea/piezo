@@ -11,10 +11,10 @@ spec:
       http:
         paths:
           - backend:
-              serviceName: prometheus-operator-prometheus
+              serviceName: piezo-monitor-prometheus-o-prometheus
               servicePort: web
             path: /prometheus/
           - backend:
-              serviceName: prometheus-operator-grafana
+              serviceName: piezo-monitor-grafana
               servicePort: service
             path: /
