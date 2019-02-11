@@ -39,9 +39,9 @@ class DeleteExample(tornado.web.RequestHandler):
 def main():
     tornado.options.parse_command_line()
     application = tornado.web.Application([
-        (r"/runexample", RunExample),
-        (r"/getlogs", GetLogs),
-        (r"/deleteexample", DeleteExample),])
+        (r"/piezo/runexample", RunExample),
+        (r"/piezo/getlogs", GetLogs),
+        (r"/piezo/deleteexample", DeleteExample),])
     http_server = tornado.httpserver.HTTPServer(application)
     http_server.listen(options.port)
     print("Starting server")

@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    # nginx.ingress.kubernetes.io/rewrite-target: /
+  name: piezo-ingress
+spec:
+  rules:
+    # - host: host-172-16-113-146.nubes.stfc.ac.uk
+    - host: prometheus.piezo.ac.uk # Need to first add 172.28.128.10 prometheus.piezo.ac.uk to /etc/hosts
+      http:
+        paths:
+          - backend:
+              serviceName: piezo-app-service
+              servicePort: web
+            path: /piezo/
