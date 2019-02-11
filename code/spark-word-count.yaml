@@ -26,18 +26,12 @@ spec:
   image: 172.28.128.10/library/spark-prom:latest
 
   imagePullPolicy: Always
-  #mainClass: org.apache.spark.examples.wordcount
   dep:
     jars:
       - http://central.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.3.1/jmx_prometheus_javaagent-0.3.1.jar
-    # pyfiles:
-    #   - "s3a://kubernetes/word-count/wordcount_python_job.zip"
-    # files: # additional files to include
-    #   - "s3a://kubernetes/inputfile.txt"
-    # filesDownloadDir: # where to download additional files to
-    # - /tmp
   arguments:
     - "s3a://kubernetes/big.txt"
+    - "s3a://kubernetes/output"
 
 
 

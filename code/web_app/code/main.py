@@ -12,8 +12,8 @@ define("port", default=8888, help="run on the given port", type=int)
 
 class RunExample(tornado.web.RequestHandler):
     def get(self):
-        import submit_job_api as submit_job
-        #import submit_job_client as submit_job
+        # import submit_job_api as submit_job
+        import submit_job_client as submit_job
         print("Running spark example")
         submit_job.run_job()
         self.write("Running spark example")
@@ -29,9 +29,9 @@ class GetLogs(tornado.web.RequestHandler):
 
 class DeleteExample(tornado.web.RequestHandler):
     def get(self):
-        import delete_job_api
+        import delete_job_client as delete_job
 
-        result = delete_job_api.delete()
+        result = delete_job.delete_job()
         print(result)
         #os.system("kubectl logs spark-pi-driver")
         self.write(json.dumps(result))
@@ -39,9 +39,9 @@ class DeleteExample(tornado.web.RequestHandler):
 def main():
     tornado.options.parse_command_line()
     application = tornado.web.Application([
-        (r"/runexample", RunExample),
-        (r"/getlogs", GetLogs),
-        (r"/deleteexample", DeleteExample),])
+        (r"/piezo/runexample", RunExample),
+        (r"/piezo/getlogs", GetLogs),
+        (r"/piezo/deleteexample", DeleteExample),])
     http_server = tornado.httpserver.HTTPServer(application)
     http_server.listen(options.port)
     print("Starting server")

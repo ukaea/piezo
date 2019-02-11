@@ -24,7 +24,7 @@ from pyspark.sql import SparkSession
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
+    if len(sys.argv) != 3:
         print("Usage: wordcount <file>", file=sys.stderr)
         sys.exit(-1)
 
@@ -37,8 +37,14 @@ if __name__ == "__main__":
     counts = lines.flatMap(lambda x: x.split(' ')) \
                   .map(lambda x: (x, 1)) \
                   .reduceByKey(add)
-    output = counts.collect()
-    for (word, count) in output:
-        print("%s: %i" % (word, count))
+    
+    
+    counts.saveAsTextFile(sys.argv[2])
 
+    output = counts.collect()
+    
+    for (word, count) in output:
+        print("%s: %i\n" % (word, count))
+        
+    
     spark.stop()

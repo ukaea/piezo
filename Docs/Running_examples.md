@@ -17,3 +17,7 @@ Note to run this job you must first log into each node and copy the `spark-examp
 ### spark-pi-minio.yaml
 `spark-pi-minio.yaml` demonstrates puilling the spark pi job off a S3 minio instance and using the `gitlab-registry.cern.ch/db/spark-service/docker-registry/spark:v2.4.0-hadoop3.1` docker image. Note to run this job you have a minio instance running. In your minio browser create a bucket named `kubernetes` and copy across your `spark-examples_2.11-2.4.0.jar` into your bucket.
 
+
+### spark-word-count.yaml
+`spark-word-count.yaml` demonstrates a python spark application and how to connect the data file stored in s3 to the spark application. To run first copy the file `~/code/spark-jobs/word-count/wordcount.py` to the minio instance in the bucket `kubernetes/wordcount/` Also create a text file called `big.txt` in the minio instance at `/kubernetes/`. These files are configurable in the yaml file under the arguments parameter.
+
