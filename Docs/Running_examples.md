@@ -5,6 +5,7 @@ All examples currently run the same example spark job found in `spark-examples_2
 
 All jobs are run by using the command: `kubectl apply -f {spark-applications-name.yaml}`
 
+This can be autometed by using the script `run_spark_application.sh` with a single argument being the path to the example you want to run.
 
 ### spark-pi.yaml
 `spark-pi.yaml` demonstrates running the spark-pi job from a mounted persistent volume using the base docker image from the spark operator. 
