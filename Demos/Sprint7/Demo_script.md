@@ -22,11 +22,11 @@
 # Ingress rules and monitoring with Prometheus and Grafana
 1. Explain what ingress does (allows access into the cluster and control of pods but is the only way into the cluster and all other pods remain secure)
 2. Explain used helm to install the ingress controller `helm install stable/nginx-ingress`
-2. Show `~/code/ingress/...` and run `kubectl apply -f ~/code/ingress/prometheus-ingress-openstack.yaml` which defines ingress rules for accessing prometheus and Grafana
-3. In your browser navigate to `http://host-172-16-113-146.nubes.stfc.ac.uk:31924/` to show Grafana
-4. Also navigate to `http://host-172-16-113-146.nubes.stfc.ac.uk:31924/prometheus/graph` to show Prometheus
-5. Remind about use of service to select which parts to monitor
-6. Mention should be able to get spark specific metrics here but there is an error in the spark operator code so although we can scrape the pods the metrics don't exist. 
+3. Show `~/code/ingress/...` and run `kubectl apply -f ~/code/ingress/prometheus-ingress-openstack.yaml` which defines ingress rules for accessing prometheus and Grafana
+4. In your browser navigate to `http://host-172-16-113-146.nubes.stfc.ac.uk:31924/` to show Grafana
+5. Also navigate to `http://host-172-16-113-146.nubes.stfc.ac.uk:31924/prometheus/graph` to show Prometheus
+6. Remind about use of service to select which parts to monitor
+7. Mention should be able to get spark specific metrics here but there is an error in the spark operator code so although we can scrape the pods the metrics don't exist. 
 
 # Infrastructure to containerise a web app
 1. Explain still using a basic web app which demonstrates basic principles of what we are going to achieve but will be formalised (work started by Rob)
