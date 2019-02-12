@@ -39,5 +39,5 @@
 8. Open `openstack-deployment/app-deployment.yaml` and talk through how this produces deployment, creates service to control deployment and applies ingress rules.
 9. run from local machine `kubectl apply -f app-deployment.yaml`
 10. run `kubectl get pods` to show app pod created
-11. In browser send get requests to `http://host-172-16-113-146.nubes.stfc.ac.uk:31924/piezo/getlogsrunexample` to run a job, 
+11. In browser send get requests to `http://host-172-16-113-146.nubes.stfc.ac.uk:31924/piezo/runexample` to run a job, 
 `http://host-172-16-113-146.nubes.stfc.ac.uk:31924/piezo/getlogs` to get logs of the job and `http://host-172-16-113-146.nubes.stfc.ac.uk:31924/piezo/deleteexample` to clean up the job
