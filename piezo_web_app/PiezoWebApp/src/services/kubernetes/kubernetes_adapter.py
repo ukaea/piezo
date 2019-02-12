@@ -20,7 +20,7 @@ CRD_VERSION = 'v1beta1'
 class KubernetesAdapter(IKubernetesAdapter):
     def __init__(self, logger):
         self._logger = logger
-        config = kubernetes.config.load_kube_config()
+        config = kubernetes.config.load_incluster_config()
         api_client = kubernetes.client.ApiClient(config)
         self._connection = kubernetes.client.CustomObjectsApi(api_client)
 
