@@ -19,6 +19,8 @@ kind: SparkApplication
 metadata:
   name: py-wordcount
   namespace: default
+  lables: 	
+    release: prometheus-operator
 spec:
   type: Python
   pythonVersion: "2"
@@ -50,6 +52,7 @@ spec:
     memory: "512m"
     labels:
       version: 2.4.0
+      release: prometheus-operator
     serviceAccount: spark
 
   executor:
@@ -58,6 +61,7 @@ spec:
     memory: "512m"
     labels:
       version: 2.4.0
+      release: prometheus-operator
  
   monitoring:
     exposeDriverMetrics: true
