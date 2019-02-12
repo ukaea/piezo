@@ -1,0 +1,1 @@
+certificate_subject: "/C={{ country }}/ST={{ state }}/L={{ locality }}/O={{ organisation }}"

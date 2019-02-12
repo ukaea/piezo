@@ -1,0 +1,109 @@
+## Configuration file of Harbor
+
+# This attribute is for migrator to detect the version of the .cfg file, DO NOT MODIFY!
+_version = 1.7.0
+
+hostname = {{ ansible_fqdn }}
+
+ssl_cert = /etc/ssl/public/{{ ansible_fqdn }}.crt
+ssl_cert_key = /etc/ssl/private/{{ ansible_fqdn }}.key
+
+project_creation_restriction = adminonly
+token_expiration = 30
+
+
+max_job_workers = 3
+secretkey_path = /data
+
+log_rotate_count = 50
+log_rotate_size = 200k
+
+customize_crt = on
+
+
+# Harbor auth
+# This will change to OICD once implemented
+auth_mode = db_auth
+self_registration = on
+
+
+
+
+# Harbor DB
+db_host = {{ harbor_db_host }}
+db_password = {{ harbor_db_password }}
+db_port = {{ harbor_db_port }}
+db_user = {{ harbor_db_user }}
+
+
+# Registry registry
+
+registry_storage_provider_name = filesystem
+registry_storage_provider_config =
+registry_custom_ca_bundle =
+
+
+
+
+
+
+
+# LEAVE AS DEFAULTS: DO NOT CHANGE ANYTHING BELOW
+
+ui_url_protocol = https
+harbor_admin_password = Harbor12345
+
+#***** Redis server *****
+## Set this to "redis" to have Harbor to set up a local redis server
+redis_host = redis
+redis_port = 6379
+## Leave redis_password empty if "redis_host = redis"
+redis_password =
+redis_db_index = 1,2,3
+
+
+
+# UNUSED: LEAVE EVERYTHING BELOW AS DEFAULT
+
+#***** Admiral *****
+admiral_url = NA
+
+#***** Clair *****
+clair_db_host = postgresql
+clair_db_password = password
+clair_db_port = 5432
+clair_db_username = postgres
+clair_db = postgres
+clair_updaters_interval = 12
+http_proxy =
+https_proxy =
+no_proxy = 127.0.0.1,localhost,core,registry
+
+#***** Email server *****
+email_identity =
+email_server = mail.domain.tld
+email_server_port = 25
+email_username = sample_admin@mydomain.com
+email_password = abc
+email_from = admin <sample_admin@mydomain.com>
+email_ssl = false
+email_insecure = false
+
+#***** LDAP *****
+ldap_url = ldaps://ldap.mydomain.com
+ldap_basedn = ou=people,dc=mydomain,dc=com
+ldap_uid = uid
+ldap_scope = 2
+ldap_timeout = 5
+ldap_verify_cert = true
+ldap_group_basedn = ou=group,dc=mydomain,dc=com
+ldap_group_filter = objectclass=group
+ldap_group_gid = cn
+ldap_group_scope = 2
+
+#***** UAA *****
+uaa_endpoint = uaa.mydomain.org
+uaa_clientid = id
+uaa_clientsecret = secret
+uaa_verify_cert = true
+uaa_ca_cert = /path/to/ca.pem

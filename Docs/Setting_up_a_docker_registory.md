@@ -1,6 +1,6 @@
 ## Building a custom docker image and running it for the spark application
 
-* Install `Harbor` by with ansible by running: `ansible-playbook ~/code/harbor/alc-harbor/harbor-deployment.yml`
+* Install `Harbor` by with ansible by running: `ansible-playbook ~/code/harbor-deployment/harbor-deployment.yml`
 * In browser (firefox) navigate to ip of harbor host as in config of harbor (in this case 172.28.128.10)
 * Login as usr:`admin` pass:`Harbor12345` default (changed to Harbor123)
 * Add a user that can push and pull to the repository
