@@ -48,8 +48,8 @@ From within your `master-k8s` VM navigate to `~/code` and run:
 ./install_spark_operator.sh
 ```
 
-To check the installation was completed successfully run `kubectl get pods --all-namespaces` and check you have a pod containing the name spark-operator that has the status `running`. Now your machine is provisioned to run spark applications as outlined in `Running_examples.md`. 
+To check the installation was completed successfully run `kubectl get pods --all-namespaces` and check you have a pod containing the name spark-operator that has the status `running`. Now your machine is provisioned to run spark applications as outlined in [Running_examples.md](https://github.com/ukaea/piezo/blob/master/Docs/Running_examples.md). 
 
-The cluster can be configured further to allow extraction of metrics about the cluster and from spark applications by following the instructions in `prometheus.md`.
+The cluster can be configured further to allow extraction of metrics about the cluster and from spark applications by following the instructions in [prometheus.md](https://github.com/ukaea/piezo/blob/master/Docs/prometheus.md).
 
-Note certain jobs will require settign up a local docker registory which can be achieved by following the instructions in `Setting_up_a_docker_registory.md`
+Note certain jobs will require settign up a local docker registory which can be achieved by following the instructions in [Setting_up_a_docker_registory.md](https://github.com/ukaea/piezo/blob/master/Docs/Setting_up_a_docker_registory.md)
