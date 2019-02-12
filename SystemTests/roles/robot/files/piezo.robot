@@ -11,5 +11,7 @@ Word Count Example
     File Should Exist In S3 Bucket    kubernetes   wordcount.py
     File Should Exist In S3 Bucket    kubernetes   big.txt
     File Should Not Exist In S3 Bucket    kubernetes  output
+
+Check connection
     # Launch k8s
     Check k8s Connection
