@@ -1,0 +1,38 @@
+---
+- name: Import public settings file
+  include_vars:
+    file: "./settings/public.yml"
+
+- name: Make ssl directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - /etc/ssl/private/
+    - /etc/ssl/public/
+    - /etc/ssl/ca/
+    - /etc/ssl/csr/
+    - /etc/docker/certs.d/{{ ansible_fqdn }}/
+
+- name: Generate CA
+  shell: openssl req -newkey rsa:4096 -nodes \
+          -sha256 -keyout /etc/ssl/ca/ca.key -x509 \
+          -days 365 -out /etc/ssl/ca/ca.crt \
+          -subj "{{ certificate_subject }}/CN={{ ansible_domain }}"
+
+- name: Generate CSR from CA
+  shell: openssl req -newkey rsa:4096 -nodes -sha256 \
+          -keyout /etc/ssl/private/{{ ansible_fqdn }}.key \
+          -out /etc/ssl/csr/{{ ansible_fqdn }}.csr \
+          -subj "{{ certificate_subject }}/CN={{ ansible_fqdn }}"
+
+- name: Generate self signed certificate from CSR
+  shell: openssl x509 -req -days 365 -in /etc/ssl/csr/{{ ansible_fqdn }}.csr \
+          -CA /etc/ssl/ca/ca.crt -CAkey /etc/ssl/ca/ca.key \
+          -CAcreateserial -out /etc/ssl/public/{{ ansible_fqdn }}.crt
+
+- name: Add ca.crt in autorised Docker CA
+  copy:
+    src: /etc/ssl/ca/ca.crt
+    dest: /etc/docker/certs.d/{{ ansible_fqdn }}/ca.crt
+    remote_src: true

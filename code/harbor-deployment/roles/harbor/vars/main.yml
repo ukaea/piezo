@@ -1,0 +1,3 @@
+harbor_release_url: https://storage.googleapis.com/harbor-releases/release-{{ harbor_offline_installer_version }}/harbor-offline-installer-v{{ harbor_offline_installer_version }}.tgz
+
+registry_storage_provider_config: "regionendpoint: {{ s3_endpoint }}, accesskey: {{ s3_access_key }}, secretkey: {{ s3_secret_key }}, bucket: {{ s3_bucket_name }}"
