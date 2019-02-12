@@ -1,0 +1,19 @@
+### Harbor installation
+
+harbor_offline_installer_version: 1.7.0
+harbor_install_path : "/usr/local/"
+
+### Harbor DB
+
+# If harbor_db_host is "postgresql" then a local DB will be created and used
+# Alternatively, an external DB connection will be established
+harbor_db_host: postgresql
+harbor_db_port: 5432
+harbor_db_user: postgres
+
+
+### Registry storage
+
+# Refer to https://docs.docker.com/registry/configuration/#storage for storage options
+s3_endpoint: echo.stfc.ac.uk
+s3_bucket_name: ditto-docker-registry-test

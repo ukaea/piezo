@@ -1,0 +1,17 @@
+---
+- name: Install Harbor
+
+  hosts: all
+
+  vars:
+    - hostname: 172.28.128.170
+    - generate_ssl: true
+
+  become_method: sudo
+  become: true
+
+  roles:
+    - docker
+    - role: ssl
+      when: generate_ssl
+    - harbor

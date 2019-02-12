@@ -1,0 +1,26 @@
+---
+- name: Import public settings file
+  include_vars:
+    file: "./settings/public.yml"
+
+- name: Import secret settings file
+  include_vars:
+    file: "./settings/secret.yml"
+  no_log: true
+
+- name: Download and extract Harbor installer
+  unarchive:
+    src: "{{harbor_release_url}}"
+    dest: "{{harbor_install_path}}"
+    remote_src: true
+    creates: "{{harbor_install_path}}harbor/"
+
+- name: harbor.cfg configuration
+  template:
+    src: harbor.cfg.j2
+    dest: "{{harbor_install_path}}harbor/harbor.cfg"
+
+- name: Execute install.sh
+  shell: "{{harbor_install_path}}harbor/install.sh"
+  args:
+    chdir: "{{harbor_install_path}}harbor/"
