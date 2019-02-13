@@ -57,6 +57,7 @@ class TemplatePopulator:
                         "driver": {
                             "cores": validated_arguments["driver_cores"],
                             "coreLimit": validated_arguments["driver_core_limit"],
+                            "memory": validated_arguments["driver_memory"],
                             "labels": {
                                 "version": "2.4.0"},
                             "serviceAccount": "spark"},

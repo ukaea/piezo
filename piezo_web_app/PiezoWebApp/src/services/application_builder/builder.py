@@ -6,4 +6,4 @@ class ApplicationBuilder:
         self._template_populator = TemplatePopulator()
 
     def build_application_definition(self, request_body):
-        self._template_populator.build_template(request_body)
+        return self._template_populator.build_template(request_body)
