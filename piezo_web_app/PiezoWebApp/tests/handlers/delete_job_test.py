@@ -4,7 +4,7 @@ from PiezoWebApp.tests.handlers.base_handler_test import BaseHandlerTest
 from PiezoWebApp.src.handlers.delete_job import DeleteJobHandler
 
 
-class GetLogsHandlerTest(BaseHandlerTest):
+class DeleteJobHandlerTest(BaseHandlerTest):
     @property
     def handler(self):
         return DeleteJobHandler
