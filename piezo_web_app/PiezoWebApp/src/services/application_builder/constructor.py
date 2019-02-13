@@ -1,4 +1,4 @@
-from PiezoWebApp.src.services.application_constructor.argument_splitter import ArgumentSplitter
+from PiezoWebApp.src.services.application_builder.argument_splitter import ArgumentSplitter
 
 
 class ApplicationConstructor:
@@ -38,3 +38,4 @@ class ApplicationConstructor:
 
     def _construct_executor_specs(self, executor_arguments):
         pass
+
