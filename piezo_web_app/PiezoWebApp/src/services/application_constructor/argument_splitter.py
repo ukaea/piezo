@@ -1,14 +1,18 @@
-def get_metadata_arguments(arguments):
-    pass
+from PiezoWebApp.src.services.application_constructor.argument_validator import ArgumentValidator
 
 
-def get_spec_arguments(arguments):
-    pass
+class ArgumentSplitter:
+    def __init__(self):
+        self._validator = ArgumentValidator()
 
+    def get_metadata_arguments(self, arguments):
+        pass
 
-def get_driver_arguments(arguments):
-    pass
+    def get_spec_arguments(self, arguments):
+        pass
 
+    def get_driver_arguments(self, arguments):
+        pass
 
-def get_executor_arguments(arguments):
-    pass
+    def get_executor_arguments(self, arguments):
+        pass

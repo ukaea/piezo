@@ -1,28 +1,40 @@
-from PiezoWebApp.src.services.application_constructor.argument_splitter import get_metadata_arguments
-from PiezoWebApp.src.services.application_constructor.argument_splitter import get_spec_arguments
+from PiezoWebApp.src.services.application_constructor.argument_splitter import ArgumentSplitter
 
 
-def construct_application(application_arguments):
-    metadata_arguments = get_metadata_arguments(application_arguments)
-    specs_arguments = get_spec_arguments(application_arguments)
+class ApplicationConstructor:
 
-    metadata = _construct_metadata(metadata_arguments)
-    spec = _construct_specs(specs_arguments)
-    return {"apiVersion": "sparkoperator.k8s.io/v1beta1",
-            "kind": "SparkApplication",
-            "metadata": metadata,
-            "spec": spec}
+    def __init__(self):
+        self._argument_splitter = ArgumentSplitter()
 
+    def construct_application(self, application_arguments):
+        metadata_arguments = self._argument_splitter.get_metadata_arguments(application_arguments)
+        specs_arguments = self._argument_splitter.get_spec_arguments(application_arguments)
 
-def _construct_metadata(metadata_arguments):
-    return {"name": metadata_arguments["name"],
-            "namespace": metadata_arguments["namespace"]}
+        metadata = self._construct_metadata(metadata_arguments)
+        spec = self._construct_specs(specs_arguments)
+        return {"apiVersion": "sparkoperator.k8s.io/v1beta1",
+                "kind": "SparkApplication",
+                "metadata": metadata,
+                "spec": spec}
 
-def _construct_specs(specs_arguments):
-    pass
+    @staticmethod
+    def _construct_metadata(metadata_arguments):
+        return {"name": metadata_arguments["name"],
+                "namespace": metadata_arguments["namespace"]}
 
-def _construct_driver_specs(specs_arguments):
-    pass
+    def _construct_specs(self, specs_arguments):
+        driver_arguments = self._argument_splitter.get_driver_arguments(specs_arguments)
+        executor_arguments = self._argument_splitter.get_executor_arguments(specs_arguments)
 
-def _construct_executor_specs(specs_arguments):
-    pass
+        driver_specs = self._construct_driver_specs(driver_arguments)
+        executor_specs = self._construct_executor_specs(executor_arguments)
+
+        return {"some specs": "some_response",
+                "driver": driver_specs,
+                "executor": executor_specs}
+
+    def _construct_driver_specs(self, driver_arguments):
+        pass
+
+    def _construct_executor_specs(self, executor_arguments):
+        pass
