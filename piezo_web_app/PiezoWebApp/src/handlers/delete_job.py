@@ -14,7 +14,7 @@ class GetLogsHandler(BaseHandler):
             'namespace': 'default'
         }
     )
-    def get(self, *args, **kwargs):
+    def delete(self, *args, **kwargs):
         job_name = self.get_body_attribute('job_name', required=True)
         namespace = self.get_body_attribute('namespace', required=True)
         result = self._kubernetes_adapter.delete_job(job_name, namespace)
