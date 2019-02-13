@@ -5,11 +5,12 @@ Library           RequestsLibrary
 
 ################################################################################################
 *** Variables ***
-${K8S_ENDPOINT}     http://host-172-16-113-146.nubes.stfc.ac.uk:31924/piezo
+${K8S_ENDPOINT}     http://host-172-16-113-146.nubes.stfc.ac.uk:31924
 
 ################################################################################################
 *** Keywords ***
-Check k8s Connection
+Check K8s Route Returns 200 Response
+    [Arguments]   ${route}
     Create Session    k8s   ${K8S_ENDPOINT}
-    ${resp}=  Get Request   k8s   /runexample
+    ${resp}=  Get Request   k8s   ${route}
     Should Be Equal As Strings    ${resp.status_code}   200
