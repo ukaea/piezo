@@ -26,7 +26,10 @@
 4. In your browser navigate to `http://host-172-16-113-146.nubes.stfc.ac.uk:31924/` to show Grafana
 5. Also navigate to `http://host-172-16-113-146.nubes.stfc.ac.uk:31924/prometheus/graph` to show Prometheus
 6. Remind about use of service to select which parts to monitor
-7. Mention should be able to get spark specific metrics here but there is an error in the spark operator code so although we can scrape the pods the metrics don't exist. 
+7. navigate to `code/prometheus/monitor-operator`
+8. Run `kubectl apply -f spark-operator-service.yaml`
+9. Run `kubectl apply -f spark-operator-service-monitor.yaml`
+10. Reopen browser and show additional options
 
 # Infrastructure to containerise a web app
 1. Explain still using a basic web app which demonstrates basic principles of what we are going to achieve but will be formalised (work started by Rob)
@@ -39,5 +42,5 @@
 8. Open `openstack-deployment/app-deployment.yaml` and talk through how this produces deployment, creates service to control deployment and applies ingress rules.
 9. run from local machine `kubectl apply -f app-deployment.yaml`
 10. run `kubectl get pods` to show app pod created
-11. In browser send get requests to `http://host-172-16-113-146.nubes.stfc.ac.uk:31924/piezo/getlogsrunexample` to run a job, 
+11. In browser send get requests to `http://host-172-16-113-146.nubes.stfc.ac.uk:31924/piezo/runexample` to run a job, 
 `http://host-172-16-113-146.nubes.stfc.ac.uk:31924/piezo/getlogs` to get logs of the job and `http://host-172-16-113-146.nubes.stfc.ac.uk:31924/piezo/deleteexample` to clean up the job
