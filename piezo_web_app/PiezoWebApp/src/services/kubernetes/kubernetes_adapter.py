@@ -1,11 +1,7 @@
 import kubernetes
 from kubernetes.client.rest import ApiException
-import requests
 
 from PiezoWebApp.src.services.kubernetes.i_kubernetes_adapter import IKubernetesAdapter
-
-
-API_BASE_URL = 'localhost:8001'
 
 # str | The custom resource's group name
 CRD_GROUP = 'sparkoperator.k8s.io'
@@ -25,9 +21,16 @@ class KubernetesAdapter(IKubernetesAdapter):
         self._connection = kubernetes.client.CustomObjectsApi(api_client)
 
     def delete_job(self, job_name, namespace):
-        url = f'http://${API_BASE_URL}/apis/${CRD_GROUP}/${CRD_VERSION}/namespaces/${namespace}/${CRD_PLURAL}/${job_name}'
         try:
-            api_response = requests.delete(url)
+            body = kubernetes.client.V1DeleteOptions()
+            api_response = self._connection.delete_namespaced_custom_object(
+                CRD_GROUP,
+                CRD_VERSION,
+                namespace,
+                CRD_PLURAL,
+                job_name,
+                body
+            )
             return api_response.content
         except ApiException as exception:
             self._logger.error(f'API exception when trying to delete job "${job_name}" in namespace '
