@@ -6,7 +6,8 @@ from PiezoWebApp.src.handlers.schema.schema_helpers import create_object_schema_
 
 class GetLogsHandler(BaseHandler):
     @schema.validate(
-        input_schema=create_object_schema_with_string_properties(['driver_name', 'namespace'], required=['driver_name', 'namespace']),
+        input_schema=create_object_schema_with_string_properties(
+            ['driver_name', 'namespace'], required=['driver_name', 'namespace']),
         input_example={
             'driver_name': 'example-driver',
             'namespace': 'default'
