@@ -4,7 +4,7 @@ from PiezoWebApp.src.handlers.base_handler import BaseHandler
 from PiezoWebApp.src.handlers.schema.schema_helpers import create_object_schema_with_string_properties
 
 
-class GetLogsHandler(BaseHandler):
+class DeleteJobHandler(BaseHandler):
     @schema.validate(
         input_schema=create_object_schema_with_string_properties(
             ['job_name', 'namespace'],

@@ -1,13 +1,13 @@
 from tornado.testing import gen_test
 
 from PiezoWebApp.tests.handlers.base_handler_test import BaseHandlerTest
-from PiezoWebApp.src.handlers.get_logs import GetLogsHandler
+from PiezoWebApp.src.handlers.delete_job import DeleteJobHandler
 
 
 class GetLogsHandlerTest(BaseHandlerTest):
     @property
     def handler(self):
-        return GetLogsHandler
+        return DeleteJobHandler
 
     @property
     def standard_request_method(self):
@@ -32,7 +32,7 @@ class GetLogsHandlerTest(BaseHandlerTest):
         # Act
         response_body, response_code = yield self.send_request(body)
         # Assert
-        self.mock_kubernetes_adapter.get_logs.assert_called_once_with('test-driver', 'test-namespace')
+        self.mock_kubernetes_adapter.delete_job.assert_called_once_with('test-spark-job', 'test-namespace')
         assert response_code == 200
         assert response_body['status'] == 'success'
         assert response_body['data'] == '{"message": "test-spark-job deleted from namespace test-namespace"}'
