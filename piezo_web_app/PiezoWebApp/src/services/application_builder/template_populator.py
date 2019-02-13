@@ -1,5 +1,10 @@
 class TemplatePopulator:
 
+    def build_template(self, validated_arguments):
+        if validated_arguments["language"] == "Python":
+            return self.populate_python_job_template(validated_arguments)
+        return self.populate_scala_job_template(validated_arguments)
+
     @staticmethod
     def populate_python_job_template(validated_arguments):
         template = {"apiVersion": "sparkoperator.k8s.io/v1beta1",
