@@ -1,19 +1,28 @@
-class Constructor:
+from PiezoWebApp.src.services.application_constructor.argument_splitter import get_metadata_arguments
+from PiezoWebApp.src.services.application_constructor.argument_splitter import get_spec_arguments
 
-    def __init__(self, template):
-        self._manifest = template
 
-    def construct_application(self, application_arguments):
-        pass
+def construct_application(application_arguments):
+    metadata_arguments = get_metadata_arguments(application_arguments)
+    specs_arguments = get_spec_arguments(application_arguments)
 
-    def construct_metadata(self, metadata_arguments):
-        pass
+    metadata = _construct_metadata(metadata_arguments)
+    spec = _construct_specs(specs_arguments)
+    return {"apiVersion": "sparkoperator.k8s.io/v1beta1",
+            "kind": "SparkApplication",
+            "metadata": metadata,
+            "spec": spec}
 
-    def construct_specs(self, specs_arguments):
-        pass
 
-    def configure_driver_specs(self, specs_arguments):
-        pass
+def _construct_metadata(metadata_arguments):
+    return {"name": metadata_arguments["name"],
+            "namespace": metadata_arguments["namespace"]}
 
-    def configure_executor_specs(self, specs_arguments):
-        pass
+def _construct_specs(specs_arguments):
+    pass
+
+def _construct_driver_specs(specs_arguments):
+    pass
+
+def _construct_executor_specs(specs_arguments):
+    pass
