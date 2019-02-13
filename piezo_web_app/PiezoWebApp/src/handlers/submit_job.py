@@ -10,7 +10,7 @@ class SubmitJobHandler(BaseHandler):
             ['job_name', 'namespace'], required=['job_name', 'namespace']),
         input_example={
             'job_name': 'example_job_name',  # to be replaced by list of arguments we will allow the user to configure
-            'namespace': 'example_namespace'
+            'namespace': 'default'
         }
     )
     def post(self, *args, **kwargs):
