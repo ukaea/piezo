@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractmethod
 
 
-class IKubernetesAdapter(metaclass=ABCMeta):
+class IKubernetesService(metaclass=ABCMeta):
 
     @abstractmethod
     def delete_job(self, job_name, namespace):

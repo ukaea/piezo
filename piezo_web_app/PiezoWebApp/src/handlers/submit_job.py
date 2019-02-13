@@ -17,5 +17,5 @@ class SubmitJobHandler(BaseHandler):
         job_name = self.get_body_attribute('job_name', required=True)
         namespace = self.get_body_attribute('namespace', required=True)
         body = {'job_name': job_name, 'namespace': namespace}
-        result = self._kubernetes_adapter.submit_job(body)
+        result = self._kubernetes_service.submit_job(body)
         return result

@@ -1,7 +1,7 @@
 import kubernetes
 from kubernetes.client.rest import ApiException
 
-from PiezoWebApp.src.services.kubernetes.i_kubernetes_adapter import IKubernetesAdapter
+from PiezoWebApp.src.services.kubernetes.i_kubernetes_service import IKubernetesService
 
 # str | The custom resource's group name
 CRD_GROUP = 'sparkoperator.k8s.io'
@@ -13,7 +13,7 @@ CRD_PLURAL = 'sparkapplications'
 CRD_VERSION = 'v1beta1'
 
 
-class KubernetesAdapter(IKubernetesAdapter):
+class KubernetesService(IKubernetesService):
     def __init__(self, logger):
         self._logger = logger
         config = kubernetes.config.load_incluster_config()
