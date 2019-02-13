@@ -19,7 +19,7 @@ kind: SparkApplication
 metadata:
   name: py-wordcount
   namespace: default
-  lables: 	
+  labels: 	
     release: prometheus-operator
 spec:
   type: Python
