@@ -6,12 +6,16 @@ from PiezoWebApp.src.handlers.schema.schema_helpers import create_object_schema_
 
 class SubmitJobHandler(BaseHandler):
     @schema.validate(
-        input_schema=create_object_schema_with_string_properties(['body'], required=['body']),
+        input_schema=create_object_schema_with_string_properties(
+            ['job_name', 'namespace'], required=['job_name', 'namespace']),
         input_example={
-            'body': 'body_placeholder'  # to be replaced by list of arguments we will allow the user to configure
+            'job_name': 'example_job_name',  # to be replaced by list of arguments we will allow the user to configure
+            'namespace': 'example_namespace'
         }
     )
     def post(self, *args, **kwargs):
-        body = self.get_body_attribute('body', required=True)
+        job_name = self.get_body_attribute('job_name', required=True)
+        namespace = self.get_body_attribute('namespace', required=True)
+        body = {'job_name': job_name, 'namespace': namespace}
         result = self._kubernetes_adapter.submit_job(body)
         return result

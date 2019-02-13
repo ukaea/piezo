@@ -11,27 +11,27 @@ class SubmitJobHandlerTest(BaseHandlerTest):
 
     @property
     def standard_request_method(self):
-        return 'GET'
+        return 'POST'
 
     @gen_test
-    def test_get_returns_400_when_driver_name_is_missing(self):
-        body = {'namespace': 'test-namespace'}
+    def test_post_returns_400_when_job_name_is_missing(self):
+        body = {'namespace': 'example-namespace'}
         yield self.assert_request_returns_400(body)
 
     @gen_test
-    def test_get_returns_400_when_namespace_is_missing(self):
-        body = {'driver_name': 'test-driver'}
+    def test_post_returns_400_when_namespace_is_missing(self):
+        body = {'job_name': 'example-spark-job'}
         yield self.assert_request_returns_400(body)
 
     @gen_test
-    def test_get_returns_logs_when_successful(self):
+    def test_post_returns_confirmation_of_submit_when_successful(self):
         # Arrange
-        body = {'driver_name': 'test-driver', 'namespace': 'test-namespace'}
-        self.mock_kubernetes_adapter.get_logs.return_value = '{"log": "success"}'
+        body = {'job_name': 'test-spark-job', 'namespace': 'test-namespace'}
+        self.mock_kubernetes_adapter.submit_job.return_value = '{"message": "job test-spark-job submitted success"}'
         # Act
         response_body, response_code = yield self.send_request(body)
         # Assert
-        self.mock_kubernetes_adapter.get_logs.assert_called_once_with('test-driver', 'test-namespace')
+        self.mock_kubernetes_adapter.submit_job.assert_called_once_with(body)
         assert response_code == 200
         assert response_body['status'] == 'success'
-        assert response_body['data'] == '{"log": "success"}'
+        assert response_body['data'] == '{"message": "job test-spark-job submitted success"}'
