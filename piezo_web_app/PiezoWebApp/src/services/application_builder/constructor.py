@@ -1,41 +1,23 @@
-from PiezoWebApp.src.services.application_builder.argument_splitter import ArgumentSplitter
+from PiezoWebApp.src.services.application_builder.validator.argument_validator import ArgumentValidator
+from PiezoWebApp.src.services.application_builder.template_populator import TemplatePopulator
 
 
-class ApplicationConstructor:
+class ApplicationBuilder:
 
     def __init__(self):
-        self._argument_splitter = ArgumentSplitter()
+        self._template_populator = TemplatePopulator()
+        self._argument_validator = ArgumentValidator()
 
-    def construct_application(self, application_arguments):
-        metadata_arguments = self._argument_splitter.get_metadata_arguments(application_arguments)
-        specs_arguments = self._argument_splitter.get_spec_arguments(application_arguments)
 
-        metadata = self._construct_metadata(metadata_arguments)
-        spec = self._construct_specs(specs_arguments)
-        return {"apiVersion": "sparkoperator.k8s.io/v1beta1",
-                "kind": "SparkApplication",
-                "metadata": metadata,
-                "spec": spec}
 
-    @staticmethod
-    def _construct_metadata(metadata_arguments):
-        return {"name": metadata_arguments["name"],
-                "namespace": metadata_arguments["namespace"]}
+    def build_application_definition(self, request_body):
+        if request_body["language"] == "Python":
+            return self._template_populator.populate_python_job_template(request_body)
+        if request_body["language"] == "Scala":
+            return self._template_populator.populate_scala_job_template(request_body)
+        raise ValueError(f"Language must be one of: {self._argument_validator.valid_languages}")
 
-    def _construct_specs(self, specs_arguments):
-        driver_arguments = self._argument_splitter.get_driver_arguments(specs_arguments)
-        executor_arguments = self._argument_splitter.get_executor_arguments(specs_arguments)
 
-        driver_specs = self._construct_driver_specs(driver_arguments)
-        executor_specs = self._construct_executor_specs(executor_arguments)
 
-        return {"some specs": "some_response",
-                "driver": driver_specs,
-                "executor": executor_specs}
 
-    def _construct_driver_specs(self, driver_arguments):
-        pass
-
-    def _construct_executor_specs(self, executor_arguments):
-        pass
 

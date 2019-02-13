@@ -1,0 +1,2 @@
+class BodyValidator:
+    pass
