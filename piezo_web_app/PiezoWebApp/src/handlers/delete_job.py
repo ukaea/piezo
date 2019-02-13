@@ -6,7 +6,9 @@ from PiezoWebApp.src.handlers.schema.schema_helpers import create_object_schema_
 
 class GetLogsHandler(BaseHandler):
     @schema.validate(
-        input_schema=create_object_schema_with_string_properties(['job_name', 'namespace'], required=['job_name', 'namespace']),
+        input_schema=create_object_schema_with_string_properties(
+            ['job_name', 'namespace'],
+            required=['job_name', 'namespace']),
         input_example={
             'job_name': 'example-spark-job',
             'namespace': 'default'
