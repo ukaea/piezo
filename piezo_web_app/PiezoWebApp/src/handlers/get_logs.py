@@ -16,5 +16,5 @@ class GetLogsHandler(BaseHandler):
     def get(self, *args, **kwargs):
         driver_name = self.get_body_attribute('driver_name', required=True)
         namespace = self.get_body_attribute('namespace', required=True)
-        result = self._kubernetes_adapter.get_logs(driver_name, namespace)
+        result = self._kubernetes_service.get_logs(driver_name, namespace)
         return result

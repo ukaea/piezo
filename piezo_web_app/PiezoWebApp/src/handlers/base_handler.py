@@ -3,9 +3,10 @@ from tornado_json import exceptions
 
 from PiezoWebApp.src.utils.str_helper import is_str_empty
 
+
 class BaseHandler(APIHandler):
-    def initialize(self, kubernetes_adapter):
-        self._kubernetes_adapter = kubernetes_adapter
+    def initialize(self, kubernetes_service):
+        self._kubernetes_service = kubernetes_service
 
     def get_body_attribute(self, key, default=None, required=False, value_type=str):
         # pylint: disable=no-member
