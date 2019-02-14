@@ -14,11 +14,9 @@ CRD_VERSION = 'v1beta1'
 
 
 class KubernetesService(IKubernetesService):
-    def __init__(self, logger):
+    def __init__(self, kubernetes_adapter, logger):
         self._logger = logger
-        config = kubernetes.config.load_incluster_config()
-        api_client = kubernetes.client.ApiClient(config)
-        self._connection = kubernetes.client.CustomObjectsApi(api_client)
+        self._connection = kubernetes_adapter
 
     def delete_job(self, job_name, namespace):
         try:
