@@ -88,3 +88,35 @@ class TestTemplatePopulator:
                                     "memory": "512m",
                                     "labels": {
                                         "version": "2.4.0"}}}}
+
+    def test_default_template_returns_a_filled_in_spark_application_template_with_default_values(self):
+        # Arrange
+        default_template = self.test_populator.default_template()
+        # Assert
+        assert default_template ==  {"apiVersion": "sparkoperator.k8s.io/v1beta1",
+                                     "kind": "SparkApplication",
+                                     "metadata":
+                                         {"name": None,
+                                          "namespace": "default"},
+                                     "spec": {
+                                         "type": None,
+                                         "mode": "cluster",
+                                         "image": "gcr.io/spark-operator/spark:v2.4.0",
+                                         "imagePullPolicy": "Always",
+                                         "mainApplicationFile": None,
+                                         "sparkVersion": "2.4.0",
+                                         "restartPolicy": {
+                                             "type": "Never"},
+                                         "driver": {
+                                             "cores": 0.1,
+                                             "coreLimit": "200m",
+                                             "memory": "512m",
+                                             "labels": {
+                                                 "version": "2.4.0"},
+                                             "serviceAccount": "spark"},
+                                         "executor": {
+                                             "cores": 1,
+                                             "instances": 1,
+                                             "memory": "512m",
+                                             "labels": {
+                                                 "version": "2.4.0"}}}}
