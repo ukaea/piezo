@@ -4,7 +4,9 @@ from tornado_json import exceptions
 from PiezoWebApp.src.utils.str_helper import is_str_empty
 
 
+# pylint: disable=abstract-method
 class BaseHandler(APIHandler):
+    # pylint: disable=arguments-differ
     def initialize(self, kubernetes_service):
         self._kubernetes_service = kubernetes_service
 
@@ -21,7 +23,7 @@ class BaseHandler(APIHandler):
         # pylint: disable=no-member
         if value_type == str and is_str_empty(self.body[key]) is False:
             return
-        elif value_type == list and (self.body[key] is not None) and len(self.body[key]) > 0:
+        if value_type == list and (self.body[key] is not None) and len(self.body[key]) > 0:
             return
         # If missing see if can use as default
         if required:
