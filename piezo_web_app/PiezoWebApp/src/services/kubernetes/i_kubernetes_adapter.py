@@ -14,4 +14,3 @@ class IKubernetesAdapter(metaclass=ABCMeta):
     @abstractmethod
     def create_namespaced_custom_object(self, group, version, namespace, plural, name, body):
         pass
-

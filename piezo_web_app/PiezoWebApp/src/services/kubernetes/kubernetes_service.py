@@ -60,4 +60,3 @@ class KubernetesService(IKubernetesService):
             return api_response.content
         except ApiException as exception:
             self._logger.error(f'API exception when trying to submit job: ${exception}')
-

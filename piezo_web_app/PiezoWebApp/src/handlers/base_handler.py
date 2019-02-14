@@ -20,7 +20,7 @@ class BaseHandler(APIHandler):
     def _check_attribute_is_not_empty(self, key, default, required, value_type):
         # pylint: disable=no-member
         if value_type == str and is_str_empty(self.body[key]) is False:
-                return
+            return
         elif value_type == list and (self.body[key] is not None) and len(self.body[key]) > 0:
             return
         # If missing see if can use as default

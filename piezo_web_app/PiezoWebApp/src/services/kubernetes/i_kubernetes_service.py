@@ -14,4 +14,3 @@ class IKubernetesService(metaclass=ABCMeta):
     @abstractmethod
     def submit_job(self, body):
         pass
-
