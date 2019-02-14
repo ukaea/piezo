@@ -13,7 +13,7 @@ class TemplatePopulator:
 
         if validated_parameters_dict["language"].lower() == "python":
             return self._populate_python_job_template(template, validated_parameters_dict)
-        if validated_parameters_dict["language"].lower() == "scala"
+        if validated_parameters_dict["language"].lower() == "scala":
             return self._populate_scala_job_template(template, validated_parameters_dict)
         else:
             raise ValueError(
