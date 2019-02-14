@@ -1,12 +1,12 @@
 import pytest
-from PiezoWebApp.src.services.application_builder.template_populator import TemplatePopulator
+from PiezoWebApp.src.services.application_builder.manifest_populator import ManifestPopulator
 
 
 class TestTemplatePopulator:
     # pylint: disable=attribute-defined-outside-init
     @pytest.fixture(autouse=True)
     def setup(self):
-        self.test_populator = TemplatePopulator()
+        self.test_populator = ManifestPopulator()
         self.arguments = {"name": "test",
                           "path_to_main_application_file": "/path/to/file",
                           "driver_cores": 0.1,
@@ -16,12 +16,12 @@ class TestTemplatePopulator:
                           "executors": 1,
                           "executor_memory": "512m"}
 
-    def test_build_template_builds_python_job_manifest_for_python_applications(self):
+    def test_build_manifest_builds_python_job_manifest_for_python_applications(self):
         # Arrange
         self.arguments["language"] = "Python"
         self.arguments["pythonVersion"] = "2"
         # Act
-        manifest = self.test_populator.build_template(self.arguments)
+        manifest = self.test_populator.build_manifest(self.arguments)
         # Assert
         assert manifest == {"apiVersion": "sparkoperator.k8s.io/v1beta1",
                             "kind": "SparkApplication",
@@ -52,12 +52,12 @@ class TestTemplatePopulator:
                                     "labels": {
                                         "version": "2.4.0"}}}}
 
-    def test_build_template_builds_scala_job_manifest_for_scala_applications(self):
+    def test_build_manifest_builds_scala_job_manifest_for_scala_applications(self):
         # Arrange
         self.arguments["language"] = "Scala"
         self.arguments["main_class"] = "testClass"
         # Act
-        manifest = self.test_populator.build_template(self.arguments)
+        manifest = self.test_populator.build_manifest(self.arguments)
         # Assert
         assert manifest == {"apiVersion": "sparkoperator.k8s.io/v1beta1",
                             "kind": "SparkApplication",
@@ -88,18 +88,18 @@ class TestTemplatePopulator:
                                     "labels": {
                                         "version": "2.4.0"}}}}
 
-    def test_build_template_returns_a_value_error_when_an_invalid_language_is_used(self):
+    def test_build_manifest_returns_a_value_error_when_an_invalid_language_is_used(self):
         # Arrange
         self.arguments["language"] = "A_non_existent_language"
         # Assert
         with pytest.raises(ValueError):
-            self.test_populator.build_template(self.arguments)
+            self.test_populator.build_manifest(self.arguments)
 
-    def test_default_template_returns_a_filled_in_spark_application_template_with_default_values(self):
+    def test_default_manifest_returns_a_filled_in_spark_application_template_with_default_values(self):
         # Arrange
-        default_template = self.test_populator.default_template()
+        default_manifest = self.test_populator.default_spark_application_manifest()
         # Assert
-        assert default_template == {"apiVersion": "sparkoperator.k8s.io/v1beta1",
+        assert default_manifest == {"apiVersion": "sparkoperator.k8s.io/v1beta1",
                                     "kind": "SparkApplication",
                                     "metadata":
                                         {"name": None,
