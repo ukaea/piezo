@@ -1,11 +1,11 @@
 class ValidationRules:
 
     def __init__(self):
-        '''
+        """
         Validation rules are provided in a dictionary where each key maps to an array of validation values
         in the format:
         [min, max, default, format]
-        '''
+        """
         self._validation_dict = {"name": [None, None, None, "string"],
                                  "language": [None, None, "Python", "string"],
                                  "python_version": [None, None, "2", "string"],

@@ -43,9 +43,9 @@ class ArgumentValidator:
         if language not in valid_language_array:
             raise ValueError(f"Invalid language provided, please use one of {valid_language_array}")
 
-        if language == "python"
+        if language == "python":
             request_body["language"] = "Python"
-            self._optional_from_user_args.append("pythonVersion")
+            self._optional_from_user_args.append("python_version")
         elif language == "scala":
             request_body["language"] = "Scala"
             self._optional_from_user_args.append("main_class")
