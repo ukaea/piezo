@@ -1,6 +1,7 @@
-import kubernetes
 import logging
 import os
+
+import kubernetes
 import tornado
 
 from PiezoWebApp.src.handlers.delete_job import DeleteJobHandler
@@ -38,22 +39,24 @@ def build_logger(log_file_location, level):
 
 
 def build_app(k8s_adapter, log):
-    kubernetes_service = KubernetesService(k8s_adapter)
+    kubernetes_service = KubernetesService(k8s_adapter, log)
     container = dict(
         kubernetes_service=kubernetes_service,
         logger=log
     )
-    app = tornado.web.Application([
-        (format_route_specification("deletejob"), DeleteJobHandler, container),
-        (format_route_specification("getlogs"), GetLogsHandler, container),
-        (format_route_specification("submitjob"), SubmitJobHandler, container)
-     ])
+    app = tornado.web.Application(
+        [
+            (format_route_specification("deletejob"), DeleteJobHandler, container),
+            (format_route_specification("getlogs"), GetLogsHandler, container),
+            (format_route_specification("submitjob"), SubmitJobHandler, container)
+        ]
+    )
     return app
 
 
 if __name__ == "__main__":
-    kubernetes_adapter = build_kubernetes_adapter()
-    logger = build_logger("/path/to/log/dir/", "INFO")
-    application = build_app(kubernetes_adapter, logger)
-    application.listen(8888)
+    KUBERNETES_ADAPTER = build_kubernetes_adapter()
+    LOGGER = build_logger("/path/to/log/dir/", "INFO")
+    APPLICATION = build_app(KUBERNETES_ADAPTER, LOGGER)
+    APPLICATION.listen(8888)
     tornado.ioloop.IOLoop.current().start()

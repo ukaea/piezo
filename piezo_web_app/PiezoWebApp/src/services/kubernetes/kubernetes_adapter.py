@@ -9,11 +9,13 @@ class KubernetesAdapter(IKubernetesAdapter):
         self._core_connection = kubernetes.client.CoreV1Api(api_client)
         self._custom_connection = kubernetes.client.CustomObjectsApi(api_client)
 
+    # pylint: disable=too-many-arguments
     def delete_namespaced_custom_object(self, group, version, namespace, plural, name, body):
         return self._custom_connection.delete_namespaced_custom_object(group, version, namespace, plural, name, body)
 
     def read_namespaced_pod_log(self, driver_name, namespace):
         return self._core_connection.read_namespaced_pod_log(driver_name, namespace)
 
-    def create_namespaced_custom_object(self, group, version, namespace, plural, name, body):
-        return self._custom_connection.create_namespaced_custom_object(group, version, namespace, plural, name, body)
+    # pylint: disable=too-many-arguments
+    def create_namespaced_custom_object(self, group, version, namespace, plural, body):
+        return self._custom_connection.create_namespaced_custom_object(group, version, namespace, plural, body)

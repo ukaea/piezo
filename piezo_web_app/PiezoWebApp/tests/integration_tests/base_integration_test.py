@@ -19,6 +19,7 @@ class BaseIntegrationTest(tornado.testing.AsyncHTTPTestCase, metaclass=ABCMeta):
     def standard_request_method(self):
         pass
 
+    # pylint: disable=attribute-defined-outside-init
     def setup(self):
         self.mock_k8s_adapter = mock.create_autospec(IKubernetesService)
         self.mock_logger = mock.create_autospec(logging.Logger)

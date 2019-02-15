@@ -2,7 +2,7 @@ flake8
 kubernetes
 mock
 pylint
-pytest
+pytest>=3.6
 pytest-cov
 pytest-mock
 pytest-tornado
