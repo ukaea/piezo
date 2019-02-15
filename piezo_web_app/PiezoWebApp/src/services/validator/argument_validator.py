@@ -12,15 +12,6 @@ class ArgumentValidator:
                                          "executors",
                                          "executor_cores",
                                          "executor_memory"]
-        self._required_for_app_args = ["name",
-                                       "language",
-                                       "path_to_main_app_file",
-                                       "driver_cores",
-                                       "driver_core_limit",
-                                       "driver_memory",
-                                       "executors",
-                                       "executor_cores",
-                                       "executor_memory"]
         self.validation_rules = ValidationRules()
 
     def validate_arguments(self, request_body):
@@ -53,9 +44,9 @@ class ArgumentValidator:
             raise ValueError(f"Invalid language provided, please use one of {valid_language_array}")
 
         if language == "python":
-            self._required_for_app_args.append("pythonVersion")
+            self._optional_from_user_args.append("pythonVersion")
         elif language == "scala":
-            self._required_for_app_args.append("main_class")
+            self._optional_from_user_args.append("main_class")
 
     @staticmethod
     def _check_provided_args_are_valid(request_body):
