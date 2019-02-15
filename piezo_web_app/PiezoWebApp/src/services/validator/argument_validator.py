@@ -15,8 +15,8 @@ class ArgumentValidator:
         self.validation_rules = ValidationRules()
 
     def validate_arguments(self, request_body):
-        self._validate_language_requirements(request_body)
         try:
+            self._validate_language_requirements(request_body)
             self._check_all_required_args_are_provided(request_body)
         except ValueError:
             raise
@@ -43,9 +43,11 @@ class ArgumentValidator:
         if language not in valid_language_array:
             raise ValueError(f"Invalid language provided, please use one of {valid_language_array}")
 
-        if language == "python":
+        if language == "python"
+            request_body["language"] = "Python"
             self._optional_from_user_args.append("pythonVersion")
         elif language == "scala":
+            request_body["language"] = "Scala"
             self._optional_from_user_args.append("main_class")
 
     @staticmethod
@@ -61,7 +63,7 @@ class ArgumentValidator:
     def _add_defaults_for_non_user_required_args(all_optional_args, current_validated_args):
         args_to_add = [arg for arg in all_optional_args if arg not in current_validated_args]
         for arg in args_to_add:
-            arg_default = SparkJobProperty(arg).default()
+            arg_default = SparkJobProperty(arg).default
             current_validated_args[arg] = arg_default
         return current_validated_args
 
