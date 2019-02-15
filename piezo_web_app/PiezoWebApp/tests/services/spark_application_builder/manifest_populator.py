@@ -1,5 +1,5 @@
-import pytest
 import unittest
+import pytest
 
 
 from PiezoWebApp.src.services.spark_application_builder.manifest_populator import ManifestPopulator
@@ -95,7 +95,6 @@ class TestTemplatePopulator(unittest.TestCase):
         # Arrange
         default_manifest = self.test_populator.default_spark_application_manifest()
         # Assert
-        self.maxDiff = None
         self.assertDictEqual(default_manifest, {"apiVersion": "sparkoperator.k8s.io/v1beta1",
                                                 "kind": "SparkApplication",
                                                 "metadata":

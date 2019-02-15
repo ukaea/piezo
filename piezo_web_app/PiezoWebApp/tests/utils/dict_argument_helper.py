@@ -1,8 +1,10 @@
+import unittest
 import pytest
+
 from PiezoWebApp.src.utils.dict_argument_helper import set_value_in_nested_dict
 
 
-class TestDictArgumentHelper:
+class TestDictArgumentHelper(unittest.TestCase):
 
     def test_set_value_in_nested_dict_sets_value_at_top_level_when_path_has_len_one(self):
         # Arrange
@@ -41,4 +43,3 @@ class TestDictArgumentHelper:
         # Act
         with pytest.raises(IndexError):
             set_value_in_nested_dict(nested_dict, path, value)
-
