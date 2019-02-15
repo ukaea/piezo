@@ -18,8 +18,18 @@ class TestDictArgumentHelper(unittest.TestCase):
 
     def test_set_value_in_nested_dict_sets_nested_values_for_paths_longer_than_one(self):
         # Arrange
+        path = ["e", "f", "i"]
+        nested_dict = {"a": 1, "b": {"c": 2, "d": 3}, "e": {"f": {"g": 4, "h": 5}}}
+        value = 6
+        # Act
+        result = set_value_in_nested_dict(nested_dict, path, value)
+        # Assert
+        assert result == {"a": 1, "b": {"c": 2, "d": 3}, "e": {"f": {"g": 4, "h": 5, "i": 6}}}
+
+    def test_set_value_in_nested_dict_overwrites_value_that_already_exists(self):
+        # Arrange
         path = ["d", "e", "g"]
-        nested_dict = {"a": 1, "b": {"c": 2}, "d": {"e": {"f": 3}}}
+        nested_dict = {"a": 1, "b": {"c": 2}, "d": {"e": {"f": 3, "g": 4}}}
         value = 5
         # Act
         result = set_value_in_nested_dict(nested_dict, path, value)
