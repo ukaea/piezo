@@ -27,11 +27,11 @@ class SubmitJobHandlerTest(BaseHandlerTest):
     def test_post_returns_confirmation_of_submit_when_successful(self):
         # Arrange
         body = {'job_name': 'test-spark-job', 'namespace': 'test-namespace'}
-        self.mock_kubernetes_adapter.submit_job.return_value = '{"message": "job test-spark-job submitted success"}'
+        self.mock_kubernetes_service.submit_job.return_value = '{"message": "job test-spark-job submitted success"}'
         # Act
         response_body, response_code = yield self.send_request(body)
         # Assert
-        self.mock_kubernetes_adapter.submit_job.assert_called_once_with(body)
+        self.mock_kubernetes_service.submit_job.assert_called_once_with(body)
         assert response_code == 200
         assert response_body['status'] == 'success'
         assert response_body['data'] == '{"message": "job test-spark-job submitted success"}'
