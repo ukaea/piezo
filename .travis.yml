@@ -1,0 +1,15 @@
+language: python
+python:
+  - "3.6"
+before_install:
+  - cd piezo_web_app
+install:
+  - pip install flake8
+  - pip install -r requirements.txt
+before_script:
+  - export PYTHONPATH=$PYTHONPATH:$(pwd)
+  - sh build_version_number.sh
+script:
+  - flake8 ./PiezoWebApp
+  - python lint_threshold_check.py ./PiezoWebApp
+  - pytest ./PiezoWebApp

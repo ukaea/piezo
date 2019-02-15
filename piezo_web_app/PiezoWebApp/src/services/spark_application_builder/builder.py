@@ -1,4 +1,4 @@
-from PiezoWebApp.src.services.application_builder.manifest_populator import ManifestPopulator
+from PiezoWebApp.src.services.spark_application_builder.manifest_populator import ManifestPopulator
 
 
 class ApplicationBuilder:
