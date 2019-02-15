@@ -1,3 +1,6 @@
+from PiezoWebApp.src.utils.dict_argument_helper import set_value_in_nested_dict
+
+
 class ManifestPopulator:
 
     def __init__(self):
@@ -14,7 +17,7 @@ class ManifestPopulator:
         self._spec_main_app_file = None
         self._spec_main_class = None
         self._spec_spark_version = "2.4.0"
-        self._spec_restart_policy_type = "never"
+        self._spec_restart_policy_type = "Never"
         self._spec_driver_cores = 0.1
         self._spec_driver_core_limit = "200m"
         self._spec_driver_memory = "512m"
@@ -27,16 +30,7 @@ class ManifestPopulator:
 
     @staticmethod
     def add_value_to_manifest(array_of_path, manifest, value):
-        current_dict = manifest
-        for i in range(len(array_of_path) - 1):
-            current_dict = current_dict[array_of_path[i]]
-        current_dict[array_of_path[len(array_of_path)-1]] = value
-
-        if len(array_of_path) == 2:
-            manifest[array_of_path[0]][array_of_path[1]] = value
-        elif len(array_of_path) == 3:
-            manifest[array_of_path[0]][array_of_path[1]][array_of_path[2]] = value
-        return manifest
+        return set_value_in_nested_dict(nested_dict=manifest, path=array_of_path, value=value)
 
     def build_manifest(self, validated_parameters_dict):
         manifest = self.default_spark_application_manifest()
@@ -53,11 +47,10 @@ class ManifestPopulator:
                     {"name": self._metadata_name,
                      "namespace": self._metadata_namespace},
                 "spec": {
-                    "type": self._spec_type,
                     "mode": self._spec_mode,
                     "image": self._spec_image,
                     "imagePullPolicy": self._spec_image_pull_policy,
-                    "mainApplicationFile": self._spec_spark_version,
+                    "mainApplicationFile": self._spec_main_app_file,
                     "sparkVersion": self._spec_spark_version,
                     "restartPolicy": {
                         "type": self._spec_restart_policy_type},
@@ -77,7 +70,7 @@ class ManifestPopulator:
 
     @staticmethod
     def variable_to_manifest_path(var):
-        var_to_path_dict = {"name": ["manifest", "name"],
+        var_to_path_dict = {"name": ["metadata", "name"],
                             "language": ["spec", "type"],
                             "python_version": ["spec", "pythonVersion"],
                             "main_class": ["spec", "mainClass"],
