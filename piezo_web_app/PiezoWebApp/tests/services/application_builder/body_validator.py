@@ -1,6 +1,6 @@
 import pytest
 
-from PiezoWebApp.src.services.application_builder.validator.common_props_validator import CommonPropsValidator
+from PiezoWebApp.src.services.validator import CommonPropsValidator
 
 class TestCommonPropsValidator:
 
