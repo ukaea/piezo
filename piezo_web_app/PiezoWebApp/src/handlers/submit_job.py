@@ -17,6 +17,8 @@ class SubmitJobHandler(BaseHandler):
     def post(self, *args, **kwargs):
         job_name = self.get_body_attribute('job_name', required=True)
         namespace = self.get_body_attribute('namespace', required=True)
+        self._logger.debug(f'Trying to submit job "{job_name}" in namespace "{namespace}".')
         body = {'job_name': job_name, 'namespace': namespace}
         result = self._kubernetes_service.submit_job(body)
+        self._logger.debug(f'Submitting job "{job_name}" to namespace "{namespace}" returned result "{result}".')
         return result
