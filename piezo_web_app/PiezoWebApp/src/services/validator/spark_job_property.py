@@ -1,5 +1,5 @@
 from PiezoWebApp.src.services.validator.validation_rules import ValidationRules
-from PiezoWebApp.src.services.validator import validator
+from PiezoWebApp.src.services.validator import argument_validator
 
 
 class SparkJobProperty:
@@ -39,27 +39,27 @@ class SparkJobProperty:
     def validate(self, value):
         try:
             if self._key == "name":
-                return validator.validate_name(value)
+                return argument_validator.validate_name(value)
             elif self._key == "language":
-                return validator.validate_language(value)
+                return argument_validator.validate_language(value)
             elif self._key == "python_version":
-                return validator.validate_python_version(value)
+                return argument_validator.validate_python_version(value)
             elif self._key == "path_to_main_app_file":
-                return validator.validate_path_to_main_app_file(value)
+                return argument_validator.validate_path_to_main_app_file(value)
             elif self._key == "main_class":
-                return validator.validate_main_class(value)
+                return argument_validator.validate_main_class(value)
             elif self._key == "driver_cores":
-                return validator.validate_driver_cores(value, self._min, self._max)
+                return argument_validator.validate_driver_cores(value, self._min, self._max)
             elif self._key == "driver_core_limit":
-                return validator.validate_driver_core_limit(value, self._min, self._max)
+                return argument_validator.validate_driver_core_limit(value, self._min, self._max)
             elif self._key == "driver_memory":
-                return validator.validate_driver_memory(value, self._min, self._max)
+                return argument_validator.validate_driver_memory(value, self._min, self._max)
             elif self._key == "executors":
-                return validator.validate_executors(value, self._min, self._max)
+                return argument_validator.validate_executors(value, self._min, self._max)
             elif self._key == "executor_cores":
-                return validator.validate_executor_cores(value, self._min, self._max)
+                return argument_validator.validate_executor_cores(value, self._min, self._max)
             elif self._key == "executor_memory":
-                return validator.validate_executor_memory(value, self._min, self._max)
+                return argument_validator.validate_executor_memory(value, self._min, self._max)
         except ValueError:
             raise
         raise ValueError(f"Unexpected argument {self._key}")
