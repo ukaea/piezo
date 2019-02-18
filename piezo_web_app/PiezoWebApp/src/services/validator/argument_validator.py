@@ -15,16 +15,18 @@ class ArgumentValidator:
         self.validation_rules = ValidationRules()
 
     def validate_arguments(self, request_body):
+        # Ensure all ars needed are present
         try:
             self._validate_language_requirements(request_body)
             self._check_all_required_args_are_provided(request_body)
         except ValueError:
             raise
-
-        validated_args = ArgumentValidator._check_provided_args_are_valid(request_body)
-
-        full_validated_args = ArgumentValidator._add_defaults_for_non_user_required_args(self._optional_from_user_args,
-                                                                                         validated_args)
+        # Remove unsupported args
+        args_to_validate = self._remove_unsupported_args(request_body)
+        # Validate remaining args
+        validated_args = ArgumentValidator._check_provided_arg_values_are_valid(args_to_validate)
+        # Add default values where needed
+        full_validated_args = self._add_defaults_for_non_user_required_args(validated_args)
         return full_validated_args
 
     def _check_all_required_args_are_provided(self, request_body):
@@ -51,7 +53,7 @@ class ArgumentValidator:
             self._optional_from_user_args.append("main_class")
 
     @staticmethod
-    def _check_provided_args_are_valid(request_body):
+    def _check_provided_arg_values_are_valid(request_body):
         for key in request_body:
             try:
                 SparkJobProperty(key).validate(request_body[key])
@@ -59,11 +61,13 @@ class ArgumentValidator:
                 raise
         return request_body
 
-    @staticmethod
-    def _add_defaults_for_non_user_required_args(all_optional_args, current_validated_args):
-        args_to_add = [arg for arg in all_optional_args if arg not in current_validated_args]
+    def _add_defaults_for_non_user_required_args(self, current_validated_args):
+        args_to_add = [arg for arg in self._optional_from_user_args if arg not in current_validated_args]
         for arg in args_to_add:
             arg_default = SparkJobProperty(arg).default
             current_validated_args[arg] = arg_default
         return current_validated_args
 
+    def _remove_unsupported_args(self, request_body):
+        supported_args = self._required_from_user_args + self._optional_from_user_args
+        return {arg: request_body[arg] for arg in supported_args}
