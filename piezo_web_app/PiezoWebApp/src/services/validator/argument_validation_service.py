@@ -1,9 +1,9 @@
 from PiezoWebApp.src.services.validator.spark_job_property import SparkJobProperty
 
 
-class ArgumentValidator:
+class ArgumentValidationService:
 
-    def __init__(self, validation_rules):
+    def __init__(self):
         self._required_from_user_args = ["name", "language", "path_to_main_app_file"]
         self._optional_from_user_args = ["driver_cores",
                                          "driver_core_limit",
@@ -11,7 +11,6 @@ class ArgumentValidator:
                                          "executors",
                                          "executor_cores",
                                          "executor_memory"]
-        self.validation_rules = validation_rules
 
     def validate_arguments(self, request_body):
         # Ensure all vars needed are present
@@ -23,7 +22,7 @@ class ArgumentValidator:
         # check for unsupported args
         args_to_validate = self._check_for_unsupported_args(request_body)
         # Validate remaining args
-        validated_args_dict = ArgumentValidator._check_provided_arg_values_are_valid(args_to_validate)
+        validated_args_dict = ArgumentValidationService._check_provided_arg_values_are_valid(args_to_validate)
         return validated_args_dict
 
     def _check_all_required_args_are_provided(self, request_body):
@@ -53,7 +52,7 @@ class ArgumentValidator:
     def _check_provided_arg_values_are_valid(request_body):
         for key in request_body:
             try:
-                SparkJobProperty(key).validate(request_body[key])
+                request_body[key] = SparkJobProperty(key).validate(request_body[key])
             except ValueError:
                 raise
         return request_body

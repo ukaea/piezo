@@ -1,5 +1,5 @@
 from PiezoWebApp.src.services.validator.validation_rules import ValidationRules
-from PiezoWebApp.src.utils.str_helper import is_str_empty
+from PiezoWebApp.src.services.validator import validator
 
 
 class SparkJobProperty:
@@ -37,25 +37,29 @@ class SparkJobProperty:
         return self._required_format
 
     def validate(self, value):
-        # Validate numerical args
-        if self.required_format in ["int", "float"]:
-            if self.required_format == "int":
-                formatted_value = int(value)
-            else:
-                formatted_value = round(float(value), 1)
-            is_valid = self.min <= formatted_value <= self.max
-            if is_valid is False:
-                raise ValueError(f"Argument {self._key} must be between {self.min} and {self.max}")
-            return formatted_value
-
-        # Validate string args
-        elif self.required_format == "string":
-            formatted_value = str(value)
-            if is_str_empty(formatted_value):
-                raise ValueError(f"Argument {self._key} can't be empty")
-
-            # Python version specific validation
-            if self._key == "python_version":
-                if value in ["2", "3"] is False:
-                    raise ValueError("Python version must be either '2' or '3'")
-            return formatted_value
+        try:
+            if self._key == "name":
+                return validator.validate_name(value)
+            elif self._key == "language":
+                return validator.validate_language(value)
+            elif self._key == "python_version":
+                return validator.validate_python_version(value)
+            elif self._key == "path_to_main_app_file":
+                return validator.validate_path_to_main_app_file(value)
+            elif self._key == "main_class":
+                return validator.validate_main_class(value)
+            elif self._key == "driver_cores":
+                return validator.validate_driver_cores(value, self._min, self._max)
+            elif self._key == "driver_core_limit":
+                return validator.validate_driver_core_limit(value, self._min, self._max)
+            elif self._key == "driver_memory":
+                return validator.validate_driver_memory(value, self._min, self._max)
+            elif self._key == "executors":
+                return validator.validate_executors(value, self._min, self._max)
+            elif self._key == "executor_cores":
+                return validator.validate_executor_cores(value, self._min, self._max)
+            elif self._key == "executor_memory":
+                return validator.validate_executor_memory(value, self._min, self._max)
+        except ValueError:
+            raise
+        raise ValueError(f"Unexpected argument {self._key}")
