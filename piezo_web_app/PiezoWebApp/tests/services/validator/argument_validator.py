@@ -149,7 +149,7 @@ class TestArgumentValidator:
         assert validation_result.is_valid is True
 
     @pytest.mark.parametrize("executors", [100, "0", " ", "", "1p", 3.3])
-    def test_validate_executors_rejects_values_outside_valid_range_or_strings(self, executors):
+    def test_validate_executors_rejects_values_outside_valid_range_or_with_bad_format(self, executors):
         # Arrange
         validation_values = self.validation_rules.get_keys_property_array("executors")
         # Act
@@ -157,4 +157,46 @@ class TestArgumentValidator:
             argument_validator.validate_executors(executors, validation_values[0], validation_values[1])
         # Assert
         assert validation_result.is_valid is False
+
+    @pytest.mark.parametrize("executor_cores", ["1", 2, 3.0, "4"])
+    def test_validate_executor_cores_accepts_numerical_values_within_valid_range(self, executor_cores):
+        # Arrange
+        validation_values = self.validation_rules.get_keys_property_array("executor_cores")
+        # Act
+        validation_result = \
+            argument_validator.validate_executor_cores(executor_cores, validation_values[0], validation_values[1])
+        # Assert
+        assert validation_result.is_valid is True
+
+    @pytest.mark.parametrize("executor_cores", [100, "0", " ", "", "1p", 3.3])
+    def test_validate_executor_cores_rejects_values_outside_valid_range_or_with_bad_format(self, executor_cores):
+        # Arrange
+        validation_values = self.validation_rules.get_keys_property_array("executor_cores")
+        # Act
+        validation_result = \
+            argument_validator.validate_executorcores(executor_cores, validation_values[0], validation_values[1])
+        # Assert
+        assert validation_result.is_valid is False
+
+    @pytest.mark.parametrize("executor_memory", ["512", 512, "2000.2", 3000.5, 4096, "4096"])
+    def test_validate_executor_memory_accepts_numerical_values_within_valid_range(self, executor_memory):
+        # Arrange
+        validation_values = self.validation_rules.get_keys_property_array("executor_memory")
+        # Act
+        validation_result = \
+            argument_validator.validate_executor_memory(executor_memory, validation_values[0], validation_values[1])
+        # Assert
+        assert validation_result.is_valid is True
+
+    @pytest.mark.parametrize("executor_memory", [511, "200", " ", "", "5000", 4097])
+    def test_validate_executor_memory_rejects_values_outside_valid_range_or_with_bad_format(self, executor_memory):
+        # Arrange
+        validation_values = self.validation_rules.get_keys_property_array("executor_memory")
+        # Act
+        validation_result = \
+            argument_validator.validate_executor_memory(executor_memory, validation_values[0], validation_values[1])
+        # Assert
+        assert validation_result.is_valid is False
+
+
 
