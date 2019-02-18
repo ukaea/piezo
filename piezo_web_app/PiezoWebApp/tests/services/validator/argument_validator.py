@@ -174,7 +174,7 @@ class TestArgumentValidator:
         validation_values = self.validation_rules.get_keys_property_array("executor_cores")
         # Act
         validation_result = \
-            argument_validator.validate_executorcores(executor_cores, validation_values[0], validation_values[1])
+            argument_validator.validate_executor_cores(executor_cores, validation_values[0], validation_values[1])
         # Assert
         assert validation_result.is_valid is False
 
