@@ -1,3 +1,4 @@
+from mock import call
 from tornado.testing import gen_test
 
 from PiezoWebApp.tests.handlers.base_handler_test import BaseHandlerTest
@@ -32,6 +33,11 @@ class SubmitJobHandlerTest(BaseHandlerTest):
         response_body, response_code = yield self.send_request(body)
         # Assert
         self.mock_kubernetes_service.submit_job.assert_called_once_with(body)
+        self.mock_logger.debug.assert_has_calls([
+            call('Trying to submit job "test-spark-job" to namespace "test-namespace".'),
+            call('Submitting job "test-spark-job" to namespace "test-namespace" returned result '
+                 '"{"message": "job test-spark-job submitted success"}".')
+        ])
         assert response_code == 200
         assert response_body['status'] == 'success'
         assert response_body['data'] == '{"message": "job test-spark-job submitted success"}'

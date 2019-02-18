@@ -1,3 +1,4 @@
+from mock import call
 from tornado.testing import gen_test
 
 from PiezoWebApp.tests.handlers.base_handler_test import BaseHandlerTest
@@ -32,6 +33,11 @@ class GetLogsHandlerTest(BaseHandlerTest):
         response_body, response_code = yield self.send_request(body)
         # Assert
         self.mock_kubernetes_service.get_logs.assert_called_once_with('test-driver', 'test-namespace')
+        self.mock_logger.debug.assert_has_calls([
+            call('Trying to delete job "test-spark-job" in namespace "test-namespace".'),
+            call('Deleting job "test-spark-job" in namespace "test-namespace" returned result '
+                 '"{"message": "test-spark-job deleted from namespace test-namespace"}".')
+        ])
         assert response_code == 200
         assert response_body['status'] == 'success'
         assert response_body['data'] == '{"log": "success"}'
