@@ -34,9 +34,9 @@ class GetLogsHandlerTest(BaseHandlerTest):
         # Assert
         self.mock_kubernetes_service.get_logs.assert_called_once_with('test-driver', 'test-namespace')
         self.mock_logger.debug.assert_has_calls([
-            call('Trying to delete job "test-spark-job" in namespace "test-namespace".'),
-            call('Deleting job "test-spark-job" in namespace "test-namespace" returned result '
-                 '"{"message": "test-spark-job deleted from namespace test-namespace"}".')
+            call('Trying to delete driver "test-driver" in namespace "test-namespace".'),
+            call('Getting logs from driver "test-driver" in namespace "test-namespace" returned result '
+                 '"{"log": "success"}".')
         ])
         assert response_code == 200
         assert response_body['status'] == 'success'
