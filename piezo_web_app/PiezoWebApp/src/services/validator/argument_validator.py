@@ -42,73 +42,29 @@ def validate_main_class(value):
 
 
 def validate_driver_cores(value, min_value, max_value):
-    if isinstance(value, int) or isinstance(value, float):
-        is_valid = min_value <= value <= max_value if (value*10) % 1 == 0 else False
-    elif isinstance(value, str):
-        try:
-            numerical_value = float(value[:-1])/1000 if value[-1] == "m" else float(value)
-            is_valid = min_value <= numerical_value <= max_value if (numerical_value*10) % 1 == 0 else False
-        except (ValueError, IndexError):
-            return ValidationResult(False,
-                                    "Driver cores must be of the form X (where X is an int or float and represents the"
-                                    " number of cpus to the nearest 0.1 or 'Xm' (where Xm is a string and the m "
-                                    "represents millicpus). Note: 0.1 == '100m', 1 == 1000m",
-                                    None)
-    else:
-        is_valid = False
-    return ValidationResult(True, None, value) if is_valid is True else ValidationResult(
-        False,
-        f"Driver core = {value} outside of valid range ({min_value}, {max_value}) or "
-        f"({str(int(min_value*1000))+'m'}, {str(int(max_value*1000))+'m'} and be given to 0.1 cpu (100m)",
-        None)
+    format_error_msg = "Driver cores must be of the form X (where X is an int or float and represents " \
+                       "the number of cpus to the nearest 0.1 or 'Xm' (where Xm is a string and the m " \
+                       "represents millicpus). Note: 0.1 == '100m', 1 == 1000m"
+    value_error_msg = f"Driver core = {value} outside of valid range ({min_value}, {max_value}) or " \
+                      f"({str(int(min_value*1000))+'m'}, {str(int(max_value*1000))+'m'} and be given to 0.1 cpu (100m)"
+    return _validate_cores(value, min_value, max_value, format_error_msg, value_error_msg)
 
 
 def validate_driver_core_limit(value, min_value, max_value):
-    if isinstance(value, int) or isinstance(value, float):
-        is_valid = min_value <= value <= max_value if (value*10) % 1 == 0 else False
-    elif isinstance(value, str):
-        try:
-            numerical_value = float(value[:-1])/1000 if value[-1] == "m" else float(value)
-            is_valid = min_value <= numerical_value <= max_value if (numerical_value*10) % 1 == 0 else False
-        except (ValueError, IndexError):
-            return ValidationResult(False,
-                                    "Driver core limit must be of the form X (where X is an int or float and represents"
-                                    " the number of cpus to the nearest 0.1 or 'Xm' (where Xm is a string and the m "
-                                    "represents millicpus). Note: 0.1 == '100m', 1 == 1000m",
-                                    None)
-    else:
-        is_valid = False
-    return ValidationResult(True, None, value) if is_valid is True else ValidationResult(
-        False,
-        f"Driver core limit = {value} outside of valid range ({min_value}, {max_value}) or "
-        f"({str(int(min_value*1000))+'m'}, {str(int(max_value*1000))+'m'} and be given to 0.1 cpu (100m)",
-        None)
+    format_error_msg = "Driver core limit must be of the form X (where X is an int or float and represents " \
+                       "the number of cpus to the nearest 0.1 or 'Xm' (where Xm is a string and the m " \
+                       "represents millicpus). Note: 0.1 == '100m', 1 == 1000m"
+    value_error_msg = f"Driver core limit = {value} outside of valid range ({min_value}, {max_value}) or " \
+                      f"({str(int(min_value*1000))+'m'}, {str(int(max_value*1000))+'m'} and be given to 0.1 cpu (100m)"
+    return _validate_cores(value, min_value, max_value, format_error_msg, value_error_msg)
 
 
 def validate_driver_memory(value, min_value, max_value):
-    if isinstance(value, str):
-        try:
-            numerical_value = float(value[:-1]) if value[-1] == "m" else float(value)
-            is_valid = min_value <= numerical_value <= max_value if numerical_value % 1 == 0 else False
-        except (ValueError, IndexError):
-            return ValidationResult(
-                False,
-                "Driver memory must be a string in the format 'Xm' where X is the number of megabytes,"
-                "integers are also accepted but are assumed to also be megabytes.",
-                None)
-    elif isinstance(value, int) or isinstance(value, float):
-        numerical_value = value
-        is_valid = min_value <= numerical_value <= max_value if numerical_value % 1 == 0 else False
-    else:
-        return ValidationResult(False,
-                                "Driver memory must be a string in the format 'Xm' where X is the number of megabytes,"
-                                "integers are also accepted but are assumed to also be megabytes.",
-                                None)
-    if is_valid:
-        return ValidationResult(True, None, numerical_value)
-    return ValidationResult(False,
-                            f"Driver memory = {value} is outside of valid range "
-                            f"({str(min_value) + 'm'}, {str(max_value) + 'm'}", None)
+    format_error_msg = "Driver memory must be a string in the format 'Xm' where X is the number of megabytes, " \
+                       "integers are also accepted but are assumed to also be megabytes."
+    value_error_msg = f"Driver memory = {value} is outside of valid range " \
+                      f"({str(min_value) + 'm'}, {str(max_value) + 'm'}"
+    return _validate_memory(value, min_value, max_value, format_error_msg, value_error_msg)
 
 
 def validate_executors(value, min_value, max_value):
@@ -124,51 +80,20 @@ def validate_executors(value, min_value, max_value):
 
 
 def validate_executor_cores(value, min_value, max_value):
-    if isinstance(value, int) or isinstance(value, float):
-        is_valid = min_value <= value <= max_value if (value*10) % 1 == 0 else False
-    elif isinstance(value, str):
-        try:
-            numerical_value = float(value[:-1])/1000 if value[-1] == "m" else float(value)
-            is_valid = min_value <= numerical_value <= max_value if (numerical_value*10) % 1 == 0 else False
-        except (ValueError, IndexError):
-            return ValidationResult(False,
-                                    "Executor cores must be of the form X (where X is an int or float and represents "
-                                    "the number of cpus to the nearest 0.1 or 'Xm' (where Xm is a string and the m "
-                                    "represents millicpus). Note: 0.1 == '100m', 1 == 1000m",
-                                    None)
-    else:
-        is_valid = False
-    return ValidationResult(True, None, value) if is_valid is True else ValidationResult(
-        False,
-        f"Executor core = {value} outside of valid range ({min_value}, {max_value}) or "
-        f"({str(int(min_value*1000))+'m'}, {str(int(max_value*1000))+'m'} and be given to 0.1 cpu (100m)",
-        None)
+    format_error_msg = "Executor cores must be of the form X (where X is an int or float and represents " \
+                       "the number of cpus to the nearest 0.1 or 'Xm' (where Xm is a string and the m " \
+                       "represents millicpus). Note: 0.1 == '100m', 1 == 1000m"
+    value_error_msg = f"Executor core = {value} outside of valid range ({min_value}, {max_value}) or " \
+                      f"({str(int(min_value*1000))+'m'}, {str(int(max_value*1000))+'m'} and be given to 0.1 cpu (100m)"
+    return _validate_cores(value, min_value, max_value, format_error_msg, value_error_msg)
 
 
 def validate_executor_memory(value, min_value, max_value):
-    if isinstance(value, str):
-        try:
-            numerical_value = float(value[:-1]) if value[-1] == "m" else float(value)
-            is_valid = min_value <= numerical_value <= max_value if numerical_value % 1 == 0 else False
-        except (ValueError, IndexError):
-            return ValidationResult(
-                False,
-                "Executor memory must be a string in the format 'Xm' where X is the number of megabytes,"
-                "integers are also accepted but are assumed to also be megabytes.",
-                None)
-    elif isinstance(value, int) or isinstance(value, float):
-        numerical_value = value
-        is_valid = min_value <= numerical_value <= max_value if numerical_value % 1 == 0 else False
-    else:
-        return ValidationResult(False,
-                                "Executor memory must be a string in the format 'Xm' where X is the number of megabytes"
-                                ", integers are also accepted but are assumed to also be megabytes.",
-                                None)
-    if is_valid:
-        return ValidationResult(True, None, numerical_value)
-    return ValidationResult(False,
-                            f"Executor memory = {value} is outside of valid range "
-                            f"({str(min_value) + 'm'}, {str(max_value) + 'm'}", None)
+    format_error_msg = "Executor memory must be a string in the format 'Xm' where X is the number of megabytes, " \
+                       "integers are also accepted but are assumed to also be megabytes."
+    value_error_msg = f"Executor memory = {value} is outside of valid range " \
+                      f"({str(min_value) + 'm'}, {str(max_value) + 'm'}"
+    return _validate_memory(value, min_value, max_value, format_error_msg, value_error_msg)
 
 
 def _validate_memory(value, min_value, max_value, format_error_msg, value_error_msg):
