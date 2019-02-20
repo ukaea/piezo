@@ -7,7 +7,7 @@ import mock
 import pytest
 
 from PiezoWebApp.src.services.kubernetes.i_kubernetes_adapter import IKubernetesAdapter
-from PiezoWebApp.src.services.kubernetes.kubernetes_service import KubernetesService
+from PiezoWebApp.src.services.spark_job.spark_job_service import KubernetesService
 
 # str | The custom resource's group name
 CRD_GROUP = 'sparkoperator.k8s.io'

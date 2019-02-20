@@ -73,5 +73,5 @@ class KubernetesService(IKubernetesService):
             return api_response.content
         except ApiException as exception:
             message = f'Kubernetes error when trying to submit job in namespace "{namespace}": {exception.reason}'
-            self._logger.error(f'API exception when trying to submit job: ${exception}')
-            return f"API exception when submitting job: {body['metadata']['name']} - {exception}"
+            self._logger.error(message)
+            return message
