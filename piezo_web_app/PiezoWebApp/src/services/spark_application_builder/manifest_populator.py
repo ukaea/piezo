@@ -3,30 +3,30 @@ from PiezoWebApp.src.utils.dict_argument_helper import set_value_in_nested_dict
 
 class ManifestPopulator:
 
-    def __init__(self):
-        self._api_version = "sparkoperator.k8s.io/v1beta1"
-        self._kind = "SparkApplication"
-        self._metadata_name = None
-        self._metadata_namespace = "default"
-        self._spec_type = None
-        self._spec_mode = "cluster"
-        self._spec_type = "Python"
-        self._spec_python_version = "2"
-        self._spec_image = "gcr.io/spark-operator/spark:v2.4.0"
-        self._spec_image_pull_policy = "Always"
-        self._spec_main_app_file = None
-        self._spec_main_class = None
-        self._spec_spark_version = "2.4.0"
-        self._spec_restart_policy_type = "Never"
-        self._spec_driver_cores = 0.1
-        self._spec_driver_core_limit = "200m"
-        self._spec_driver_memory = "512m"
-        self._spec_driver_label_version = "2.4.0"
-        self._spec_driver_service_account = "spark"
-        self._spec_executor_instances = 1
-        self._spec_executor_cores = 1
-        self._spec_executor_memory = "512m"
-        self._spec_executor_label_version = "2.4.0"
+    def __init__(self, validation_rules):
+        self._validation_rules = validation_rules
+        self._api_version = self._validation_rules.get_default_value_for_key("apiVersion")
+        self._kind = self._validation_rules.get_default_value_for_key("kind")
+        self._metadata_name = self._validation_rules.get_default_value_for_key("name")
+        self._metadata_namespace = self._validation_rules.get_default_value_for_key("namespace")
+        self._spec_type = self._validation_rules.get_default_value_for_key("language")
+        self._spec_mode = self._validation_rules.get_default_value_for_key("mode")
+        self._spec_python_version = self._validation_rules.get_default_value_for_key("python_version")
+        self._spec_image = self._validation_rules.get_default_value_for_key("image")
+        self._spec_image_pull_policy = self._validation_rules.get_default_value_for_key("image_pull_policy")
+        self._spec_main_app_file = self._validation_rules.get_default_value_for_key("path_to_main_app_file")
+        self._spec_main_class = self._validation_rules.get_default_value_for_key("main_class")
+        self._spec_spark_version = self._validation_rules.get_default_value_for_key("spark_version")
+        self._spec_restart_policy_type = self._validation_rules.get_default_value_for_key("restart_policy")
+        self._spec_driver_cores = self._validation_rules.get_default_value_for_key("driver_cores")
+        self._spec_driver_core_limit = self._validation_rules.get_default_value_for_key("driver_core_limit")
+        self._spec_driver_memory = self._validation_rules.get_default_value_for_key("driver_memory")
+        self._spec_driver_label_version = self._validation_rules.get_default_value_for_key("spark_version")
+        self._spec_driver_service_account = self._validation_rules.get_default_value_for_key("service_account")
+        self._spec_executor_instances = self._validation_rules.get_default_value_for_key("executors")
+        self._spec_executor_cores = self._validation_rules.get_default_value_for_key("executor_cores")
+        self._spec_executor_memory = self._validation_rules.get_default_value_for_key("executor_memory")
+        self._spec_executor_label_version = self._validation_rules.get_default_value_for_key("spark_version")
 
     @staticmethod
     def add_value_to_manifest(array_of_path, manifest, value):

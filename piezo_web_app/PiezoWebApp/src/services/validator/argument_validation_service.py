@@ -3,14 +3,10 @@ from PiezoWebApp.src.services.validator.spark_job_property import SparkJobProper
 
 class ArgumentValidationService:
 
-    def __init__(self):
-        self._required_args_from_user = ["name", "language", "path_to_main_app_file"]
-        self._optional_args_from_user = ["driver_cores",
-                                         "driver_core_limit",
-                                         "driver_memory",
-                                         "executors",
-                                         "executor_cores",
-                                         "executor_memory"]
+    def __init__(self, validation_rules):
+        self._validation_rules = validation_rules
+        self._required_args_from_user = self._validation_rules.get_keys_or_required_args
+        self._optional_args_from_user = self._validation_rules.get_keys_of_optional_args
 
     def validate_arguments(self, request_body):
         # Ensure all vars needed are present
@@ -48,11 +44,11 @@ class ArgumentValidationService:
             request_body["language"] = "Scala"
             self._required_args_from_user.append("main_class")
 
-    @staticmethod
-    def _check_provided_arg_values_are_valid(request_body):
+    def _check_provided_arg_values_are_valid(self, request_body):
         for key in request_body:
             try:
-                request_body[key] = SparkJobProperty(key).validate(request_body[key]).validated_value
+                request_body[key] = \
+                    SparkJobProperty(key, self._validation_rules).validate(request_body[key]).validated_value
             except ValueError:
                 raise
         return request_body
