@@ -1,9 +1,10 @@
 from logging import Logger
+from types import SimpleNamespace
+from unittest import TestCase
+
 from kubernetes.client.rest import ApiException
 import mock
 import pytest
-from types import SimpleNamespace
-from unittest import TestCase
 
 from PiezoWebApp.src.services.kubernetes.i_kubernetes_adapter import IKubernetesAdapter
 from PiezoWebApp.src.services.kubernetes.kubernetes_service import KubernetesService
@@ -85,7 +86,7 @@ class KubernetesServiceTest(TestCase):
         assert result == "Response"
         self.mock_kubernetes_adapter.read_namespaced_pod_log.assert_called_once_with('test-driver', 'test-namespace')
 
-    def test_get_logs_logs_and_returns_missing_namespace(self):
+    def test_submit_job_logs_and_returns_missing_namespace(self):
         # Arrange
         self.mock_kubernetes_adapter.create_namespaced_custom_object.side_effect = ApiException(reason="Reason")
         body = {
@@ -100,7 +101,7 @@ class KubernetesServiceTest(TestCase):
         self.mock_logger.warning.assert_called_once_with(expected_message)
         assert result == expected_message
 
-    def test_get_logs_logs_and_returns_api_exception_reason(self):
+    def test_submit_job_logs_and_returns_api_exception_reason(self):
         # Arrange
         self.mock_kubernetes_adapter.create_namespaced_custom_object.side_effect = ApiException(reason="Reason")
         body = {

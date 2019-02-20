@@ -1,4 +1,3 @@
-import kubernetes
 from kubernetes.client.rest import ApiException
 
 from PiezoWebApp.src.services.kubernetes.i_kubernetes_service import IKubernetesService
@@ -61,7 +60,6 @@ class KubernetesService(IKubernetesService):
                 CRD_VERSION,
                 namespace,
                 CRD_PLURAL,
-
                 body
             )
             return api_response.content
