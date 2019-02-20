@@ -1,6 +1,5 @@
 import unittest
 import pytest
-import mock
 
 
 from PiezoWebApp.src.services.spark_application_builder.manifest_populator import ManifestPopulator
@@ -11,8 +10,9 @@ class TestTemplatePopulator(unittest.TestCase):
     # pylint: disable=attribute-defined-outside-init
     @pytest.fixture(autouse=True)
     def setup(self):
-        mock_validation_rules = mock.create_autospec(ValidationRules)
-        self.test_populator = ManifestPopulator(mock_validation_rules)
+        self.maxDiff = None
+        validation_rules = ValidationRules()
+        self.test_populator = ManifestPopulator(validation_rules)
         self.arguments = {"name": "test",
                           "path_to_main_app_file": "/path/to/file",
                           "driver_cores": 0.1,
@@ -113,7 +113,7 @@ class TestTemplatePopulator(unittest.TestCase):
                                                         "type": "Never"},
                                                     "driver": {
                                                         "cores": 0.1,
-                                                        "coreLimit": "200m",
+                                                        "coreLimit": 0.2,
                                                         "memory": "512m",
                                                         "labels": {
                                                             "version": "2.4.0"},

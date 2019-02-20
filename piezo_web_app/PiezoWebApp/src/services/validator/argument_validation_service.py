@@ -6,13 +6,15 @@ class ArgumentValidationService:
 
     def __init__(self, validation_rules):
         self._validation_rules = validation_rules
-        self._required_args_from_user = self._validation_rules.get_keys_or_required_args
+        self._required_args_from_user = self._validation_rules.get_keys_of_required_args
         self._optional_args_from_user = self._validation_rules.get_keys_of_optional_args
 
     def validate_request_keys(self, request_body):
         # Ensure all vars needed are present
         language_validation_result = self._validate_language_requirements(request_body)
-        required_args_validation_result_dict = self._check_all_required_args_are_provided(request_body)
+        validated_language_results = language_validation_result.validated_value
+
+        required_args_validation_result_dict = self._check_all_required_args_are_provided(validated_language_results)
         # check for unsupported args
         unsupported_args = self._check_for_unsupported_args(request_body)
         return ArgumentValidationService._validate_request_keys_return_helper(language_validation_result,
@@ -48,6 +50,7 @@ class ArgumentValidationService:
         elif language == "scala":
             request_body["language"] = "Scala"
             self._required_args_from_user.append("main_class")
+        return ValidationResult(True, "language validated", request_body)
 
     def _check_provided_arg_values_are_valid(self, request_body):
         validated_dict = {}

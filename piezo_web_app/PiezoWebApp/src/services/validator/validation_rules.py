@@ -22,13 +22,13 @@ class ValidationRules:
                                  "service_account": [None, None, "spark", "base"],
                                  "name": [None, None, None, "required"],
                                  "language": [None, None, None, "required"],
-                                 "path_to_main_app_file": [None, None, None, "optional"],
+                                 "path_to_main_app_file": [None, None, None, "required"],
                                  "driver_cores": [0.1, 1, 0.1, "optional"],
                                  "driver_core_limit": [0.2, 1.2, 0.2, "optional"],
-                                 "driver_memory": [512, 2048, 512, "optional"],
+                                 "driver_memory": [512, 2048, "512m", "optional"],
                                  "executors": [1, 10, 1, "optional"],
                                  "executor_cores": [1, 4, 1, "optional"],
-                                 "executor_memory": [512, 4096, 512, "optional"],
+                                 "executor_memory": [512, 4096, "512m", "optional"],
                                  "main_class": [None, None, None, "conditional"],
                                  "python_version": [None, None, None, "conditional"]
                                  }
