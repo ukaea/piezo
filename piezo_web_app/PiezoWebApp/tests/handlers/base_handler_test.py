@@ -1,5 +1,6 @@
 from abc import ABCMeta, abstractmethod
 import json
+import logging
 import mock
 import pytest
 from tornado.httpclient import HTTPClientError
@@ -23,8 +24,10 @@ class BaseHandlerTest(AsyncHTTPTestCase, metaclass=ABCMeta):
 
     def get_app(self):
         self.mock_kubernetes_service = mock.create_autospec(IKubernetesService)
+        self.mock_logger = mock.create_autospec(logging.Logger)
         self.container = {
-            'kubernetes_service': self.mock_kubernetes_service
+            'kubernetes_service': self.mock_kubernetes_service,
+            'logger': self.mock_logger
         }
         application = Application([
             (format_route_specification('testroute'), self.handler, self.container),

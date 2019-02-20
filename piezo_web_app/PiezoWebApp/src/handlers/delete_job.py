@@ -18,5 +18,7 @@ class DeleteJobHandler(BaseHandler):
     def delete(self, *args, **kwargs):
         job_name = self.get_body_attribute('job_name', required=True)
         namespace = self.get_body_attribute('namespace', required=True)
+        self._logger.debug(f'Trying to delete job "{job_name}" in namespace "{namespace}".')
         result = self._kubernetes_service.delete_job(job_name, namespace)
+        self._logger.debug(f'Deleting job "{job_name}" in namespace "{namespace}" returned result "{result}".')
         return result
