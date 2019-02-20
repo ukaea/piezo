@@ -2,7 +2,7 @@ import kubernetes
 from kubernetes.client.rest import ApiException
 
 from PiezoWebApp.src.services.kubernetes.i_kubernetes_service import IKubernetesService
-from PiezoWebApp.src.services.spark_application_builder.manifest_populator import ManifestPopulator
+from PiezoWebApp.src.services.spark_job.manifest_populator import ManifestPopulator
 from PiezoWebApp.src.services.validator.validation_rules import ValidationRules
 from PiezoWebApp.src.services.validator.argument_validation_service import ArgumentValidationService
 
