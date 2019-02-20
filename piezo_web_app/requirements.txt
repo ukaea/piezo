@@ -2,12 +2,12 @@ flake8
 kubernetes
 mock
 pylint
-pytest=3.6
+pytest==3.6
 pytest-cov
 pytest-mock
 pytest-tornado
 requests
 tornado
 tornado-json
-unittest=3.6
+unittest==3.6
 wheel
