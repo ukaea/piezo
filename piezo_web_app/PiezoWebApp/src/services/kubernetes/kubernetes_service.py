@@ -1,4 +1,3 @@
-import kubernetes
 from kubernetes.client.rest import ApiException
 
 from PiezoWebApp.src.services.kubernetes.i_kubernetes_service import IKubernetesService
@@ -26,7 +25,7 @@ class KubernetesService(IKubernetesService):
 
     def delete_job(self, job_name, namespace):
         try:
-            body = kubernetes.client.V1DeleteOptions()
+            body = self._connection.delete_options()
             api_response = self._connection.delete_namespaced_custom_object(
                 CRD_GROUP,
                 CRD_VERSION,
@@ -37,16 +36,20 @@ class KubernetesService(IKubernetesService):
             )
             return api_response.content
         except ApiException as exception:
-            self._logger.error(f'API exception when trying to delete job "${job_name}" in namespace '
-                               f'"${namespace}": ${exception}')
+            message = f'Kubernetes error when trying to delete job "{job_name}" in namespace '\
+                f'"{namespace}": {exception.reason}'
+            self._logger.error(message)
+            return message
 
     def get_logs(self, driver_name, namespace):
         try:
             api_response = self._connection.read_namespaced_pod_log(driver_name, namespace)
             return api_response
         except ApiException as exception:
-            self._logger.error(f'API exception when trying to read logs for driver "${driver_name}" in namespace '
-                               f'"${namespace}": ${exception}')
+            message = f'Kubernetes error when trying to get logs for driver "{driver_name}" in namespace '\
+                f'"{namespace}": {exception.reason}'
+            self._logger.error(message)
+            return message
 
     def submit_job(self, body):
         # Get the namespace from the body
@@ -69,5 +72,6 @@ class KubernetesService(IKubernetesService):
             )
             return api_response.content
         except ApiException as exception:
+            message = f'Kubernetes error when trying to submit job in namespace "{namespace}": {exception.reason}'
             self._logger.error(f'API exception when trying to submit job: ${exception}')
             return f"API exception when submitting job: {body['metadata']['name']} - {exception}"

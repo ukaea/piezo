@@ -7,8 +7,9 @@ from PiezoWebApp.src.utils.str_helper import is_str_empty
 # pylint: disable=abstract-method
 class BaseHandler(APIHandler):
     # pylint: disable=arguments-differ
-    def initialize(self, kubernetes_service):
+    def initialize(self, kubernetes_service, logger):
         self._kubernetes_service = kubernetes_service
+        self._logger = logger
 
     def get_body_attribute(self, key, default=None, required=False, value_type=str):
         # pylint: disable=no-member
@@ -16,7 +17,7 @@ class BaseHandler(APIHandler):
             self._check_attribute_is_not_empty(key, default, required, value_type)
             return self.body[key]
         if required:
-            raise exceptions.APIError(400, 'Attribute missing')
+            raise exceptions.APIError(400, f'Attribute "{key}" is missing')
         return default
 
     def _check_attribute_is_not_empty(self, key, default, required, value_type):
