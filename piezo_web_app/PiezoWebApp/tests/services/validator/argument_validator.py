@@ -197,6 +197,3 @@ class TestArgumentValidator:
             argument_validator.validate_executor_memory(executor_memory, validation_values[0], validation_values[1])
         # Assert
         assert validation_result.is_valid is False
-
-
-

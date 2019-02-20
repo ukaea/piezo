@@ -21,7 +21,7 @@ def validate_language(value):
 def validate_python_version(value):
     string_value = str(value) if isinstance(value, int) else value
     if string_value not in ["2", "3"]:
-            return ValidationResult(False, "Python version must be a string and either '2' or '3'", None)
+        return ValidationResult(False, "Python version must be a string and either '2' or '3'", None)
     return ValidationResult(True, None, string_value)
 
 
