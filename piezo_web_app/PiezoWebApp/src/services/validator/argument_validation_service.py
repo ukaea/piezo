@@ -50,13 +50,17 @@ class ArgumentValidationService:
             self._required_args_from_user.append("main_class")
 
     def _check_provided_arg_values_are_valid(self, request_body):
+        validated_dict = {}
+        error_msg = "The following errors occurred when validating request body values: \n"
+        all_valid = True
         for key in request_body:
-            try:
-                request_body[key] = \
-                    SparkJobProperty(key, self._validation_rules).validate(request_body[key]).validated_value
-            except ValueError:
-                raise
-        return request_body
+            validation_response = SparkJobProperty(key, self._validation_rules).validate(request_body[key])
+            if validation_response.is_valid is True:
+                validated_dict[key] = validation_response.validated_value
+            else:
+                error_msg += validation_response.message
+                all_valid = False
+        return ValidationResult(all_valid, error_msg, validated_dict)
 
     def _check_for_unsupported_args(self, request_body):
         unsupported_args = []
