@@ -2,6 +2,9 @@ import kubernetes
 from kubernetes.client.rest import ApiException
 
 from PiezoWebApp.src.services.kubernetes.i_kubernetes_service import IKubernetesService
+from PiezoWebApp.src.services.spark_application_builder.manifest_populator import ManifestPopulator
+from PiezoWebApp.src.services.validator.validation_rules import ValidationRules
+from PiezoWebApp.src.services.validator.argument_validation_service import ArgumentValidationService
 
 # str | The custom resource's group name
 CRD_GROUP = 'sparkoperator.k8s.io'
@@ -17,6 +20,9 @@ class KubernetesService(IKubernetesService):
     def __init__(self, kubernetes_adapter, logger):
         self._logger = logger
         self._connection = kubernetes_adapter
+        self.validation_rules = ValidationRules
+        self._manifest_populator = ManifestPopulator(self.validation_rules)
+        self._argument_validation_service = ArgumentValidationService(self.validation_rules)
 
     def delete_job(self, job_name, namespace):
         try:
@@ -44,10 +50,14 @@ class KubernetesService(IKubernetesService):
 
     def submit_job(self, body):
         # Get the namespace from the body
-        try:
-            namespace = body['metadata']['namespace']
-        except KeyError:
-            self._logger.warning(f'Job submitted without namespace in metadata')
+        validated_body_keys = self._argument_validation_service.validate_request_keys(body)
+        if validated_body_keys.is_valid is False:
+            return validated_body_keys.message
+        validated_body_values = self._argument_validation_service.validate_request_values(body)
+        if validated_body_values.is_valid is False:
+            return validated_body_values.message
+        body = self._manifest_populator.build_manifest(validated_body_values.validated_value)
+        namespace = body['metadata']['namespace']
         # Try to submit the job
         try:
             api_response = self._connection.create_namespaced_custom_object(
@@ -60,3 +70,4 @@ class KubernetesService(IKubernetesService):
             return api_response.content
         except ApiException as exception:
             self._logger.error(f'API exception when trying to submit job: ${exception}')
+            return f"API exception when submitting job: {body['metadata']['name']} - {exception}"
