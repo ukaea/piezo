@@ -19,7 +19,7 @@ CRD_PLURAL = 'sparkapplications'
 CRD_VERSION = 'v1beta1'
 
 
-class KubernetesServiceTest(TestCase):
+class TestKubernetesService(TestCase):
     # pylint: disable=attribute-defined-outside-init
     @pytest.fixture(autouse=True)
     def setup(self):

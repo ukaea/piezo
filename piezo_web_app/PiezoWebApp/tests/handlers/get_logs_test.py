@@ -5,7 +5,7 @@ from PiezoWebApp.tests.handlers.base_handler_test import BaseHandlerTest
 from PiezoWebApp.src.handlers.get_logs import GetLogsHandler
 
 
-class GetLogsHandlerTest(BaseHandlerTest):
+class TestGetLogsHandler(BaseHandlerTest):
     @property
     def handler(self):
         return GetLogsHandler
