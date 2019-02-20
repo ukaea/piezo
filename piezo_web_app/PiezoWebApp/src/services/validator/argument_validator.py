@@ -104,7 +104,7 @@ def _validate_memory(value, min_value, max_value, format_error_msg, value_error_
         except (ValueError, IndexError):
             return ValidationResult(
                 False, format_error_msg, None)
-    elif isinstance(value, int) or isinstance(value, float):
+    elif isinstance(value, (float, int)):
         numerical_value = value
         is_valid = min_value <= numerical_value <= max_value if numerical_value % 1 == 0 else False
     else:
@@ -115,7 +115,7 @@ def _validate_memory(value, min_value, max_value, format_error_msg, value_error_
 
 
 def _validate_cores(value, min_value, max_value, format_error_msg, value_error_msg):
-    if isinstance(value, int) or isinstance(value, float):
+    if isinstance(value, (float, int)):
         is_valid = min_value <= value <= max_value if (value*10) % 1 == 0 else False
     elif isinstance(value, str):
         try:

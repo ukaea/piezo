@@ -19,8 +19,8 @@ class ArgumentValidationService:
                                                                               required_args_validation_result_dict,
                                                                               unsupported_args)
 
-    def validate_request_values(self, request_body):
-        # Validate remaining args
+    @staticmethod
+    def validate_request_values(request_body):
         validated_args_dict = ArgumentValidationService._check_provided_arg_values_are_valid(request_body)
         return validated_args_dict
 

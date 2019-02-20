@@ -1,15 +1,18 @@
 import unittest
 import pytest
+import mock
 
 
 from PiezoWebApp.src.services.spark_application_builder.manifest_populator import ManifestPopulator
+from PiezoWebApp.src.services.validator.validation_rules import ValidationRules
 
 
 class TestTemplatePopulator(unittest.TestCase):
     # pylint: disable=attribute-defined-outside-init
     @pytest.fixture(autouse=True)
     def setup(self):
-        self.test_populator = ManifestPopulator()
+        mock_validation_rules = mock.create_autospec(ValidationRules)
+        self.test_populator = ManifestPopulator(mock_validation_rules)
         self.arguments = {"name": "test",
                           "path_to_main_app_file": "/path/to/file",
                           "driver_cores": 0.1,

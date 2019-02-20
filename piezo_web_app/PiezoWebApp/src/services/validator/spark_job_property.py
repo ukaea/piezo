@@ -43,24 +43,24 @@ class SparkJobProperty:
     def validate(self, value):
         if self._key == "name":
             return argument_validator.validate_name(value)
-        elif self._key == "language":
+        if self._key == "language":
             return argument_validator.validate_language(value)
-        elif self._key == "python_version":
+        if self._key == "python_version":
             return argument_validator.validate_python_version(value)
-        elif self._key == "path_to_main_app_file":
+        if self._key == "path_to_main_app_file":
             return argument_validator.validate_path_to_main_app_file(value)
-        elif self._key == "main_class":
+        if self._key == "main_class":
             return argument_validator.validate_main_class(value)
-        elif self._key == "driver_cores":
+        if self._key == "driver_cores":
             return argument_validator.validate_driver_cores(value, self._min, self._max)
-        elif self._key == "driver_core_limit":
+        if self._key == "driver_core_limit":
             return argument_validator.validate_driver_core_limit(value, self._min, self._max)
-        elif self._key == "driver_memory":
+        if self._key == "driver_memory":
             return argument_validator.validate_driver_memory(value, self._min, self._max)
-        elif self._key == "executors":
+        if self._key == "executors":
             return argument_validator.validate_executors(value, self._min, self._max)
-        elif self._key == "executor_cores":
+        if self._key == "executor_cores":
             return argument_validator.validate_executor_cores(value, self._min, self._max)
-        elif self._key == "executor_memory":
+        if self._key == "executor_memory":
             return argument_validator.validate_executor_memory(value, self._min, self._max)
         raise ValueError(f"Unexpected argument {self._key}")

@@ -1,12 +1,15 @@
 import pytest
+import mock
 
 from PiezoWebApp.src.services.validator.argument_validation_service import ArgumentValidationService
+from PiezoWebApp.src.services.validator.validation_rules import ValidationRules
 
 
 class TestArgumentValidator:
     @pytest.fixture(autouse=True)
     def setup(self):
-        self._test_argument_validator = ArgumentValidationService()
+        mock_validation_rules = mock.create_autospec(ValidationRules)
+        self._test_argument_validator = ArgumentValidationService(mock_validation_rules)
 
     @pytest.mark.parametrize("request_body", [
                              {"name": "test", "language": "scala"},
