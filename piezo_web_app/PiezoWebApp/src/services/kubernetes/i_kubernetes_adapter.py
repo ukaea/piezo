@@ -9,10 +9,14 @@ class IKubernetesAdapter(metaclass=ABCMeta):
         pass
 
     @abstractmethod
+    def delete_options(self, **kwargs):
+        pass
+
+    @abstractmethod
     def read_namespaced_pod_log(self, driver_name, namespace):
         pass
 
     # pylint: disable=too-many-arguments
     @abstractmethod
-    def create_namespaced_custom_object(self, group, version, namespace, plural, name, body):
+    def create_namespaced_custom_object(self, group, version, namespace, plural, body):
         pass
