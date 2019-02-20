@@ -4,8 +4,8 @@ from PiezoWebApp.src.services.validator.spark_job_property import SparkJobProper
 class ArgumentValidationService:
 
     def __init__(self):
-        self._required_from_user_args = ["name", "language", "path_to_main_app_file"]
-        self._optional_from_user_args = ["driver_cores",
+        self._required_args_from_user = ["name", "language", "path_to_main_app_file"]
+        self._optional_args_from_user = ["driver_cores",
                                          "driver_core_limit",
                                          "driver_memory",
                                          "executors",
@@ -26,7 +26,7 @@ class ArgumentValidationService:
         return validated_args_dict
 
     def _check_all_required_args_are_provided(self, request_body):
-        for key in self._required_from_user_args:
+        for key in self._required_args_from_user:
             try:
                 request_body[key]
             except KeyError:
@@ -43,22 +43,22 @@ class ArgumentValidationService:
 
         if language == "python":
             request_body["language"] = "Python"
-            self._required_from_user_args.append("python_version")
+            self._required_args_from_user.append("python_version")
         elif language == "scala":
             request_body["language"] = "Scala"
-            self._required_from_user_args.append("main_class")
+            self._required_args_from_user.append("main_class")
 
     @staticmethod
     def _check_provided_arg_values_are_valid(request_body):
         for key in request_body:
             try:
-                request_body[key] = SparkJobProperty(key).validate(request_body[key])
+                request_body[key] = SparkJobProperty(key).validate(request_body[key]).validated_value
             except ValueError:
                 raise
         return request_body
 
     def _check_for_unsupported_args(self, request_body):
-        supported_args = self._required_from_user_args + self._optional_from_user_args
+        supported_args = self._required_args_from_user + self._optional_args_from_user
         for arg in request_body:
             if arg not in supported_args:
                 raise ValueError(f"Argument {arg} is not a supported argument")

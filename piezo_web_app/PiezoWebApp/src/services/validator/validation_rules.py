@@ -5,6 +5,7 @@ class ValidationRules:
         Validation rules are provided in a dictionary where each key maps to an array of validation values
         in the format:
         [min, max, default, format]
+        optional, required, 
         """
         self._validation_dict = {"name": [None, None, None, "string"],
                                  "language": [None, None, "Python", "string"],
@@ -19,5 +20,5 @@ class ValidationRules:
                                  "executor_memory": [512, 4096, 512, "int"]
                                  }
 
-    def get_keys_property_array(self, key):
+    def get_property_array_for_key(self, key):
         return self._validation_dict[key]

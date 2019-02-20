@@ -33,8 +33,8 @@ class TestArgumentValidator:
         self._test_argument_validator._validate_language_requirements(request_body)
         # Assert
         assert request_body["language"] == "Python"
-        assert "python_version" in self._test_argument_validator._required_from_user_args
-        assert "main_class" not in self._test_argument_validator._required_from_user_args
+        assert "python_version" in self._test_argument_validator._required_args_from_user
+        assert "main_class" not in self._test_argument_validator._required_args_from_user
 
     @pytest.mark.parametrize("request_body", [{"language": "SCALA"},
                                               {"language": "scala"},
@@ -45,8 +45,8 @@ class TestArgumentValidator:
         self._test_argument_validator._validate_language_requirements(request_body)
         # Assert
         assert request_body["language"] == "Scala"
-        assert "main_class" in self._test_argument_validator._required_from_user_args
-        assert "python_version" not in self._test_argument_validator._required_from_user_args
+        assert "main_class" in self._test_argument_validator._required_args_from_user
+        assert "python_version" not in self._test_argument_validator._required_args_from_user
 
     def test_check_for_unsupported_args_throws_value_error_if_unsupported_argument_supplied(self):
         # Arrange
