@@ -7,7 +7,7 @@ from tornado.httpclient import HTTPClientError
 from tornado.testing import AsyncHTTPTestCase
 from tornado.web import Application
 
-from PiezoWebApp.src.services.spark_job.i_kubernetes_service import ISparkJobService
+from PiezoWebApp.src.services.spark_job.i_spark_job_service import ISparkJobService
 from PiezoWebApp.src.utils.route_helper import format_route_specification
 
 
