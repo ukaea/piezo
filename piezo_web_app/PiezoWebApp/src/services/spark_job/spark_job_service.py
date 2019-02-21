@@ -19,7 +19,7 @@ class KubernetesService(IKubernetesService):
     def __init__(self, kubernetes_adapter, logger):
         self._logger = logger
         self._connection = kubernetes_adapter
-        self.validation_rules = ValidationRules
+        self.validation_rules = ValidationRules()
         self._manifest_populator = ManifestPopulator(self.validation_rules)
         self._argument_validation_service = ArgumentValidationService(self.validation_rules)
 

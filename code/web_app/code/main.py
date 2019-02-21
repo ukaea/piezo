@@ -15,8 +15,8 @@ class RunExample(tornado.web.RequestHandler):
         # import submit_job_api as submit_job
         import submit_job_client as submit_job
         print("Running spark example")
-        submit_job.run_job()
-        self.write("Running spark example")
+        response = submit_job.run_job()
+        self.write(response)
 
 class GetLogs(tornado.web.RequestHandler):
     def get(self):

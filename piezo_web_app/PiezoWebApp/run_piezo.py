@@ -38,12 +38,16 @@ def build_logger(log_file_location, level):
     return log
 
 
-def build_app(k8s_adapter, log):
+def build_container(k8s_adapter, log):
     kubernetes_service = KubernetesService(k8s_adapter, log)
     container = dict(
         kubernetes_service=kubernetes_service,
         logger=log
     )
+    return container
+
+
+def build_app(container):
     app = tornado.web.Application(
         [
             (format_route_specification("deletejob"), DeleteJobHandler, container),
@@ -57,6 +61,7 @@ def build_app(k8s_adapter, log):
 if __name__ == "__main__":
     KUBERNETES_ADAPTER = build_kubernetes_adapter()
     LOGGER = build_logger("/path/to/log/dir/", "INFO")
-    APPLICATION = build_app(KUBERNETES_ADAPTER, LOGGER)
+    CONTAINER = build_container(KUBERNETES_ADAPTER, LOGGER)
+    APPLICATION = build_app(CONTAINER)
     APPLICATION.listen(8888)
     tornado.ioloop.IOLoop.current().start()

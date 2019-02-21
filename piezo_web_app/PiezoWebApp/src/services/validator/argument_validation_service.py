@@ -6,8 +6,8 @@ class ArgumentValidationService:
 
     def __init__(self, validation_rules):
         self._validation_rules = validation_rules
-        self._required_args_from_user = self._validation_rules.get_keys_of_required_args
-        self._optional_args_from_user = self._validation_rules.get_keys_of_optional_args
+        self._required_args_from_user = self._validation_rules.get_keys_of_required_args()
+        self._optional_args_from_user = self._validation_rules.get_keys_of_optional_args()
 
     def validate_request_keys(self, request_body):
         # Ensure all vars needed are present
@@ -21,9 +21,8 @@ class ArgumentValidationService:
                                                                               required_args_validation_result_dict,
                                                                               unsupported_args)
 
-    @staticmethod
-    def validate_request_values(request_body):
-        validated_args_dict = ArgumentValidationService._check_provided_arg_values_are_valid(request_body)
+    def validate_request_values(self, request_body):
+        validated_args_dict = self._check_provided_arg_values_are_valid(request_body)
         return validated_args_dict
 
     def _check_all_required_args_are_provided(self, request_body):

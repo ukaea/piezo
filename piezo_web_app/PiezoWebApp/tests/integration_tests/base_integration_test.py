@@ -2,10 +2,22 @@ from abc import ABCMeta, abstractmethod
 import json
 import logging
 import mock
+import pytest
 import tornado.testing
+from tornado.web import Application
 
-from PiezoWebApp.run_piezo import build_app
-from PiezoWebApp.src.services.kubernetes.i_kubernetes_service import IKubernetesService
+from PiezoWebApp.run_piezo import build_container
+from PiezoWebApp.src.services.kubernetes.i_kubernetes_adapter import IKubernetesAdapter
+from PiezoWebApp.src.utils.route_helper import format_route_specification
+
+# str | The custom resource's group name
+CRD_GROUP = 'sparkoperator.k8s.io'
+
+# str | The custom resource's plural name. For TPRs this would be lowercase plural kind.
+CRD_PLURAL = 'sparkapplications'
+
+# str | The custom resource's version
+CRD_VERSION = 'v1beta1'
 
 
 class BaseIntegrationTest(tornado.testing.AsyncHTTPTestCase, metaclass=ABCMeta):
@@ -20,13 +32,19 @@ class BaseIntegrationTest(tornado.testing.AsyncHTTPTestCase, metaclass=ABCMeta):
         pass
 
     # pylint: disable=attribute-defined-outside-init
+    @pytest.fixture(autouse=True)
     def setup(self):
-        self.mock_k8s_adapter = mock.create_autospec(IKubernetesService)
+        self.mock_k8s_adapter = mock.create_autospec(IKubernetesAdapter)
         self.mock_logger = mock.create_autospec(logging.Logger)
 
     def get_app(self):
-        application = build_app(self.mock_k8s_adapter, self.mock_logger)
-        self.url = self.get_url("/api/test_handler_route")
+        container = build_container(self.mock_k8s_adapter, self.mock_logger)
+        application = Application(
+            [
+                (format_route_specification("testroute"), self.handler, container)
+            ]
+        )
+        self.url = self.get_url(r"/testroute/")
         return application
 
     async def _request(self, method, body):
@@ -38,3 +56,12 @@ class BaseIntegrationTest(tornado.testing.AsyncHTTPTestCase, metaclass=ABCMeta):
             allow_nonstandard_methods=True
         )
         return response
+
+    @staticmethod
+    def _get_body(response):
+        return json.loads(response.body, encoding='utf-8')
+
+    async def send_request(self, body):
+        response = await self._request(self.standard_request_method, body)
+        response_body = BaseIntegrationTest._get_body(response)
+        return response_body, response.code

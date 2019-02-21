@@ -43,4 +43,5 @@ class ValidationRules:
         return [key for key in self._validation_dict if self._validation_dict[key][3] == "optional"]
 
     def get_default_value_for_key(self, key):
-        return self._validation_dict[key][2]
+        property_array = self._validation_dict[key]
+        return property_array[2]
