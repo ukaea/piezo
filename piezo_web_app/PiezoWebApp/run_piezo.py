@@ -8,7 +8,7 @@ from PiezoWebApp.src.handlers.delete_job import DeleteJobHandler
 from PiezoWebApp.src.handlers.get_logs import GetLogsHandler
 from PiezoWebApp.src.handlers.submit_job import SubmitJobHandler
 from PiezoWebApp.src.services.kubernetes.kubernetes_adapter import KubernetesAdapter
-from PiezoWebApp.src.services.spark_job.manifest_populator import ManifestPopulator
+from PiezoWebApp.src.services.spark_job.validation.manifest_populator import ManifestPopulator
 from PiezoWebApp.src.services.spark_job.validation import ValidationRules
 from PiezoWebApp.src.services.spark_job.spark_job_service import SparkJobService
 from PiezoWebApp.src.services.spark_job.validation import ArgumentValidationService
