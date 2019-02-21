@@ -3,7 +3,7 @@ import pytest
 
 
 from PiezoWebApp.src.services.spark_job.validation.manifest_populator import ManifestPopulator
-from PiezoWebApp.src.services.spark_job.validation import ValidationRules
+from PiezoWebApp.src.services.spark_job.validation.validation_rules import ValidationRules
 
 
 class TestTemplatePopulator(unittest.TestCase):
@@ -96,7 +96,7 @@ class TestTemplatePopulator(unittest.TestCase):
 
     def test_default_manifest_returns_a_filled_in_spark_application_template_with_default_values(self):
         # Arrange
-        default_manifest = self.test_populator.default_spark_application_manifest()
+        default_manifest = self.test_populator._default_spark_application_manifest()
         # Assert
         self.assertDictEqual(default_manifest, {"apiVersion": "sparkoperator.k8s.io/v1beta1",
                                                 "kind": "SparkApplication",

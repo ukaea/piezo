@@ -3,6 +3,7 @@ from PiezoWebApp.tests.integration_tests.base_integration_test import *
 from tornado.testing import gen_test
 from types import SimpleNamespace
 
+
 class TestSubmitJobIntegration(BaseIntegrationTest):
     @property
     def handler(self):

@@ -10,7 +10,7 @@ class SparkJobProperty:
         self._default = None
         self._format = None
         self._validation_rules = validation_rules
-        self._parse(key, validation_rules)
+        self._parse(key)
 
     def _parse(self, key):
         validation_properties = self._validation_rules.get_property_array_for_key(key)

@@ -1,5 +1,5 @@
 from PiezoWebApp.src.utils.str_helper import is_str_empty
-from PiezoWebApp.src.services.spark_job.validation import ValidationResult
+from PiezoWebApp.src.models.spark_job_validation_result import ValidationResult
 
 
 def validate_name(value):
