@@ -1,9 +1,6 @@
 from kubernetes.client.rest import ApiException
 
 from PiezoWebApp.src.services.kubernetes.i_kubernetes_service import IKubernetesService
-from PiezoWebApp.src.services.spark_job.manifest_populator import ManifestPopulator
-from PiezoWebApp.src.services.validator.validation_rules import ValidationRules
-from PiezoWebApp.src.services.validator.argument_validation_service import ArgumentValidationService
 from PiezoWebApp.src.utils.return_status import StatusCodes
 
 # str | The custom resource's group name
@@ -17,12 +14,11 @@ CRD_VERSION = 'v1beta1'
 
 
 class KubernetesService(IKubernetesService):
-    def __init__(self, kubernetes_adapter, logger):
+    def __init__(self, kubernetes_adapter, logger, manifest_populator, validation_service):
         self._logger = logger
         self._connection = kubernetes_adapter
-        self.validation_rules = ValidationRules()
-        self._manifest_populator = ManifestPopulator(self.validation_rules)
-        self._argument_validation_service = ArgumentValidationService(self.validation_rules)
+        self._manifest_populator = manifest_populator
+        self._argument_validation_service = validation_service
 
     def delete_job(self, job_name, namespace):
         try:
