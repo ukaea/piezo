@@ -1,8 +1,8 @@
+from PiezoWebApp.src.services.spark_job.validation.i_manifest_populator import IManifestPopulator
 from PiezoWebApp.src.utils.dict_argument_helper import set_value_in_nested_dict
 
 
-class ManifestPopulator:
-
+class ManifestPopulator(IManifestPopulator):
     def __init__(self, validation_rules):
         self._validation_rules = validation_rules
         self._api_version = self._validation_rules.get_default_value_for_key("apiVersion")
