@@ -9,9 +9,9 @@ from PiezoWebApp.src.handlers.get_logs import GetLogsHandler
 from PiezoWebApp.src.handlers.submit_job import SubmitJobHandler
 from PiezoWebApp.src.services.kubernetes.kubernetes_adapter import KubernetesAdapter
 from PiezoWebApp.src.services.spark_job.validation.manifest_populator import ManifestPopulator
-from PiezoWebApp.src.services.spark_job.validation import ValidationRules
+from PiezoWebApp.src.services.spark_job.validation.validation_rules import ValidationRules
 from PiezoWebApp.src.services.spark_job.spark_job_service import SparkJobService
-from PiezoWebApp.src.services.spark_job.validation import ArgumentValidationService
+from PiezoWebApp.src.services.spark_job.validation.validation_service import ValidationService
 from PiezoWebApp.src.utils.route_helper import format_route_specification
 
 
@@ -43,7 +43,7 @@ def build_logger(log_file_location, level):
 
 def build_container(k8s_adapter, log):
     validation_rules = ValidationRules()
-    validation_service = ArgumentValidationService(validation_rules)
+    validation_service = ValidationService(validation_rules)
     manifest_populator = ManifestPopulator(validation_rules)
     spark_job_service = SparkJobService(k8s_adapter, log, manifest_populator, validation_service)
     container = dict(

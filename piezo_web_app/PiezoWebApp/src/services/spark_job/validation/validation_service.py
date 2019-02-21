@@ -1,8 +1,9 @@
 from PiezoWebApp.src.models.spark_job_property import SparkJobProperty
 from PiezoWebApp.src.models.spark_job_validation_result import ValidationResult
+from PiezoWebApp.src.services.spark_job.validation.i_validation_service import IValidationService
 
 
-class ArgumentValidationService:
+class ValidationService(IValidationService):
 
     def __init__(self, validation_rules):
         self._validation_rules = validation_rules
@@ -17,9 +18,9 @@ class ArgumentValidationService:
         required_args_validation_result_dict = self._check_all_required_args_are_provided(validated_language_results)
         # check for unsupported args
         unsupported_args = self._check_for_unsupported_args(request_body)
-        return ArgumentValidationService._validate_request_keys_return_helper(language_validation_result,
-                                                                              required_args_validation_result_dict,
-                                                                              unsupported_args)
+        return ValidationService._validate_request_keys_return_helper(language_validation_result,
+                                                                      required_args_validation_result_dict,
+                                                                      unsupported_args)
 
     def validate_request_values(self, request_body):
         validated_args_dict = self._check_provided_arg_values_are_valid(request_body)

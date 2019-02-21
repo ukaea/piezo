@@ -1,7 +1,7 @@
 import pytest
 import mock
 
-from PiezoWebApp.src.services.spark_job.validation.argument_validation_service import ArgumentValidationService
+from PiezoWebApp.src.services.spark_job.validation.validation_service import ValidationService
 from PiezoWebApp.src.services.spark_job.validation.validation_rules import ValidationRules
 
 
@@ -35,7 +35,7 @@ class TestArgumentValidator:
         mock_validation_rules.get_keys_of_required_args = ["name", "language", "path_to_main_app_file"]
         mock_validation_rules.get_keys_of_optional_args = ["driver_cores", "driver_core_limit", "driver_memory",
                                                            "executors", "executor_cores", "executor_memory"]
-        self._test_argument_validator = ArgumentValidationService(mock_validation_rules)
+        self._test_argument_validator = ValidationService(mock_validation_rules)
 
     def test_check_all_required_args_are_provided_returns_invalid_if_a_required_arg_is_missing(self):
         # Arrange
