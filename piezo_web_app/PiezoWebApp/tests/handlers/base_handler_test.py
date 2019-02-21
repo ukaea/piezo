@@ -23,11 +23,11 @@ class BaseHandlerTest(AsyncHTTPTestCase, metaclass=ABCMeta):
         pass
 
     def get_app(self):
-        self.mock_kubernetes_service = mock.create_autospec(ISparkJobService)
         self.mock_logger = mock.create_autospec(logging.Logger)
+        self.mock_spark_job_service = mock.create_autospec(ISparkJobService)
         self.container = {
-            'kubernetes_service': self.mock_kubernetes_service,
-            'logger': self.mock_logger
+            'logger': self.mock_logger,
+            'spark_job_service': self.mock_spark_job_service
         }
         application = Application([
             (format_route_specification('testroute'), self.handler, self.container),

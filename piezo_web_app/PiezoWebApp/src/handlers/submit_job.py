@@ -23,7 +23,7 @@ class SubmitJobHandler(BaseHandler):
     def post(self, *args, **kwargs):
         name = self.body['name']
         self._logger.debug(f'Trying to submit job "{name}".')
-        result = self._kubernetes_service.submit_job(self.body)
+        result = self._spark_job_service.submit_job(self.body)
         status = result['status']
         self._logger.debug(f'Submitting job "{name}" returned status "{status.name}".')
         self.check_request_was_completed_successfully(result)

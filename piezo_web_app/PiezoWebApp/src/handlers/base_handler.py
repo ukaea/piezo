@@ -7,9 +7,9 @@ from PiezoWebApp.src.utils.str_helper import is_str_empty
 # pylint: disable=abstract-method
 class BaseHandler(APIHandler):
     # pylint: disable=arguments-differ
-    def initialize(self, kubernetes_service, logger):
-        self._kubernetes_service = kubernetes_service
+    def initialize(self, logger, spark_job_service):
         self._logger = logger
+        self._spark_job_service = spark_job_service
 
     def get_body_attribute(self, key, default=None, required=False, value_type=str):
         # pylint: disable=no-member

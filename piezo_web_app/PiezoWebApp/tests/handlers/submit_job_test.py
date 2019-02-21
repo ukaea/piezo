@@ -29,7 +29,7 @@ class TestSubmitJobHandler(BaseHandlerTest):
     def test_post_returns_confirmation_of_submit_when_successful(self):
         # Arrange
         body = {'name': 'test-spark-job', 'language': 'test-language'}
-        self.mock_kubernetes_service.submit_job.return_value = {
+        self.mock_spark_job_service.submit_job.return_value = {
             'status': StatusCodes.Okay,
             'message': 'Job driver created successfully',
             'driver_name': 'test-spark-job-driver'
@@ -37,7 +37,7 @@ class TestSubmitJobHandler(BaseHandlerTest):
         # Act
         response_body, response_code = yield self.send_request(body)
         # Assert
-        self.mock_kubernetes_service.submit_job.assert_called_once_with(body)
+        self.mock_spark_job_service.submit_job.assert_called_once_with(body)
         self.mock_logger.debug.assert_has_calls([
             call('Trying to submit job "test-spark-job".'),
             call('Submitting job "test-spark-job" returned status "Okay".')
