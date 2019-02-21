@@ -7,7 +7,7 @@ import mock
 import pytest
 
 from PiezoWebApp.src.services.kubernetes.i_kubernetes_adapter import IKubernetesAdapter
-from PiezoWebApp.src.services.spark_job.spark_job_service import KubernetesService
+from PiezoWebApp.src.services.spark_job.spark_job_service import SparkJobService
 
 # str | The custom resource's group name
 CRD_GROUP = 'sparkoperator.k8s.io'
@@ -25,7 +25,7 @@ class TestKubernetesService(TestCase):
     def setup(self):
         self.mock_kubernetes_adapter = mock.create_autospec(IKubernetesAdapter)
         self.mock_logger = mock.create_autospec(Logger)
-        self.test_service = KubernetesService(self.mock_kubernetes_adapter, self.mock_logger)
+        self.test_service = SparkJobService(self.mock_kubernetes_adapter, self.mock_logger)
 
     def test_delete_job_sends_expected_arguments(self):
         # Arrange

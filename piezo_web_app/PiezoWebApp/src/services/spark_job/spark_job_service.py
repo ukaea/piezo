@@ -1,6 +1,6 @@
 from kubernetes.client.rest import ApiException
 
-from PiezoWebApp.src.services.spark_job.i_kubernetes_service import IKubernetesService
+from PiezoWebApp.src.services.spark_job.i_kubernetes_service import ISparkJobService
 from PiezoWebApp.src.utils.return_status import StatusCodes
 
 # str | The custom resource's group name
@@ -13,7 +13,7 @@ CRD_PLURAL = 'sparkapplications'
 CRD_VERSION = 'v1beta1'
 
 
-class KubernetesService(IKubernetesService):
+class SparkJobService(ISparkJobService):
     def __init__(self, kubernetes_adapter, logger, manifest_populator, validation_service):
         self._logger = logger
         self._connection = kubernetes_adapter
