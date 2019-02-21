@@ -38,18 +38,18 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
         # Assert
         expected_body = {
             "apiVersion": "sparkoperator.k8s.io/v1beta1",
-             "kind": "SparkApplication",
-             "metadata": {
+            "kind": "SparkApplication",
+            "metadata": {
                  "name": "test_python_job",
                  "namespace": "default"
              },
-             "spec": {
-                 "type": "Python",
-                 "pythonVersion": "2",
-                 "mode": "cluster",
-                 "image": "gcr.io/spark-operator/spark:v2.4.0",
-                 "imagePullPolicy": "Always",
-                 "mainApplicationFile": "/path_to/file",
+            "spec": {
+                "type": "Python",
+                "pythonVersion": "2",
+                "mode": "cluster",
+                "image": "gcr.io/spark-operator/spark:v2.4.0",
+                "imagePullPolicy": "Always",
+                "mainApplicationFile": "/path_to/file",
                  "sparkVersion": "2.4.0",
                  "restartPolicy": {"type": "Never"},
                  "driver": {
@@ -59,13 +59,13 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                      "labels": {"version": "2.4.0"},
                      "serviceAccount": "spark"
                  },
-                 "executor": {
-                     "cores": 1,
-                     "instances": 1,
-                     "memory": "512m",
-                     "labels": {"version": "2.4.0"}
-                 }
-             }
+                "executor": {
+                    "cores": 1,
+                    "instances": 1,
+                    "memory": "512m",
+                    "labels": {"version": "2.4.0"}
+                }
+            }
         }
         assert self.mock_k8s_adapter.create_namespaced_custom_object.call_count == 1
         call_args = self.mock_k8s_adapter.create_namespaced_custom_object.call_args[0]
