@@ -28,19 +28,19 @@ class ManifestPopulator:
         self._spec_executor_memory = self._validation_rules.get_default_value_for_key("executor_memory")
         self._spec_executor_label_version = self._validation_rules.get_default_value_for_key("spark_version")
 
-    @staticmethod
-    def add_value_to_manifest(array_of_path, manifest, value):
-        return set_value_in_nested_dict(nested_dict=manifest, path=array_of_path, value=value)
-
     def build_manifest(self, validated_parameters_dict):
-        manifest = self.default_spark_application_manifest()
+        manifest = self._default_spark_application_manifest()
         for key in validated_parameters_dict:
             value = validated_parameters_dict[key]
-            array_of_path = ManifestPopulator.variable_to_manifest_path(key)
-            ManifestPopulator.add_value_to_manifest(array_of_path, manifest, value)
+            array_of_path = self._variable_to_manifest_path(key)
+            self._add_value_to_manifest(array_of_path, manifest, value)
         return manifest
 
-    def default_spark_application_manifest(self):
+    @staticmethod
+    def _add_value_to_manifest(array_of_path, manifest, value):
+        return set_value_in_nested_dict(nested_dict=manifest, path=array_of_path, value=value)
+
+    def _default_spark_application_manifest(self):
         return {"apiVersion": self._api_version,
                 "kind": self._kind,
                 "metadata":
@@ -69,7 +69,7 @@ class ManifestPopulator:
                             "version": self._spec_executor_label_version}}}}
 
     @staticmethod
-    def variable_to_manifest_path(var):
+    def _variable_to_manifest_path(var):
         var_to_path_dict = {"name": ["metadata", "name"],
                             "language": ["spec", "type"],
                             "python_version": ["spec", "pythonVersion"],
