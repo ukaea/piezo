@@ -1,5 +1,5 @@
 from PiezoWebApp.src.services.spark_job.spark_job_property import SparkJobProperty
-from PiezoWebApp.src.services.validator.validation_result import ValidationResult
+from PiezoWebApp.src.services.spark_job.validation import ValidationResult
 
 
 class ArgumentValidationService:

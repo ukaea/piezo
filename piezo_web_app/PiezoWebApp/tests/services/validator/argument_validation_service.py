@@ -1,8 +1,8 @@
 import pytest
 import mock
 
-from PiezoWebApp.src.services.validator.argument_validation_service import ArgumentValidationService
-from PiezoWebApp.src.services.validator.validation_rules import ValidationRules
+from PiezoWebApp.src.services.spark_job.validation.argument_validation_service import ArgumentValidationService
+from PiezoWebApp.src.services.spark_job.validation.validation_rules import ValidationRules
 
 
 class TestArgumentValidator:

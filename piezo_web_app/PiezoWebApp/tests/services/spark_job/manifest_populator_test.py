@@ -3,7 +3,7 @@ import pytest
 
 
 from PiezoWebApp.src.services.spark_job.manifest_populator import ManifestPopulator
-from PiezoWebApp.src.services.validator.validation_rules import ValidationRules
+from PiezoWebApp.src.services.spark_job.validation import ValidationRules
 
 
 class TestTemplatePopulator(unittest.TestCase):
