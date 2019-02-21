@@ -4,6 +4,7 @@ from PiezoWebApp.src.services.kubernetes.i_kubernetes_service import IKubernetes
 from PiezoWebApp.src.services.spark_job.manifest_populator import ManifestPopulator
 from PiezoWebApp.src.services.validator.validation_rules import ValidationRules
 from PiezoWebApp.src.services.validator.argument_validation_service import ArgumentValidationService
+from PiezoWebApp.src.utils.return_status import StatusCodes
 
 # str | The custom resource's group name
 CRD_GROUP = 'sparkoperator.k8s.io'
@@ -70,8 +71,17 @@ class KubernetesService(IKubernetesService):
                 CRD_PLURAL,
                 body
             )
-            return api_response.content
+            driver_name = f'{api_response["metadata"]["name"]}-driver'
+            result = {
+                'status': StatusCodes.Okay,
+                'message': 'Job driver created successfully',
+                'driver_name': driver_name
+            }
+            return result
         except ApiException as exception:
             message = f'Kubernetes error when trying to submit job in namespace "{namespace}": {exception.reason}'
             self._logger.error(message)
-            return message
+            return {
+                'status': exception.status,
+                'message': message
+            }

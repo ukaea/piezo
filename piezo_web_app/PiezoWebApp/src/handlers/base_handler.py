@@ -30,3 +30,9 @@ class BaseHandler(APIHandler):
         if required:
             raise exceptions.APIError(400, f'Attribute "{key}" is empty')
         self.body[key] = default
+
+    @staticmethod
+    def check_request_was_completed_successfully(result):
+        exceptions.api_assert(result["status"].value == 200,
+                              result["status"].value,
+                              result['message'])

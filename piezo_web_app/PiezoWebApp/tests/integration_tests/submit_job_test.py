@@ -15,9 +15,13 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
     @gen_test
     def test_correct_python_job_is_submitted_correctly(self):
         # Arrange
-        body = {"name": "test_python_job", "language": "Python", "path_to_main_app_file": "/path_to/file", "python_version": "2"}
-        kubernetes_response = SimpleNamespace()
-        kubernetes_response.content = "Application submitted successfully"
+        body = {
+            "name": "test_python_job",
+            "language": "Python",
+            "path_to_main_app_file": "/path_to/file",
+            "python_version": "2"
+        }
+        kubernetes_response = {'metadata': {'name': 'test_python_job'}}
         self.mock_k8s_adapter.create_namespaced_custom_object.return_value = kubernetes_response
         # Act
         response_body, response_code = yield self.send_request(body)
@@ -50,6 +54,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                                  "memory": "512m",
                                  "labels": {
                                      "version": "2.4.0"}}}}
-        assert self.mock_k8s_adapter.create_namespaced_custom_object.called_with(
-            CRD_GROUP, CRD_VERSION, "default", CRD_PLURAL, expected_body)
+        # assert self.mock_k8s_adapter.create_namespaced_custom_object.assert_called_once_with(
+        #     CRD_GROUP, CRD_VERSION, "default", CRD_PLURAL, expected_body)
+        assert response_body['data']['driver_name'] == 'test_python_job-driver'
 
