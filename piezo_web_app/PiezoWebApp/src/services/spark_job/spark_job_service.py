@@ -49,16 +49,27 @@ class SparkJobService(ISparkJobService):
             return message
 
     def submit_job(self, body):
-        # Get the namespace from the body
+        # Validate the body keys
         validated_body_keys = self._argument_validation_service.validate_request_keys(body)
         if validated_body_keys.is_valid is False:
-            return validated_body_keys.message
+            return {
+                'status': StatusCodes.Bad_request,
+                'message': validated_body_keys.message
+            }
+
+        # Validate the body values
         validated_body_values = self._argument_validation_service.validate_request_values(body)
         if validated_body_values.is_valid is False:
-            return validated_body_values.message
+            return {
+                'status': StatusCodes.Bad_request,
+                'message': validated_body_values.message
+            }
+
+        # Populate the manifest
         body = self._manifest_populator.build_manifest(validated_body_values.validated_value)
-        namespace = body['metadata']['namespace']
+
         # Try to submit the job
+        namespace = body['metadata']['namespace']
         try:
             api_response = self._connection.create_namespaced_custom_object(
                 CRD_GROUP,
@@ -75,7 +86,7 @@ class SparkJobService(ISparkJobService):
             }
             return result
         except ApiException as exception:
-            message = f'Kubernetes error when trying to submit job in namespace "{namespace}": {exception.reason}'
+            message = f'Kubernetes error when trying to submit job: {exception.reason}'
             self._logger.error(message)
             return {
                 'status': exception.status,
