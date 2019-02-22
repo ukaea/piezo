@@ -14,17 +14,17 @@ def validate(key, value, validation_rule):
     if key == "main_class":
         return validate_main_class(value)
     if key == "driver_cores":
-        return validate_driver_cores(value, validation_rule.min, validation_rule.max)
+        return validate_driver_cores(value, validation_rule.minimum, validation_rule.maximum)
     if key == "driver_core_limit":
-        return validate_driver_core_limit(value, validation_rule.min, validation_rule.max)
+        return validate_driver_core_limit(value, validation_rule.minimum, validation_rule.maximum)
     if key == "driver_memory":
-        return validate_driver_memory(value, validation_rule.min, validation_rule.max)
+        return validate_driver_memory(value, validation_rule.minimum, validation_rule.maximum)
     if key == "executors":
-        return validate_executors(value, validation_rule.min, validation_rule.max)
+        return validate_executors(value, validation_rule.minimum, validation_rule.maximum)
     if key == "executor_cores":
-        return validate_executor_cores(value, validation_rule.min, validation_rule.max)
+        return validate_executor_cores(value, validation_rule.minimum, validation_rule.maximum)
     if key == "executor_memory":
-        return validate_executor_memory(value, validation_rule.min, validation_rule.max)
+        return validate_executor_memory(value, validation_rule.minimum, validation_rule.maximum)
     raise ValueError(f"Unexpected argument {key}")
 
 

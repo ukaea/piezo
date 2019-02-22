@@ -17,7 +17,7 @@ class ValidationRules:
             "name": ValidationRule("name", ArgumentClassification.Required, None),
             "language": ValidationRule("language", ArgumentClassification.Required, None),
             "path_to_main_app_file": ValidationRule("path_to_main_app_file", ArgumentClassification.Required, None),
-            "driver_cores": ValidationRule("driver_cores", ArgumentClassification.Optional, 0.1, 0.1, 0.1),
+            "driver_cores": ValidationRule("driver_cores", ArgumentClassification.Optional, 0.1, 1, 0.1),
             "driver_core_limit": ValidationRule("driver_core_limit", ArgumentClassification.Optional, 0.2, 0.2, 1.2),
             "driver_memory": ValidationRule("driver_memory", ArgumentClassification.Optional, "512m", 512, 2048),
             "executors": ValidationRule("executors", ArgumentClassification.Optional, 1, 1, 10),
