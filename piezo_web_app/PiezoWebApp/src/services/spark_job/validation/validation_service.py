@@ -1,8 +1,7 @@
 from PiezoWebApp.src.models.spark_job_validation_result import ValidationResult
 from PiezoWebApp.src.services.spark_job.validation.i_validation_service import IValidationService
 from PiezoWebApp.src.services.spark_job.validation.argument_validator import validate
-from PiezoWebApp.src.utils.dict_argument_helper import get_items_not_in_keys
-from PiezoWebApp.src.utils.dict_argument_helper import get_keys_not_in_list
+from PiezoWebApp.src.utils.dict_argument_helper import get_set_difference
 
 
 class ValidationService(IValidationService):
@@ -18,8 +17,8 @@ class ValidationService(IValidationService):
         supported_keys = required_keys + self._validation_ruleset.get_keys_of_optional_inputs()
 
         # Find any discrepancies
-        missing_keys = get_items_not_in_keys(required_keys, request_body)
-        unsupported_keys = get_keys_not_in_list(request_body, supported_keys)
+        missing_keys = get_set_difference(required_keys, request_body)
+        unsupported_keys = get_set_difference(request_body, supported_keys)
 
         # Group the results together
         is_valid = True

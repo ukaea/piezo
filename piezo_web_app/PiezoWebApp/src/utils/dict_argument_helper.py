@@ -1,9 +1,5 @@
-def get_items_not_in_keys(lst, dictionary):
-    return list(set(lst) - set(dictionary))
-
-
-def get_keys_not_in_list(dictionary, lst):
-    return list(set(dictionary) - set(lst))
+def get_set_difference(a, b):
+    return list(set(a) - set(b))
 
 
 def set_value_in_nested_dict(nested_dict, path, value):

@@ -1,29 +1,74 @@
 import pytest
 
-from PiezoWebApp.src.utils.dict_argument_helper import get_items_not_in_keys
-from PiezoWebApp.src.utils.dict_argument_helper import get_keys_not_in_list
+from PiezoWebApp.src.utils.dict_argument_helper import get_set_difference
 from PiezoWebApp.src.utils.dict_argument_helper import set_value_in_nested_dict
 
 
-def test_get_items_not_in_keys_finds_simple_missing_key():
+# get_set_difference: list -> dictionary
+
+def test_get_set_difference_finds_simple_missing_key():
     # Arrange
     lst = ['a', 'b', 'c']
     dictionary = {'a': 1, 'c': 3}
     # Act
-    result = get_items_not_in_keys(lst, dictionary)
+    result = get_set_difference(lst, dictionary)
     # Assert
     assert result == ['b']
 
 
-def test_get_keys_not_in_list_finds_simple_missing_key():
+def test_get_set_difference_returns_empty_array_when_items_equals_keys():
+    # Arrange
+    lst = ['a', 'b', 'c']
+    dictionary = {'a': 1, 'b': 2, 'c': 3}
+    # Act
+    result = get_set_difference(lst, dictionary)
+    # Assert
+    assert result == []
+
+
+def test_get_set_difference_returns_empty_array_when_items_subset_of_keys():
+    # Arrange
+    lst = ['a', 'c']
+    dictionary = {'a': 1, 'b': 2, 'c': 3}
+    # Act
+    result = get_set_difference(lst, dictionary)
+    # Assert
+    assert result == []
+
+
+# get_set_difference: dictionary -> list
+
+def test_get_set_difference_finds_simple_missing_item():
     # Arrange
     dictionary = {'a': 1, 'b': 2, 'c': 3}
     lst = ['a', 'c']
     # Act
-    result = get_keys_not_in_list(dictionary, lst)
+    result = get_set_difference(dictionary, lst)
     # Assert
     assert result == ['b']
 
+
+def test_get_set_difference_returns_empty_array_when_keys_equals_items():
+    # Arrange
+    dictionary = {'a': 1, 'b': 2, 'c': 3}
+    lst = ['a', 'b', 'c']
+    # Act
+    result = get_set_difference(dictionary, lst)
+    # Assert
+    assert result == []
+
+
+def test_get_set_difference_returns_empty_array_when_keys_subset_of_items():
+    # Arrange
+    dictionary = {'a': 1, 'c': 3}
+    lst = ['a', 'b', 'c']
+    # Act
+    result = get_set_difference(dictionary, lst)
+    # Assert
+    assert result == []
+
+
+# set_value_in_nested_dict
 
 def test_set_value_in_nested_dict_sets_value_at_top_level_when_path_has_len_one():
     # Arrange
