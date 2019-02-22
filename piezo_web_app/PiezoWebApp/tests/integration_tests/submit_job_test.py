@@ -1,6 +1,7 @@
+from tornado.testing import gen_test
+
 from PiezoWebApp.src.handlers.submit_job import SubmitJobHandler
 from PiezoWebApp.tests.integration_tests.base_integration_test import BaseIntegrationTest
-from tornado.testing import gen_test
 
 
 # str | The custom resource's group name
@@ -40,9 +41,9 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             "apiVersion": "sparkoperator.k8s.io/v1beta1",
             "kind": "SparkApplication",
             "metadata": {
-                 "name": "test_python_job",
-                 "namespace": "default"
-             },
+                "name": "test_python_job",
+                "namespace": "default"
+            },
             "spec": {
                 "type": "Python",
                 "pythonVersion": "2",
@@ -58,7 +59,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                     "memory": "512m",
                     "labels": {"version": "2.4.0"},
                     "serviceAccount": "spark"
-                 },
+                },
                 "executor": {
                     "cores": 1,
                     "instances": 1,

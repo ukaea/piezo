@@ -5,7 +5,7 @@ from PiezoWebApp.src.services.spark_job.validation.validation_rules import Valid
 
 
 class TestArgumentValidator:
-
+    # pylint: disable=attribute-defined-outside-init
     @pytest.fixture(autouse=True)
     def setup(self):
         self.validation_rules = ValidationRules()

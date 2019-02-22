@@ -10,7 +10,6 @@ class TestTemplatePopulator(unittest.TestCase):
     # pylint: disable=attribute-defined-outside-init
     @pytest.fixture(autouse=True)
     def setup(self):
-        self.maxDiff = None
         validation_rules = ValidationRules()
         self.test_populator = ManifestPopulator(validation_rules)
         self.arguments = {"name": "test",
