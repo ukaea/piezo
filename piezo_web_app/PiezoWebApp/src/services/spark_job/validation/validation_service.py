@@ -31,7 +31,7 @@ class ValidationService(IValidationService):
             error_msg += f'Unsupported input "{key}" provided\n'
         result = ValidationResult(
             is_valid,
-            "All input keys provided are valid" if is_valid else error_msg,
+            "All input keys provided are valid\n" if is_valid else error_msg,
             None
         )
 
@@ -53,7 +53,7 @@ class ValidationService(IValidationService):
 
         result = ValidationResult(
             is_valid,
-            "All inputs provided are valid" if is_valid else error_msg,
+            "All inputs provided are valid\n" if is_valid else error_msg,
             validated_dict if is_valid else None
         )
         return result
