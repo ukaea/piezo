@@ -1,6 +1,28 @@
 import pytest
 
+from PiezoWebApp.src.utils.dict_argument_helper import get_items_not_in_keys
+from PiezoWebApp.src.utils.dict_argument_helper import get_keys_not_in_list
 from PiezoWebApp.src.utils.dict_argument_helper import set_value_in_nested_dict
+
+
+def test_get_items_not_in_keys_finds_simple_missing_key():
+    # Arrange
+    lst = ['a', 'b', 'c']
+    dictionary = {'a': 1, 'c': 3}
+    # Act
+    result = get_items_not_in_keys(lst, dictionary)
+    # Assert
+    assert result == ['b']
+
+
+def test_get_keys_not_in_list_finds_simple_missing_key():
+    # Arrange
+    dictionary = {'a': 1, 'b': 2, 'c': 3}
+    lst = ['a', 'c']
+    # Act
+    result = get_keys_not_in_list(dictionary, lst)
+    # Assert
+    assert result == ['b']
 
 
 def test_set_value_in_nested_dict_sets_value_at_top_level_when_path_has_len_one():

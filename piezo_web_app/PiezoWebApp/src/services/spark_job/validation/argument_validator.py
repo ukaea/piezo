@@ -6,7 +6,7 @@ def validate(key, value, validation_rule):
     if key == "name":
         return _validate_name(value)
     if key == "language":
-        return _validate_language(value)
+        return _validate_language(value, validation_rule)
     if key == "python_version":
         return _validate_python_version(value)
     if key == "path_to_main_app_file":
@@ -36,11 +36,11 @@ def _validate_name(value):
     return ValidationResult(True, None, value)
 
 
-def _validate_language(value):
+def _validate_language(value, validation_rule):
     if not isinstance(value, str):
-        return ValidationResult(False, "language argument must be a string", None)
-    if str(value.lower()) not in ["python", "scala"]:
-        return ValidationResult(False, "language must be either 'python' or 'Scala'", None)
+        return ValidationResult(False, '"language" must be a string', None)
+    if value not in validation_rule.options:
+        return ValidationResult(False, f'"language" must be one of: {validation_rule.options}', None)
     return ValidationResult(True, None, value)
 
 

@@ -1,94 +1,74 @@
 from PiezoWebApp.src.models.spark_job_validation_result import ValidationResult
 from PiezoWebApp.src.services.spark_job.validation.i_validation_service import IValidationService
 from PiezoWebApp.src.services.spark_job.validation.argument_validator import validate
+from PiezoWebApp.src.utils.dict_argument_helper import get_items_not_in_keys
+from PiezoWebApp.src.utils.dict_argument_helper import get_keys_not_in_list
 
 
 class ValidationService(IValidationService):
 
-    def __init__(self, validation_rules):
-        self._validation_rules = validation_rules
-        self._required_args_from_user = self._validation_rules.get_keys_of_required_args()
-        self._optional_args_from_user = self._validation_rules.get_keys_of_optional_args()
+    def __init__(self, validation_ruleset):
+        self._validation_ruleset = validation_ruleset
 
     def validate_request_keys(self, request_body):
-        # Ensure all vars needed are present
-        language_validation_result = self._validate_language_requirements(request_body)
-        validated_language_results = language_validation_result.validated_value
-
-        required_args_validation_result_dict = self._check_all_required_args_are_provided(validated_language_results)
-        # check for unsupported args
-        unsupported_args = self._check_for_unsupported_args(request_body)
-        return ValidationService._validate_request_keys_return_helper(language_validation_result,
-                                                                      required_args_validation_result_dict,
-                                                                      unsupported_args)
+        # Get keys required/supported
+        required_keys = self._get_all_required_args(request_body)
+        supported_keys = required_keys + self._validation_ruleset.get_keys_of_optional_inputs()
+        # Find any discrepancies
+        missing_keys = get_items_not_in_keys(required_keys, request_body)
+        unsupported_keys = get_keys_not_in_list(request_body, supported_keys)
+        # Group the results together
+        is_valid = True
+        error_msg = "The following errors were found: \n"
+        for key in missing_keys:
+            is_valid = False
+            error_msg += f'Missing required input "{key}"\n'
+        for key in unsupported_keys:
+            is_valid = False
+            error_msg += f'Unsupported input "{key}" provided\n'
+        result = ValidationResult(
+            is_valid,
+            "All input keys provided are valid" if is_valid else error_msg,
+            None
+        )
+        return result
 
     def validate_request_values(self, request_body):
-        validated_args_dict = self._check_provided_arg_values_are_valid(request_body)
-        return validated_args_dict
-
-    def _check_all_required_args_are_provided(self, request_body):
-        required_args_validation_result_dict = \
-            {key: ValidationResult(True, None, None) for key in self._required_args_from_user}
-        for key in self._required_args_from_user:
-            if key not in request_body:
-                required_args_validation_result_dict[key] = \
-                    ValidationResult(False, f"Missing required argument {key}", None)
-        return required_args_validation_result_dict
-
-    def _validate_language_requirements(self, request_body):
-        try:
-            language = request_body["language"].lower()
-        except KeyError:
-            return ValidationResult(False, "Missing required argument 'language'", None)
-        valid_language_array = ["python", "scala"]
-        if language not in valid_language_array:
-            return ValidationResult(False, f"Invalid language provided, please use one of {valid_language_array}", None)
-
-        if language == "python":
-            request_body["language"] = "Python"
-            self._required_args_from_user.append("python_version")
-        elif language == "scala":
-            request_body["language"] = "Scala"
-            self._required_args_from_user.append("main_class")
-        return ValidationResult(True, "language validated", request_body)
-
-    def _check_provided_arg_values_are_valid(self, request_body):
         validated_dict = {}
         error_msg = "The following errors occurred when validating request body values: \n"
-        all_valid = True
+        is_valid = True
         for key, input_value in request_body.items():
-            rule_for_key = self._validation_rules.get_validation_rule_for_key(key)
+            rule_for_key = self._validation_ruleset.get_validation_rule_for_key(key)
             validation_result = validate(key, input_value, rule_for_key)
             if validation_result.is_valid is True:
                 validated_dict[key] = validation_result.validated_value
             else:
                 error_msg += validation_result.message
-                all_valid = False
-        return ValidationResult(all_valid, error_msg, validated_dict)
+                is_valid = False
 
-    def _check_for_unsupported_args(self, request_body):
-        unsupported_args = []
-        supported_args = self._required_args_from_user + self._optional_args_from_user
-        for arg in request_body:
-            if arg not in supported_args:
-                unsupported_args.append(arg)
-        return unsupported_args
+        result = ValidationResult(
+            is_valid,
+            "All inputs provided are valid" if is_valid else error_msg,
+            validated_dict
+        )
+        return result
 
-    @staticmethod
-    def _validate_request_keys_return_helper(language_verification_result,
-                                             required_args_validation_result_dict,
-                                             unsupported_args):
-        all_required_present = all(
-            required_args_validation_result_dict[arg].is_valid is True for arg in required_args_validation_result_dict)
-        if language_verification_result.is_valid is True and all_required_present is True and not unsupported_args:
-            return ValidationResult(True, "All argument keys provided are valid", None)
+    def _get_all_required_args(self, request_body):
+        required_keys = self._validation_ruleset.get_keys_of_required_inputs()
+        if 'language' in request_body:
+            required_keys += self._validation_ruleset.get_keys_for_language(request_body['language'])
+        return required_keys
+
+    def _validate_language_requirements(self, request_body):
+        if 'language' in request_body:
+            language = request_body['language'].lower()
         else:
-            error_msg = "The following errors were found: \n"
-            if language_verification_result.is_valid is False:
-                error_msg += language_verification_result.message + "\n"
-            for arg in required_args_validation_result_dict:
-                if required_args_validation_result_dict[arg].is_valid is False:
-                    error_msg += required_args_validation_result_dict[arg].message + "\n"
-            for arg in unsupported_args:
-                error_msg += f"Unsupported argument {arg} provided \n"
-        return ValidationResult(False, error_msg, None)
+            return ValidationResult(False, 'Missing required argument "language"', None)
+        valid_language_array = ['python', 'scala']
+        if language not in valid_language_array:
+            return ValidationResult(False, f'Invalid language provided, please use one of {valid_language_array}', None)
+        if language == "python":
+            request_body["language"] = "Python"
+        elif language == "scala":
+            request_body["language"] = "Scala"
+        return ValidationResult(True, "language validated", request_body)

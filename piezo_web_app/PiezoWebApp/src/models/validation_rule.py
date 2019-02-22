@@ -1,14 +1,10 @@
 class ValidationRule:
-    def __init__(self, key, classification, default, minimum=None, maximum=None):
-        self._key = key
+    def __init__(self, classification, default, minimum=None, maximum=None, options=None):
         self._classification = classification
         self._default = default
         self._minimum = minimum
         self._maximum = maximum
-
-    @property
-    def key(self):
-        return self._key
+        self._options = options
 
     @property
     def classification(self):
@@ -25,3 +21,7 @@ class ValidationRule:
     @property
     def maximum(self):
         return self._maximum
+
+    @property
+    def options(self):
+        return self._options

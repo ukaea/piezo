@@ -4,6 +4,7 @@ import os
 import kubernetes
 import tornado
 
+from PiezoWebApp.src.config.spark_job_validation_rules import language_specific_keys
 from PiezoWebApp.src.config.spark_job_validation_rules import validation_rules
 from PiezoWebApp.src.handlers.delete_job import DeleteJobHandler
 from PiezoWebApp.src.handlers.get_logs import GetLogsHandler
@@ -43,8 +44,8 @@ def build_logger(log_file_location, level):
     return log
 
 
-def build_container(k8s_adapter, log, validation_dict):
-    validation_ruleset = ValidationRuleset(validation_dict)
+def build_container(k8s_adapter, log):
+    validation_ruleset = ValidationRuleset(language_specific_keys, validation_rules)
     validation_service = ValidationService(validation_ruleset)
     manifest_populator = ManifestPopulator(validation_ruleset)
     spark_job_service = SparkJobService(k8s_adapter, log, manifest_populator, validation_service)

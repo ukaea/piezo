@@ -1,5 +1,6 @@
 import pytest
 
+from PiezoWebApp.src.config.spark_job_validation_rules import language_specific_keys
 from PiezoWebApp.src.config.spark_job_validation_rules import validation_rules
 from PiezoWebApp.src.services.spark_job.validation import argument_validator
 from PiezoWebApp.src.services.spark_job.validation.validation_ruleset import ValidationRuleset
@@ -9,7 +10,7 @@ class TestArgumentValidator:
     # pylint: disable=attribute-defined-outside-init
     @pytest.fixture(autouse=True)
     def setup(self):
-        self.validation_ruleset = ValidationRuleset(validation_rules)
+        self.validation_ruleset = ValidationRuleset(language_specific_keys, validation_rules)
 
     @pytest.mark.parametrize("name", ["test", "name", "12ewq", "13234some_long_name!!!@"])
     def test_validate_name_validates_non_empty_strings(self, name):
@@ -29,7 +30,7 @@ class TestArgumentValidator:
         # Assert
         assert validation_result.is_valid is False
 
-    @pytest.mark.parametrize("language", ["python", "PYTHON", "PythON", "Scala", "SCALA", "ScALa"])
+    @pytest.mark.parametrize("language", ["Python", "Scala"])
     def test_validate_language_validates_valid_languages(self, language):
         # Arrange
         validation_rule = self.validation_ruleset.get_validation_rule_for_key("language")
@@ -38,7 +39,7 @@ class TestArgumentValidator:
         # Assert
         assert validation_result.is_valid is True
 
-    @pytest.mark.parametrize("language", ["pytho", "R", "Fortran", 123, "", "  "])
+    @pytest.mark.parametrize("language", ["python", "PYTHON", "PythON", "SCALA", "ScALa", "R", 123, "", "  "])
     def test_validate_language_rejects_non_valid_languages(self, language):
         # Arrange
         validation_rule = self.validation_ruleset.get_validation_rule_for_key("language")
