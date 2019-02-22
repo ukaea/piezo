@@ -2,6 +2,32 @@ from PiezoWebApp.src.utils.str_helper import is_str_empty
 from PiezoWebApp.src.models.spark_job_validation_result import ValidationResult
 
 
+def validate(key, value, validation_rule):
+    if key == "name":
+        return validate_name(value)
+    if key == "language":
+        return validate_language(value)
+    if key == "python_version":
+        return validate_python_version(value)
+    if key == "path_to_main_app_file":
+        return validate_path_to_main_app_file(value)
+    if key == "main_class":
+        return validate_main_class(value)
+    if key == "driver_cores":
+        return validate_driver_cores(value, validation_rule.min, validation_rule.max)
+    if key == "driver_core_limit":
+        return validate_driver_core_limit(value, validation_rule.min, validation_rule.max)
+    if key == "driver_memory":
+        return validate_driver_memory(value, validation_rule.min, validation_rule.max)
+    if key == "executors":
+        return validate_executors(value, validation_rule.min, validation_rule.max)
+    if key == "executor_cores":
+        return validate_executor_cores(value, validation_rule.min, validation_rule.max)
+    if key == "executor_memory":
+        return validate_executor_memory(value, validation_rule.min, validation_rule.max)
+    raise ValueError(f"Unexpected argument {key}")
+
+
 def validate_name(value):
     if not isinstance(value, str):
         return ValidationResult(False, "name argument must be a string", None)

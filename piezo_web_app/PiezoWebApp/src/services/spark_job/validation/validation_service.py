@@ -1,6 +1,6 @@
-from PiezoWebApp.src.models.spark_job_property import SparkJobProperty
 from PiezoWebApp.src.models.spark_job_validation_result import ValidationResult
 from PiezoWebApp.src.services.spark_job.validation.i_validation_service import IValidationService
+from PiezoWebApp.src.services.spark_job.validation.argument_validator import validate
 
 
 class ValidationService(IValidationService):
@@ -56,12 +56,13 @@ class ValidationService(IValidationService):
         validated_dict = {}
         error_msg = "The following errors occurred when validating request body values: \n"
         all_valid = True
-        for key in request_body:
-            validation_response = SparkJobProperty(key, self._validation_rules).validate(request_body[key])
-            if validation_response.is_valid is True:
-                validated_dict[key] = validation_response.validated_value
+        for key, input_value in request_body.items():
+            rule_for_key = self._validation_rules.get_validation_rule_for_key(key)
+            validation_result = validate(key, input_value, rule_for_key)
+            if validation_result.is_valid is True:
+                validated_dict[key] = validation_result.validated_value
             else:
-                error_msg += validation_response.message
+                error_msg += validation_result.message
                 all_valid = False
         return ValidationResult(all_valid, error_msg, validated_dict)
 
