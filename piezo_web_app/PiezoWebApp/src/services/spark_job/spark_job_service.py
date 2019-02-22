@@ -1,7 +1,7 @@
 from kubernetes.client.rest import ApiException
 
 from PiezoWebApp.src.services.spark_job.i_spark_job_service import ISparkJobService
-from PiezoWebApp.src.utils.return_status import StatusCodes
+from PiezoWebApp.src.models.return_status import StatusCodes
 
 # str | The custom resource's group name
 CRD_GROUP = 'sparkoperator.k8s.io'

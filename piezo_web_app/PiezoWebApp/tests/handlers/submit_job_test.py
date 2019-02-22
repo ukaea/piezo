@@ -3,7 +3,7 @@ from tornado.testing import gen_test
 
 from PiezoWebApp.tests.handlers.base_handler_test import BaseHandlerTest
 from PiezoWebApp.src.handlers.submit_job import SubmitJobHandler
-from PiezoWebApp.src.utils.return_status import StatusCodes
+from PiezoWebApp.src.models.return_status import StatusCodes
 
 
 class TestSubmitJobHandler(BaseHandlerTest):

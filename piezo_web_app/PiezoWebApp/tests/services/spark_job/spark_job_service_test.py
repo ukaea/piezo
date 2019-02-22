@@ -11,7 +11,7 @@ from PiezoWebApp.src.services.spark_job.spark_job_service import SparkJobService
 from PiezoWebApp.src.services.spark_job.validation.i_manifest_populator import IManifestPopulator
 from PiezoWebApp.src.services.spark_job.validation.i_validation_service import IValidationService
 from PiezoWebApp.src.models.spark_job_validation_result import ValidationResult
-from PiezoWebApp.src.utils.return_status import StatusCodes
+from PiezoWebApp.src.models.return_status import StatusCodes
 
 # str | The custom resource's group name
 CRD_GROUP = 'sparkoperator.k8s.io'
