@@ -3,14 +3,14 @@ import pytest
 
 
 from PiezoWebApp.src.services.spark_job.validation.manifest_populator import ManifestPopulator
-from PiezoWebApp.src.services.spark_job.validation.validation_rules import ValidationRules
+from PiezoWebApp.src.services.spark_job.validation.validation_ruleset import ValidationRuleset
 
 
 class TestTemplatePopulator(unittest.TestCase):
     # pylint: disable=attribute-defined-outside-init
     @pytest.fixture(autouse=True)
     def setup(self):
-        validation_rules = ValidationRules()
+        validation_rules = ValidationRuleset()
         self.test_populator = ManifestPopulator(validation_rules)
         self.arguments = {"name": "test",
                           "path_to_main_app_file": "/path/to/file",

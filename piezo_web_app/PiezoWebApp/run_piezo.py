@@ -4,13 +4,14 @@ import os
 import kubernetes
 import tornado
 
+from PiezoWebApp.src.config.spark_job_validation_rules import validation_rules
 from PiezoWebApp.src.handlers.delete_job import DeleteJobHandler
 from PiezoWebApp.src.handlers.get_logs import GetLogsHandler
 from PiezoWebApp.src.handlers.heartbeat_handler import HeartbeatHandler
 from PiezoWebApp.src.handlers.submit_job import SubmitJobHandler
 from PiezoWebApp.src.services.kubernetes.kubernetes_adapter import KubernetesAdapter
 from PiezoWebApp.src.services.spark_job.validation.manifest_populator import ManifestPopulator
-from PiezoWebApp.src.services.spark_job.validation.validation_rules import ValidationRules
+from PiezoWebApp.src.services.spark_job.validation.validation_ruleset import ValidationRuleset
 from PiezoWebApp.src.services.spark_job.spark_job_service import SparkJobService
 from PiezoWebApp.src.services.spark_job.validation.validation_service import ValidationService
 from PiezoWebApp.src.utils.route_helper import format_route_specification
@@ -42,10 +43,10 @@ def build_logger(log_file_location, level):
     return log
 
 
-def build_container(k8s_adapter, log):
-    validation_rules = ValidationRules()
-    validation_service = ValidationService(validation_rules)
-    manifest_populator = ManifestPopulator(validation_rules)
+def build_container(k8s_adapter, log, validation_dict):
+    validation_ruleset = ValidationRuleset(validation_dict)
+    validation_service = ValidationService(validation_ruleset)
+    manifest_populator = ManifestPopulator(validation_ruleset)
     spark_job_service = SparkJobService(k8s_adapter, log, manifest_populator, validation_service)
     container = dict(
         logger=log,
@@ -69,7 +70,7 @@ def build_app(container):
 if __name__ == "__main__":
     KUBERNETES_ADAPTER = build_kubernetes_adapter()
     LOGGER = build_logger("/path/to/log/dir/", "INFO")
-    CONTAINER = build_container(KUBERNETES_ADAPTER, LOGGER)
+    CONTAINER = build_container(KUBERNETES_ADAPTER, LOGGER, validation_rules)
     APPLICATION = build_app(CONTAINER)
     APPLICATION.listen(8888)
     tornado.ioloop.IOLoop.current().start()
