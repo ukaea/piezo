@@ -1,8 +1,6 @@
 import pytest
 import mock
 
-from PiezoWebApp.src.models.spark_job_argument_classification import ArgumentClassification
-from PiezoWebApp.src.models.validation_rule import ValidationRule
 from PiezoWebApp.src.services.spark_job.validation.validation_service import ValidationService
 from PiezoWebApp.src.services.spark_job.validation.validation_ruleset import ValidationRuleset
 
@@ -27,7 +25,6 @@ class TestValidationService:
         result = self.test_service.validate_request_keys(request_body)
         # Assert
         assert result.is_valid is True
-
 
     def test_check_all_required_args_are_provided_returns_invalid_if_a_required_arg_is_missing(self):
         # Arrange
