@@ -1,7 +1,7 @@
 import pytest
 
-from PiezoWebApp.src.config.spark_job_validation_rules import language_specific_keys
-from PiezoWebApp.src.config.spark_job_validation_rules import validation_rules
+from PiezoWebApp.src.config.spark_job_validation_rules import LANGUAGE_SPECIFIC_KEYS
+from PiezoWebApp.src.config.spark_job_validation_rules import VALIDATION_RULES
 from PiezoWebApp.src.services.spark_job.validation import argument_validator
 from PiezoWebApp.src.services.spark_job.validation.validation_ruleset import ValidationRuleset
 
@@ -10,7 +10,7 @@ class TestArgumentValidator:
     # pylint: disable=attribute-defined-outside-init
     @pytest.fixture(autouse=True)
     def setup(self):
-        self.validation_ruleset = ValidationRuleset(language_specific_keys, validation_rules)
+        self.validation_ruleset = ValidationRuleset(LANGUAGE_SPECIFIC_KEYS, VALIDATION_RULES)
 
     @pytest.mark.parametrize("name", ["test", "name", "12ewq", "13234some_long_name!!!@"])
     def test_validate_name_validates_non_empty_strings(self, name):

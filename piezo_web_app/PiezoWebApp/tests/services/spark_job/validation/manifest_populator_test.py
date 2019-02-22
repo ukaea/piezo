@@ -1,7 +1,8 @@
 import unittest
 import pytest
 
-
+from PiezoWebApp.src.config.spark_job_validation_rules import LANGUAGE_SPECIFIC_KEYS
+from PiezoWebApp.src.config.spark_job_validation_rules import VALIDATION_RULES
 from PiezoWebApp.src.services.spark_job.validation.manifest_populator import ManifestPopulator
 from PiezoWebApp.src.services.spark_job.validation.validation_ruleset import ValidationRuleset
 
@@ -10,8 +11,8 @@ class TestTemplatePopulator(unittest.TestCase):
     # pylint: disable=attribute-defined-outside-init
     @pytest.fixture(autouse=True)
     def setup(self):
-        validation_rules = ValidationRuleset()
-        self.test_populator = ManifestPopulator(validation_rules)
+        validation_ruleset = ValidationRuleset(LANGUAGE_SPECIFIC_KEYS, VALIDATION_RULES)
+        self.test_populator = ManifestPopulator(validation_ruleset)
         self.arguments = {"name": "test",
                           "path_to_main_app_file": "/path/to/file",
                           "driver_cores": 0.1,

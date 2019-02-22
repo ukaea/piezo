@@ -25,9 +25,6 @@ class ValidationRuleset:
         validation_rule = self._validation_dict[key]
         return validation_rule.default
 
-    def get_recognised_languages(self):
-        return list(self._language_specific_keys.keys())
-
     def get_keys_for_language(self, language):
         if language in self._language_specific_keys:
             return self._language_specific_keys[language]

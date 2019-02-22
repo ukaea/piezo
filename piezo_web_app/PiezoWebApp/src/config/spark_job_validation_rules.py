@@ -1,12 +1,12 @@
 from PiezoWebApp.src.models.spark_job_argument_classification import ArgumentClassification
 from PiezoWebApp.src.models.validation_rule import ValidationRule
 
-language_specific_keys = {
+LANGUAGE_SPECIFIC_KEYS = {
     "Python": ["python_version"],
     "Scala": ["main_class"]
 }
 
-validation_rules = {
+VALIDATION_RULES = {
     "apiVersion": ValidationRule(ArgumentClassification.Fixed, "sparkoperator.k8s.io/v1beta1"),
     "kind": ValidationRule(ArgumentClassification.Fixed, "SparkApplication"),
     "namespace": ValidationRule(ArgumentClassification.Fixed, "default"),
@@ -17,7 +17,7 @@ validation_rules = {
     "restart_policy": ValidationRule(ArgumentClassification.Fixed, "Never"),
     "service_account": ValidationRule(ArgumentClassification.Fixed, "spark"),
     "name": ValidationRule(ArgumentClassification.Required, None),
-    "language": ValidationRule(ArgumentClassification.Required, None, options=list(language_specific_keys.keys())),
+    "language": ValidationRule(ArgumentClassification.Required, None, options=list(LANGUAGE_SPECIFIC_KEYS.keys())),
     "path_to_main_app_file": ValidationRule(ArgumentClassification.Required, None),
     "driver_cores": ValidationRule(ArgumentClassification.Optional, 0.1, minimum=0.1, maximum=1),
     "driver_core_limit": ValidationRule(ArgumentClassification.Optional, 0.2, minimum=0.2, maximum=1.2),
