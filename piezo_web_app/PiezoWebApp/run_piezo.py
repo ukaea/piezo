@@ -6,6 +6,7 @@ import tornado
 
 from PiezoWebApp.src.handlers.delete_job import DeleteJobHandler
 from PiezoWebApp.src.handlers.get_logs import GetLogsHandler
+from PiezoWebApp.src.handlers.heartbeat_handler import HeartbeatHandler
 from PiezoWebApp.src.handlers.submit_job import SubmitJobHandler
 from PiezoWebApp.src.services.kubernetes.kubernetes_adapter import KubernetesAdapter
 from PiezoWebApp.src.services.spark_job.validation.manifest_populator import ManifestPopulator
@@ -56,6 +57,7 @@ def build_container(k8s_adapter, log):
 def build_app(container):
     app = tornado.web.Application(
         [
+            ("(|/)", HeartbeatHandler),
             (format_route_specification("deletejob"), DeleteJobHandler, container),
             (format_route_specification("getlogs"), GetLogsHandler, container),
             (format_route_specification("submitjob"), SubmitJobHandler, container)
