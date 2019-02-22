@@ -4,31 +4,31 @@ from PiezoWebApp.src.models.spark_job_validation_result import ValidationResult
 
 def validate(key, value, validation_rule):
     if key == "name":
-        return validate_name(value)
+        return _validate_name(value)
     if key == "language":
-        return validate_language(value)
+        return _validate_language(value)
     if key == "python_version":
-        return validate_python_version(value)
+        return _validate_python_version(value)
     if key == "path_to_main_app_file":
-        return validate_path_to_main_app_file(value)
+        return _validate_path_to_main_app_file(value)
     if key == "main_class":
-        return validate_main_class(value)
+        return _validate_main_class(value)
     if key == "driver_cores":
-        return validate_driver_cores(value, validation_rule.minimum, validation_rule.maximum)
+        return _validate_driver_cores(value, validation_rule.minimum, validation_rule.maximum)
     if key == "driver_core_limit":
-        return validate_driver_core_limit(value, validation_rule.minimum, validation_rule.maximum)
+        return _validate_driver_core_limit(value, validation_rule.minimum, validation_rule.maximum)
     if key == "driver_memory":
-        return validate_driver_memory(value, validation_rule.minimum, validation_rule.maximum)
+        return _validate_driver_memory(value, validation_rule.minimum, validation_rule.maximum)
     if key == "executors":
-        return validate_executors(value, validation_rule.minimum, validation_rule.maximum)
+        return _validate_executors(value, validation_rule.minimum, validation_rule.maximum)
     if key == "executor_cores":
-        return validate_executor_cores(value, validation_rule.minimum, validation_rule.maximum)
+        return _validate_executor_cores(value, validation_rule.minimum, validation_rule.maximum)
     if key == "executor_memory":
-        return validate_executor_memory(value, validation_rule.minimum, validation_rule.maximum)
+        return _validate_executor_memory(value, validation_rule.minimum, validation_rule.maximum)
     raise ValueError(f"Unexpected argument {key}")
 
 
-def validate_name(value):
+def _validate_name(value):
     if not isinstance(value, str):
         return ValidationResult(False, "name argument must be a string", None)
     if is_str_empty(value) is True:
@@ -36,7 +36,7 @@ def validate_name(value):
     return ValidationResult(True, None, value)
 
 
-def validate_language(value):
+def _validate_language(value):
     if not isinstance(value, str):
         return ValidationResult(False, "language argument must be a string", None)
     if str(value.lower()) not in ["python", "scala"]:
@@ -44,14 +44,14 @@ def validate_language(value):
     return ValidationResult(True, None, value)
 
 
-def validate_python_version(value):
+def _validate_python_version(value):
     string_value = str(value) if isinstance(value, int) else value
     if string_value not in ["2", "3"]:
         return ValidationResult(False, "Python version must be a string and either '2' or '3'", None)
     return ValidationResult(True, None, string_value)
 
 
-def validate_path_to_main_app_file(value):
+def _validate_path_to_main_app_file(value):
     if not isinstance(value, str):
         return ValidationResult(False, "path_to_main_app_file argument must be a string", None)
     if is_str_empty(value) is True:
@@ -59,7 +59,7 @@ def validate_path_to_main_app_file(value):
     return ValidationResult(True, None, value)
 
 
-def validate_main_class(value):
+def _validate_main_class(value):
     if not isinstance(value, str):
         return ValidationResult(False, "main_class argument must be a string", None)
     if is_str_empty(value) is True:
@@ -67,7 +67,7 @@ def validate_main_class(value):
     return ValidationResult(True, None, value)
 
 
-def validate_driver_cores(value, min_value, max_value):
+def _validate_driver_cores(value, min_value, max_value):
     format_error_msg = "Driver cores must be of the form X (where X is an int or float and represents " \
                        "the number of cpus to the nearest 0.1 or 'Xm' (where Xm is a string and the m " \
                        "represents millicpus). Note: 0.1 == '100m', 1 == 1000m"
@@ -76,7 +76,7 @@ def validate_driver_cores(value, min_value, max_value):
     return _validate_cores(value, min_value, max_value, format_error_msg, value_error_msg)
 
 
-def validate_driver_core_limit(value, min_value, max_value):
+def _validate_driver_core_limit(value, min_value, max_value):
     format_error_msg = "Driver core limit must be of the form X (where X is an int or float and represents " \
                        "the number of cpus to the nearest 0.1 or 'Xm' (where Xm is a string and the m " \
                        "represents millicpus). Note: 0.1 == '100m', 1 == 1000m"
@@ -85,7 +85,7 @@ def validate_driver_core_limit(value, min_value, max_value):
     return _validate_cores(value, min_value, max_value, format_error_msg, value_error_msg)
 
 
-def validate_driver_memory(value, min_value, max_value):
+def _validate_driver_memory(value, min_value, max_value):
     format_error_msg = "Driver memory must be a string in the format 'Xm' where X is the number of megabytes, " \
                        "integers are also accepted but are assumed to also be megabytes."
     value_error_msg = f"Driver memory = {value} is outside of valid range " \
@@ -93,7 +93,7 @@ def validate_driver_memory(value, min_value, max_value):
     return _validate_memory(value, min_value, max_value, format_error_msg, value_error_msg)
 
 
-def validate_executors(value, min_value, max_value):
+def _validate_executors(value, min_value, max_value):
     try:
         numerical_value = float(value)
     except ValueError:
@@ -105,7 +105,7 @@ def validate_executors(value, min_value, max_value):
         False, f"Executors = {value} outside of valid values range ({min_value}, {max_value})", None)
 
 
-def validate_executor_cores(value, min_value, max_value):
+def _validate_executor_cores(value, min_value, max_value):
     format_error_msg = "Executor cores must be of the form X (where X is an int or float and represents " \
                        "the number of cpus to the nearest 0.1 or 'Xm' (where Xm is a string and the m " \
                        "represents millicpus). Note: 0.1 == '100m', 1 == 1000m"
@@ -114,7 +114,7 @@ def validate_executor_cores(value, min_value, max_value):
     return _validate_cores(value, min_value, max_value, format_error_msg, value_error_msg)
 
 
-def validate_executor_memory(value, min_value, max_value):
+def _validate_executor_memory(value, min_value, max_value):
     format_error_msg = "Executor memory must be a string in the format 'Xm' where X is the number of megabytes, " \
                        "integers are also accepted but are assumed to also be megabytes."
     value_error_msg = f"Executor memory = {value} is outside of valid range " \
