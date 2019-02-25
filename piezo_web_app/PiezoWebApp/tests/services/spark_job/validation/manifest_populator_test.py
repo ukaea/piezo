@@ -15,11 +15,11 @@ class TestTemplatePopulator(unittest.TestCase):
         self.test_populator = ManifestPopulator(validation_ruleset)
         self.arguments = {"name": "test",
                           "path_to_main_app_file": "/path/to/file",
-                          "driver_cores": 0.1,
+                          "driver_cores": "0.1",
                           "driver_core_limit": "200m",
                           "driver_memory": "512m",
-                          "executor_cores": 1,
-                          "executors": 1,
+                          "executor_cores": "1",
+                          "executors": "1",
                           "executor_memory": "512m"}
 
     def test_build_manifest_builds_python_job_manifest_for_python_applications(self):
@@ -45,15 +45,15 @@ class TestTemplatePopulator(unittest.TestCase):
                                             "restartPolicy": {
                                                 "type": "Never"},
                                             "driver": {
-                                                "cores": 0.1,
+                                                "cores": "0.1",
                                                 "coreLimit": "200m",
                                                 "memory": "512m",
                                                 "labels": {
                                                     "version": "2.4.0"},
                                                 "serviceAccount": "spark"},
                                             "executor": {
-                                                "cores": 1,
-                                                "instances": 1,
+                                                "cores": "1",
+                                                "instances": "1",
                                                 "memory": "512m",
                                                 "labels": {
                                                     "version": "2.4.0"}}}})
@@ -81,15 +81,15 @@ class TestTemplatePopulator(unittest.TestCase):
                                             "restartPolicy": {
                                                 "type": "Never"},
                                             "driver": {
-                                                "cores": 0.1,
+                                                "cores": "0.1",
                                                 "coreLimit": "200m",
                                                 "memory": "512m",
                                                 "labels": {
                                                     "version": "2.4.0"},
                                                 "serviceAccount": "spark"},
                                             "executor": {
-                                                "cores": 1,
-                                                "instances": 1,
+                                                "cores": "1",
+                                                "instances": "1",
                                                 "memory": "512m",
                                                 "labels": {
                                                     "version": "2.4.0"}}}})
