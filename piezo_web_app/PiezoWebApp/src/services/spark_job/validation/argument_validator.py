@@ -77,8 +77,8 @@ def _validate_driver_cores(value, min_value, max_value):
 
 
 def _validate_driver_core_limit(value, min_value, max_value):
-    format_error_msg = "Driver core limit must be of the form X (where X is an int or float and represents " \
-                       "the number of cpus to the nearest 0.1 or 'Xm' (where Xm is a string and the m " \
+    format_error_msg = "Driver core limit must be a string of the form 'X' (where X is an int or float and represents" \
+                       " the number of cpus to the nearest 0.1 or 'Xm' (where Xm is a string and the m " \
                        "represents millicpus). Note: 0.1 == '100m', 1 == 1000m"
     value_error_msg = f"Driver core limit = {value} outside of valid range ({min_value}, {max_value}) or " \
                       f"({str(int(min_value*1000))+'m'}, {str(int(max_value*1000))+'m'} and be given to 0.1 cpu (100m)"
@@ -151,5 +151,5 @@ def _validate_cores(value, min_value, max_value, format_error_msg, value_error_m
             return ValidationResult(False, format_error_msg, None)
     else:
         is_valid = False
-    return ValidationResult(True, None, value) if is_valid is True else ValidationResult(
+    return ValidationResult(True, None, str(value)) if is_valid is True else ValidationResult(
         False, value_error_msg, None)
