@@ -102,7 +102,7 @@ class TestArgumentValidator:
         # Assert
         assert validation_result.is_valid is False
 
-    @pytest.mark.parametrize("cores", ["100m", 0.1, "200m", 0.2, "0.2"])
+    @pytest.mark.parametrize("cores", ["100m", "0.1", "200m", "1", "1.0"])
     def test_validate_driver_cores_accepts_values_in_both_cpu_and_millicpu_within_valid_range(self, cores):
         # Arrange
         validation_rule = self.validation_ruleset.get_validation_rule_for_key("driver_cores")
@@ -111,7 +111,7 @@ class TestArgumentValidator:
         # Assert
         assert validation_result.is_valid is True
 
-    @pytest.mark.parametrize("cores", ["1001m", 0.0, "200mn", 1.01, "12e13m", " ", ""])
+    @pytest.mark.parametrize("cores", ["1001m", "0.0", "200mn", "1.01", "12e13m", " ", ""])
     def test_validate_driver_cores_rejects_values_outside_valid_range_or_with_incorrect_format(self, cores):
         # Arrange
         validation_rule = self.validation_ruleset.get_validation_rule_for_key("driver_cores")
@@ -120,7 +120,7 @@ class TestArgumentValidator:
         # Assert
         assert validation_result.is_valid is False
 
-    @pytest.mark.parametrize("core_limit", ["400m", 0.4, "200m", 0.2, "0.30"])
+    @pytest.mark.parametrize("core_limit", ["400m", "0.4", "200m", "0.2", "0.30"])
     def test_validate_driver_core_limit_accepts_values_in_both_cpu_and_millicpu_within_valid_range(self, core_limit):
         # Arrange
         validation_rule = self.validation_ruleset.get_validation_rule_for_key("driver_core_limit")
@@ -129,7 +129,7 @@ class TestArgumentValidator:
         # Assert
         assert validation_result.is_valid is True
 
-    @pytest.mark.parametrize("core_limit", ["99m", 0.0, "201mn", 0.01, 0.21, "12e13m", " ", ""])
+    @pytest.mark.parametrize("core_limit", ["99m", "0.0", "201mn", "0.01", "0.21", "12e13m", " ", ""])
     def test_validate_driver_core_limit_rejects_values_outside_valid_range_or_with_incorrect_format(self, core_limit):
         # Arrange
         validation_rule = self.validation_ruleset.get_validation_rule_for_key("driver_core_limit")
@@ -138,8 +138,8 @@ class TestArgumentValidator:
         # Assert
         assert validation_result.is_valid is False
 
-    @pytest.mark.parametrize("memory", ["512m", 512, "1000", 1000.0, "2048m", 2048])
-    def test_validate_driver_memory_accepts_values_for_megabytes_both_string_and_int_formatted(self, memory):
+    @pytest.mark.parametrize("memory", ["512m", "512", "1000", "1000.0", "2048m", "2048"])
+    def test_validate_driver_memory_accepts_values_for_megabytes_as_string(self, memory):
         # Arrange
         validation_rule = self.validation_ruleset.get_validation_rule_for_key("driver_memory")
         # Act
@@ -147,7 +147,7 @@ class TestArgumentValidator:
         # Assert
         assert validation_result.is_valid is True
 
-    @pytest.mark.parametrize("memory", ["200m", 200, "4096m", "4096", 4096, "  ", "20nb279", 2050.56, "3289.43", ""])
+    @pytest.mark.parametrize("memory", ["200m", "200", "4096m", "4096", "  ", "20nb279", "2050.56", "3289.43", ""])
     def test_validate_driver_memory_rejects_values_for_values_outside_range_and_incorrectly_formatted(self, memory):
         # Arrange
         validation_rule = self.validation_ruleset.get_validation_rule_for_key("driver_memory")
@@ -156,7 +156,7 @@ class TestArgumentValidator:
         # Assert
         assert validation_result.is_valid is False
 
-    @pytest.mark.parametrize("executors", ["1", 2, 3.0, 5, "4.0"])
+    @pytest.mark.parametrize("executors", ["1", "2", "3.0", "4.0", "5"])
     def test_validate_executors_accepts_numerical_values_within_valid_range(self, executors):
         # Arrange
         validation_rule = self.validation_ruleset.get_validation_rule_for_key("executors")
@@ -165,7 +165,7 @@ class TestArgumentValidator:
         # Assert
         assert validation_result.is_valid is True
 
-    @pytest.mark.parametrize("executors", [100, "0", " ", "", "1p", 3.3])
+    @pytest.mark.parametrize("executors", ["100", "0", " ", "", "1p", "3.3"])
     def test_validate_executors_rejects_values_outside_valid_range_or_with_bad_format(self, executors):
         # Arrange
         validation_rule = self.validation_ruleset.get_validation_rule_for_key("executors")
@@ -174,7 +174,7 @@ class TestArgumentValidator:
         # Assert
         assert validation_result.is_valid is False
 
-    @pytest.mark.parametrize("executor_cores", ["1", 2, 3.0, "4", "3000m"])
+    @pytest.mark.parametrize("executor_cores", ["1", "2", "3.0", "4", "3000m"])
     def test_validate_executor_cores_accepts_numerical_values_within_valid_range(self, executor_cores):
         # Arrange
         validation_rule = self.validation_ruleset.get_validation_rule_for_key("executor_cores")
@@ -183,7 +183,7 @@ class TestArgumentValidator:
         # Assert
         assert validation_result.is_valid is True
 
-    @pytest.mark.parametrize("executor_cores", [100, "0", " ", "", "1p", "5000m"])
+    @pytest.mark.parametrize("executor_cores", ["100", "0", " ", "", "1p", "5000m"])
     def test_validate_executor_cores_rejects_values_outside_valid_range_or_with_bad_format(self, executor_cores):
         # Arrange
         validation_rule = self.validation_ruleset.get_validation_rule_for_key("executor_cores")
@@ -192,7 +192,7 @@ class TestArgumentValidator:
         # Assert
         assert validation_result.is_valid is False
 
-    @pytest.mark.parametrize("memory", ["512", 512, "2000m", 3000, 4096, "4096"])
+    @pytest.mark.parametrize("memory", ["512", "2000m", "3000", "4096"])
     def test_validate_executor_memory_accepts_numerical_values_within_valid_range(self, memory):
         # Arrange
         validation_rule = self.validation_ruleset.get_validation_rule_for_key("executor_memory")
@@ -202,7 +202,7 @@ class TestArgumentValidator:
         # Assert
         assert validation_result.is_valid is True
 
-    @pytest.mark.parametrize("memory", [511, "200", " ", "", "5000", 4097, "590M"])
+    @pytest.mark.parametrize("memory", ["511", "200", " ", "", "5000", "4097", "590M"])
     def test_validate_executor_memory_rejects_values_outside_valid_range_or_with_bad_format(self, memory):
         # Arrange
         validation_rule = self.validation_ruleset.get_validation_rule_for_key("executor_memory")

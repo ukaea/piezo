@@ -54,15 +54,15 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                 'sparkVersion': '2.4.0',
                 'restartPolicy': {'type': 'Never'},
                 'driver': {
-                    'cores': 0.1,
-                    'coreLimit': "0.2",
+                    'cores': '0.1',
+                    'coreLimit': '0.2',
                     'memory': '512m',
                     'labels': {'version': '2.4.0'},
                     'serviceAccount': 'spark'
                 },
                 'executor': {
-                    'cores': 1,
-                    'instances': 1,
+                    'cores': '1',
+                    'instances': '1',
                     'memory': '512m',
                     'labels': {'version': '2.4.0'}
                 }
@@ -115,15 +115,15 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                 'sparkVersion': '2.4.0',
                 'restartPolicy': {'type': 'Never'},
                 'driver': {
-                    'cores': 0.1,
-                    'coreLimit': "0.2",
+                    'cores': '0.1',
+                    'coreLimit': '0.2',
                     'memory': '512m',
                     'labels': {'version': '2.4.0'},
                     'serviceAccount': 'spark'
                 },
                 'executor': {
-                    'cores': 1,
-                    'instances': 1,
+                    'cores': '1',
+                    'instances': '1',
                     'memory': '512m',
                     'labels': {'version': '2.4.0'}
                 }
