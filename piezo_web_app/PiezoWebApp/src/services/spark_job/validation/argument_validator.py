@@ -131,12 +131,12 @@ def _validate_memory(value, min_value, max_value, format_error_msg, value_error_
             return ValidationResult(
                 False, format_error_msg, None)
     elif isinstance(value, (float, int)):
-        numerical_value = value
-        is_valid = min_value <= numerical_value <= max_value if numerical_value % 1 == 0 else False
+        is_valid = min_value <= value <= max_value if value % 1 == 0 else False
+        value = f'{int(value)}m'
     else:
         return ValidationResult(False, format_error_msg, None)
     if is_valid:
-        return ValidationResult(True, None, numerical_value)
+        return ValidationResult(True, None, value)
     return ValidationResult(False, value_error_msg, None)
 
 

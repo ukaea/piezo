@@ -187,14 +187,14 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                 'driver': {
                     'cores': '1',
                     'coreLimit': '1.2',
-                    'memory': 2048.0,
+                    'memory': '2048m',
                     'labels': {'version': '2.4.0'},
                     'serviceAccount': 'spark'
                 },
                 'executor': {
                     'cores': '4',
                     'instances': '10',
-                    'memory': 4096.0,
+                    'memory': '4096m',
                     'labels': {'version': '2.4.0'}
                 }
             }
