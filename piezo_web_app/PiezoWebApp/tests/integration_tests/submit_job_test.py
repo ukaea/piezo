@@ -1,3 +1,6 @@
+import json
+import pytest
+from tornado.httpclient import HTTPClientError
 from tornado.testing import gen_test
 
 from PiezoWebApp.src.handlers.submit_job import SubmitJobHandler
@@ -144,3 +147,101 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                 'driver_name': 'test_scala_job-driver'
             }
         })
+
+    @gen_test
+    def test_all_optional_inputs_defined_to_maximum_succeeds(self):
+        # Arrange
+        body = {
+            'name': 'test_python_job',
+            'language': 'Python',
+            'path_to_main_app_file': '/path_to/file',
+            'python_version': '2',
+            'driver_cores': '1',
+            'driver_core_limit': '1.2',
+            'driver_memory': '2048m',
+            'executors': '10',
+            'executor_cores': '4',
+            'executor_memory': '4096m'
+        }
+        kubernetes_response = {'metadata': {'name': 'test_python_job'}}
+        self.mock_k8s_adapter.create_namespaced_custom_object.return_value = kubernetes_response
+        # Act
+        response_body, response_code = yield self.send_request(body)
+        # Assert
+        expected_body = {
+            'apiVersion': 'sparkoperator.k8s.io/v1beta1',
+            'kind': 'SparkApplication',
+            'metadata': {
+                'name': 'test_python_job',
+                'namespace': 'default'
+            },
+            'spec': {
+                'type': 'Python',
+                'pythonVersion': '2',
+                'mode': 'cluster',
+                'image': 'gcr.io/spark-operator/spark:v2.4.0',
+                'imagePullPolicy': 'Always',
+                'mainApplicationFile': '/path_to/file',
+                'sparkVersion': '2.4.0',
+                'restartPolicy': {'type': 'Never'},
+                'driver': {
+                    'cores': '1',
+                    'coreLimit': '1.2',
+                    'memory': 2048.0,
+                    'labels': {'version': '2.4.0'},
+                    'serviceAccount': 'spark'
+                },
+                'executor': {
+                    'cores': '4',
+                    'instances': '10',
+                    'memory': 4096.0,
+                    'labels': {'version': '2.4.0'}
+                }
+            }
+        }
+        assert self.mock_k8s_adapter.create_namespaced_custom_object.call_count == 1
+        call_args = self.mock_k8s_adapter.create_namespaced_custom_object.call_args[0]
+        assert call_args[0] == CRD_GROUP
+        assert call_args[1] == CRD_VERSION
+        assert call_args[2] == 'default'
+        assert call_args[3] == CRD_PLURAL
+        self.assertDictEqual(call_args[4], expected_body)
+        assert response_code == 200
+        self.assertDictEqual(response_body, {
+            'status': 'success',
+            'data': {
+                'message': 'Job driver created successfully',
+                'driver_name': 'test_python_job-driver'
+            }
+        })
+
+    @gen_test
+    def test_all_optional_inputs_defined_to_above_maximum_returns_400_with_explanation(self):
+        # Arrange
+        body = {
+            'name': 'test_python_job',
+            'language': 'Python',
+            'path_to_main_app_file': '/path_to/file',
+            'python_version': '2',
+            'driver_cores': '1.1',
+            'driver_core_limit': '1.3',
+            'driver_memory': '2049m',
+            'executors': '11',
+            'executor_cores': '5',
+            'executor_memory': '4097m'
+        }
+        # Act
+        with pytest.raises(HTTPClientError) as error:
+            yield self.send_request(body)
+        # Assert
+        assert self.mock_k8s_adapter.create_namespaced_custom_object.assert_not_called
+        assert error.value.response.code == 400
+        msg = json.loads(error.value.response.body, encoding='utf-8')['data']
+        assert msg == "The following errors were found:\n" \
+                      "Driver core = 1.1 outside of valid range (0.1, 1) or (100m, 1000m and be given to 0.1 cpu (100m)\n" \
+                      "Driver core limit = 1.3 outside of valid range (0.2, 1.2) or (200m, 1200m and be given to 0.1 cpu (100m)\n" \
+                      "Driver memory = 2049m is outside of valid range (512m, 2048m\n" \
+                      "Executors = 11 outside of valid values range (1, 10)\n" \
+                      "Executor core = 5 outside of valid range (1, 4) or (1000m, 4000m and be given to 0.1 cpu (100m)\n" \
+                      "Executor memory = 4097m is outside of valid range (512m, 4096m\n"
+
