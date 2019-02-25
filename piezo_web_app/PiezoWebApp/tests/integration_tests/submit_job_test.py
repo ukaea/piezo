@@ -55,7 +55,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                 'restartPolicy': {'type': 'Never'},
                 'driver': {
                     'cores': 0.1,
-                    'coreLimit': 0.2,
+                    'coreLimit': "0.2",
                     'memory': '512m',
                     'labels': {'version': '2.4.0'},
                     'serviceAccount': 'spark'
@@ -116,7 +116,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                 'restartPolicy': {'type': 'Never'},
                 'driver': {
                     'cores': 0.1,
-                    'coreLimit': 0.2,
+                    'coreLimit': "0.2",
                     'memory': '512m',
                     'labels': {'version': '2.4.0'},
                     'serviceAccount': 'spark'
