@@ -56,13 +56,15 @@ def build_container(k8s_adapter, log):
     return container
 
 
-def build_app(container):
+def build_app(container, use_route_stem=False):
+    heartbeat_route = '/piezo(|/)' if use_route_stem else '(|/)'
+    route_stem = 'piezo/' if use_route_stem else ''
     app = tornado.web.Application(
         [
-            ("(|/)", HeartbeatHandler),
-            (format_route_specification("deletejob"), DeleteJobHandler, container),
-            (format_route_specification("getlogs"), GetLogsHandler, container),
-            (format_route_specification("submitjob"), SubmitJobHandler, container)
+            (heartbeat_route, HeartbeatHandler),
+            (format_route_specification(route_stem + 'deletejob'), DeleteJobHandler, container),
+            (format_route_specification(route_stem + 'getlogs'), GetLogsHandler, container),
+            (format_route_specification(route_stem + 'submitjob'), SubmitJobHandler, container)
         ]
     )
     return app
@@ -72,6 +74,6 @@ if __name__ == "__main__":
     KUBERNETES_ADAPTER = build_kubernetes_adapter()
     LOGGER = build_logger("/path/to/log/dir/", "INFO")
     CONTAINER = build_container(KUBERNETES_ADAPTER, LOGGER)
-    APPLICATION = build_app(CONTAINER)
+    APPLICATION = build_app(CONTAINER, use_route_stem=True)
     APPLICATION.listen(8888)
     tornado.ioloop.IOLoop.current().start()
