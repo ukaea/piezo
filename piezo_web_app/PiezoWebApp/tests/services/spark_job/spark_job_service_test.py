@@ -178,7 +178,16 @@ class TestSparkJobService(TestCase):
         result = self.test_service.submit_job(body)
         # Assert
         expected_message = 'Kubernetes error when trying to submit job: Reason'
-        self.mock_logger.error.assert_called_once_with(expected_message)
+        self.mock_logger.error.assert_has_calls([
+            mock.call(expected_message),
+            mock.call({
+                'metadata': {
+                    'namespace': 'example-namespace',
+                    'name': 'test-spark-job',
+                    'language': 'example-language'
+                }
+            })
+        ])
         self.assertDictEqual(result, {
             'status': 101,
             'message': expected_message
