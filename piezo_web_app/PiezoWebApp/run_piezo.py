@@ -4,12 +4,17 @@ import os
 import kubernetes
 import tornado
 
+from PiezoWebApp.src.config.spark_job_validation_rules import LANGUAGE_SPECIFIC_KEYS
+from PiezoWebApp.src.config.spark_job_validation_rules import VALIDATION_RULES
 from PiezoWebApp.src.handlers.delete_job import DeleteJobHandler
 from PiezoWebApp.src.handlers.get_logs import GetLogsHandler
 from PiezoWebApp.src.handlers.heartbeat_handler import HeartbeatHandler
 from PiezoWebApp.src.handlers.submit_job import SubmitJobHandler
 from PiezoWebApp.src.services.kubernetes.kubernetes_adapter import KubernetesAdapter
-from PiezoWebApp.src.services.kubernetes.kubernetes_service import KubernetesService
+from PiezoWebApp.src.services.spark_job.validation.manifest_populator import ManifestPopulator
+from PiezoWebApp.src.services.spark_job.validation.validation_ruleset import ValidationRuleset
+from PiezoWebApp.src.services.spark_job.spark_job_service import SparkJobService
+from PiezoWebApp.src.services.spark_job.validation.validation_service import ValidationService
 from PiezoWebApp.src.utils.route_helper import format_route_specification
 
 
@@ -39,18 +44,27 @@ def build_logger(log_file_location, level):
     return log
 
 
-def build_app(k8s_adapter, log):
-    kubernetes_service = KubernetesService(k8s_adapter, log)
+def build_container(k8s_adapter, log):
+    validation_ruleset = ValidationRuleset(LANGUAGE_SPECIFIC_KEYS, VALIDATION_RULES)
+    validation_service = ValidationService(validation_ruleset)
+    manifest_populator = ManifestPopulator(validation_ruleset)
+    spark_job_service = SparkJobService(k8s_adapter, log, manifest_populator, validation_service)
     container = dict(
-        kubernetes_service=kubernetes_service,
-        logger=log
+        logger=log,
+        spark_job_service=spark_job_service
     )
+    return container
+
+
+def build_app(container, use_route_stem=False):
+    heartbeat_route = '/piezo(|/)' if use_route_stem else '(|/)'
+    route_stem = 'piezo/' if use_route_stem else ''
     app = tornado.web.Application(
         [
-            ("(|/)", HeartbeatHandler),
-            (format_route_specification("deletejob"), DeleteJobHandler, container),
-            (format_route_specification("getlogs"), GetLogsHandler, container),
-            (format_route_specification("submitjob"), SubmitJobHandler, container)
+            (heartbeat_route, HeartbeatHandler),
+            (format_route_specification(route_stem + 'deletejob'), DeleteJobHandler, container),
+            (format_route_specification(route_stem + 'getlogs'), GetLogsHandler, container),
+            (format_route_specification(route_stem + 'submitjob'), SubmitJobHandler, container)
         ]
     )
     return app
@@ -59,6 +73,7 @@ def build_app(k8s_adapter, log):
 if __name__ == "__main__":
     KUBERNETES_ADAPTER = build_kubernetes_adapter()
     LOGGER = build_logger("/path/to/log/dir/", "INFO")
-    APPLICATION = build_app(KUBERNETES_ADAPTER, LOGGER)
+    CONTAINER = build_container(KUBERNETES_ADAPTER, LOGGER)
+    APPLICATION = build_app(CONTAINER, use_route_stem=True)
     APPLICATION.listen(8888)
     tornado.ioloop.IOLoop.current().start()

@@ -7,7 +7,7 @@ from tornado.httpclient import HTTPClientError
 from tornado.testing import AsyncHTTPTestCase
 from tornado.web import Application
 
-from PiezoWebApp.src.services.kubernetes.i_kubernetes_service import IKubernetesService
+from PiezoWebApp.src.services.spark_job.i_spark_job_service import ISparkJobService
 from PiezoWebApp.src.utils.route_helper import format_route_specification
 
 
@@ -23,11 +23,11 @@ class BaseHandlerTest(AsyncHTTPTestCase, metaclass=ABCMeta):
         pass
 
     def get_app(self):
-        self.mock_kubernetes_service = mock.create_autospec(IKubernetesService)
         self.mock_logger = mock.create_autospec(logging.Logger)
+        self.mock_spark_job_service = mock.create_autospec(ISparkJobService)
         self.container = {
-            'kubernetes_service': self.mock_kubernetes_service,
-            'logger': self.mock_logger
+            'logger': self.mock_logger,
+            'spark_job_service': self.mock_spark_job_service
         }
         application = Application([
             (format_route_specification('testroute'), self.handler, self.container),
