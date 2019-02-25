@@ -75,7 +75,7 @@ def test_create_object_schema_from_validation_rules_raises_value_error_with_all_
         'c': ValidationRule(ArgumentClassification.Fixed, None)
     }
     # Act & Assert
-    with pytest.raises(ValueError, message='No properties provided for the schema'):
+    with pytest.raises(ValueError, match='No properties provided for the schema'):
         create_object_schema_from_validation_rules(rules_dict)
 
 
@@ -83,7 +83,7 @@ def test_create_object_schema_from_validation_rules_raises_value_error_with_empt
     # Arrange
     rules_dict = {}
     # Act & Assert
-    with pytest.raises(ValueError, message='No properties provided for the schema'):
+    with pytest.raises(ValueError, match='No properties provided for the schema'):
         create_object_schema_from_validation_rules(rules_dict)
 
 
@@ -147,5 +147,5 @@ def test_create_object_schema_creates_blank_properties_section_when_none_given()
     # Arrange
     properties = []
     # Assert
-    with pytest.raises(ValueError, message='No properties provided for the schema'):
+    with pytest.raises(ValueError, match='No properties provided for the schema'):
         create_object_schema_with_string_properties(properties)
