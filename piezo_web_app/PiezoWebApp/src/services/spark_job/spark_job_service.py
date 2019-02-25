@@ -88,6 +88,7 @@ class SparkJobService(ISparkJobService):
         except ApiException as exception:
             message = f'Kubernetes error when trying to submit job: {exception.reason}'
             self._logger.error(message)
+            self._logger.error(body)
             return {
                 'status': exception.status,
                 'message': message
