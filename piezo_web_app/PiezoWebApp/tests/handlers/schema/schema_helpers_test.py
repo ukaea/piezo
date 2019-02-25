@@ -1,5 +1,6 @@
 import pytest
 
+from PiezoWebApp.src.models.validation_rule import ValidationRule
 from PiezoWebApp.src.handlers.schema.schema_helpers import create_object_schema_from_validation_rules
 from PiezoWebApp.src.handlers.schema.schema_helpers import create_object_schema_with_string_properties
 from PiezoWebApp.src.models.spark_job_argument_classification import ArgumentClassification
@@ -8,9 +9,9 @@ from PiezoWebApp.src.models.spark_job_argument_classification import ArgumentCla
 def test_create_object_schema_from_validation_rules_returns_schema_with_all_optional_properties_with_none_required():
     # Arrange
     rules_dict = {
-        'a': ArgumentClassification.Optional,
-        'b': ArgumentClassification.Optional,
-        'c': ArgumentClassification.Optional
+        'a': ValidationRule(ArgumentClassification.Optional, None),
+        'b': ValidationRule(ArgumentClassification.Optional, None),
+        'c': ValidationRule(ArgumentClassification.Optional, None)
     }
     # Act
     schema = create_object_schema_from_validation_rules(rules_dict)
@@ -28,9 +29,9 @@ def test_create_object_schema_from_validation_rules_returns_schema_with_all_opti
 def test_create_object_schema_from_validation_rules_returns_schema_with_all_conditional_properties_with_none_required():
     # Arrange
     rules_dict = {
-        'a': ArgumentClassification.Conditional,
-        'b': ArgumentClassification.Conditional,
-        'c': ArgumentClassification.Conditional
+        'a': ValidationRule(ArgumentClassification.Conditional, None),
+        'b': ValidationRule(ArgumentClassification.Conditional, None),
+        'c': ValidationRule(ArgumentClassification.Conditional, None)
     }
     # Act
     schema = create_object_schema_from_validation_rules(rules_dict)
@@ -48,9 +49,9 @@ def test_create_object_schema_from_validation_rules_returns_schema_with_all_cond
 def test_create_object_schema_from_validation_rules_returns_schema_with_all_required_properties_with_all_required():
     # Arrange
     rules_dict = {
-        'a': ArgumentClassification.Required,
-        'b': ArgumentClassification.Required,
-        'c': ArgumentClassification.Required
+        'a': ValidationRule(ArgumentClassification.Required, None),
+        'b': ValidationRule(ArgumentClassification.Required, None),
+        'c': ValidationRule(ArgumentClassification.Required, None)
     }
     # Act
     schema = create_object_schema_from_validation_rules(rules_dict)
@@ -69,9 +70,9 @@ def test_create_object_schema_from_validation_rules_returns_schema_with_all_requ
 def test_create_object_schema_from_validation_rules_raises_value_error_with_all_fixed():
     # Arrange
     rules_dict = {
-        'a': ArgumentClassification.Fixed,
-        'b': ArgumentClassification.Fixed,
-        'c': ArgumentClassification.Fixed
+        'a': ValidationRule(ArgumentClassification.Fixed, None),
+        'b': ValidationRule(ArgumentClassification.Fixed, None),
+        'c': ValidationRule(ArgumentClassification.Fixed, None)
     }
     # Act & Assert
     with pytest.raises(ValueError, message='No properties provided for the schema'):
@@ -89,10 +90,10 @@ def test_create_object_schema_from_validation_rules_raises_value_error_with_empt
 def test_create_object_schema_from_validation_rules_returns_expected_schema_with_mixed_rules():
     # Arrange
     rules_dict = {
-        'fixed': ArgumentClassification.Fixed,
-        'required': ArgumentClassification.Required,
-        'optional': ArgumentClassification.Optional,
-        'conditional': ArgumentClassification.Conditional
+        'fixed': ValidationRule(ArgumentClassification.Fixed, None),
+        'required': ValidationRule(ArgumentClassification.Required, None),
+        'optional': ValidationRule(ArgumentClassification.Optional, None),
+        'conditional': ValidationRule(ArgumentClassification.Conditional, None)
     }
     # Act
     schema = create_object_schema_from_validation_rules(rules_dict)

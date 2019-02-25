@@ -3,12 +3,12 @@ from PiezoWebApp.src.models.spark_job_argument_classification import ArgumentCla
 
 def create_object_schema_from_validation_rules(rules_dict):
     all_properties = [
-        key for key, classification in rules_dict.items()
-        if classification is not ArgumentClassification.Fixed
+        key for key, rule in rules_dict.items()
+        if rule.classification is not ArgumentClassification.Fixed
     ]
     required_properties = [
-        key for key, classification in rules_dict.items()
-        if classification is ArgumentClassification.Required
+        key for key, rule in rules_dict.items()
+        if rule.classification is ArgumentClassification.Required
     ]
     return create_object_schema_with_string_properties(all_properties, required=required_properties)
 
