@@ -114,7 +114,7 @@ class TestSparkJobService(TestCase):
         result = self.test_service.submit_job(body)
         # Assert
         self.assertDictEqual(result, {
-            'status': StatusCodes.Okay,
+            'status': StatusCodes.Okay.value,
             'message': 'Job driver created successfully',
             'driver_name': 'test-spark-job-driver'
         })
@@ -130,7 +130,7 @@ class TestSparkJobService(TestCase):
         result = self.test_service.submit_job(body)
         # Assert
         self.assertDictEqual(result, {
-            'status': StatusCodes.Bad_request,
+            'status': StatusCodes.Bad_request.value,
             'message': 'Msg'
         })
 
@@ -146,7 +146,7 @@ class TestSparkJobService(TestCase):
         result = self.test_service.submit_job(body)
         # Assert
         self.assertDictEqual(result, {
-            'status': StatusCodes.Bad_request,
+            'status': StatusCodes.Bad_request.value,
             'message': 'Msg'
         })
 

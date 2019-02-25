@@ -39,7 +39,7 @@ class TestSubmitJobHandler(BaseHandlerTest):
             'path_to_main_app_file': '/path/to/main/app.file'
         }
         self.mock_spark_job_service.submit_job.return_value = {
-            'status': StatusCodes.Okay,
+            'status': StatusCodes.Okay.value,
             'message': 'Job driver created successfully',
             'driver_name': 'test-spark-job-driver'
         }
