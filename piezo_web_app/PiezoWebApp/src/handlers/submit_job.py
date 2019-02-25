@@ -27,7 +27,7 @@ class SubmitJobHandler(BaseHandler):
         self._logger.debug(f'Trying to submit job "{name}".')
         result = self._spark_job_service.submit_job(self.body)
         status = result['status']
-        self._logger.debug(f'Submitting job "{name}" returned status "{status.name}".')
+        self._logger.debug(f'Submitting job "{name}" returned status code "{status.value}".')
         self.check_request_was_completed_successfully(result)
         del result['status']
         return result
