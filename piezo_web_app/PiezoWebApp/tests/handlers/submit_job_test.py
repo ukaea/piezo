@@ -17,18 +17,27 @@ class TestSubmitJobHandler(BaseHandlerTest):
 
     @gen_test
     def test_post_returns_400_when_name_is_missing(self):
-        body = {'language': 'example-language'}
+        body = {'language': 'example-language', 'path_to_main_app_file': '/path/to/main/app.file'}
         yield self.assert_request_returns_400(body)
 
     @gen_test
     def test_post_returns_400_when_language_is_missing(self):
-        body = {'name': 'example-spark-job'}
+        body = {'name': 'example-spark-job', 'path_to_main_app_file': '/path/to/main/app.file'}
+        yield self.assert_request_returns_400(body)
+
+    @gen_test
+    def test_post_returns_400_when_path_to_main_app_file_is_missing(self):
+        body = {'name': 'example-spark-job', 'language': 'example-language'}
         yield self.assert_request_returns_400(body)
 
     @gen_test
     def test_post_returns_confirmation_of_submit_when_successful(self):
         # Arrange
-        body = {'name': 'test-spark-job', 'language': 'test-language'}
+        body = {
+            'name': 'test-spark-job',
+            'language': 'test-language',
+            'path_to_main_app_file': '/path/to/main/app.file'
+        }
         self.mock_spark_job_service.submit_job.return_value = {
             'status': StatusCodes.Okay,
             'message': 'Job driver created successfully',

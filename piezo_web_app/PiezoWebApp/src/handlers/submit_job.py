@@ -1,17 +1,19 @@
 from tornado_json import schema
 
+from PiezoWebApp.src.config.spark_job_validation_rules import VALIDATION_RULES
 from PiezoWebApp.src.handlers.base_handler import BaseHandler
+from PiezoWebApp.src.handlers.schema.schema_helpers import create_object_schema_from_validation_rules
 from PiezoWebApp.src.handlers.schema.schema_helpers import create_object_schema_with_string_properties
 
 
 # pylint: disable=abstract-method
 class SubmitJobHandler(BaseHandler):
     @schema.validate(
-        input_schema=create_object_schema_with_string_properties(
-            ['name', 'language', 'main_class', 'path_to_main_file'], required=['name', 'language']),
+        input_schema=create_object_schema_from_validation_rules(VALIDATION_RULES),
         input_example={
             'name': 'example_job_name',  # to be replaced by list of arguments we will allow the user to configure
-            'language': 'python'
+            'language': 'Python',
+            'path_to_main_app_file': '/path/to/main.file'
 
         },
         output_schema=create_object_schema_with_string_properties(['driver_name', 'message'], required=['message']),
