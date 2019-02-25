@@ -21,16 +21,16 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
 
     @property
     def standard_request_method(self):
-        return "POST"
+        return 'POST'
 
     @gen_test
     def test_correct_python_job_is_submitted_correctly(self):
         # Arrange
         body = {
-            "name": "test_python_job",
-            "language": "Python",
-            "path_to_main_app_file": "/path_to/file",
-            "python_version": "2"
+            'name': 'test_python_job',
+            'language': 'Python',
+            'path_to_main_app_file': '/path_to/file',
+            'python_version': '2'
         }
         kubernetes_response = {'metadata': {'name': 'test_python_job'}}
         self.mock_k8s_adapter.create_namespaced_custom_object.return_value = kubernetes_response
@@ -38,33 +38,33 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
         response_body, response_code = yield self.send_request(body)
         # Assert
         expected_body = {
-            "apiVersion": "sparkoperator.k8s.io/v1beta1",
-            "kind": "SparkApplication",
-            "metadata": {
-                "name": "test_python_job",
-                "namespace": "default"
+            'apiVersion': 'sparkoperator.k8s.io/v1beta1',
+            'kind': 'SparkApplication',
+            'metadata': {
+                'name': 'test_python_job',
+                'namespace': 'default'
             },
-            "spec": {
-                "type": "Python",
-                "pythonVersion": "2",
-                "mode": "cluster",
-                "image": "gcr.io/spark-operator/spark:v2.4.0",
-                "imagePullPolicy": "Always",
-                "mainApplicationFile": "/path_to/file",
-                "sparkVersion": "2.4.0",
-                "restartPolicy": {"type": "Never"},
-                "driver": {
-                    "cores": 0.1,
-                    "coreLimit": 0.2,
-                    "memory": "512m",
-                    "labels": {"version": "2.4.0"},
-                    "serviceAccount": "spark"
+            'spec': {
+                'type': 'Python',
+                'pythonVersion': '2',
+                'mode': 'cluster',
+                'image': 'gcr.io/spark-operator/spark:v2.4.0',
+                'imagePullPolicy': 'Always',
+                'mainApplicationFile': '/path_to/file',
+                'sparkVersion': '2.4.0',
+                'restartPolicy': {'type': 'Never'},
+                'driver': {
+                    'cores': 0.1,
+                    'coreLimit': 0.2,
+                    'memory': '512m',
+                    'labels': {'version': '2.4.0'},
+                    'serviceAccount': 'spark'
                 },
-                "executor": {
-                    "cores": 1,
-                    "instances": 1,
-                    "memory": "512m",
-                    "labels": {"version": "2.4.0"}
+                'executor': {
+                    'cores': 1,
+                    'instances': 1,
+                    'memory': '512m',
+                    'labels': {'version': '2.4.0'}
                 }
             }
         }
