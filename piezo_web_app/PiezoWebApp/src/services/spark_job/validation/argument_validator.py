@@ -72,7 +72,7 @@ def _validate_driver_cores(value, min_value, max_value):
                        "the number of cpus to the nearest 0.1 or 'Xm' (where Xm is a string and the m " \
                        "represents millicpus). Note: 0.1 == '100m', 1 == 1000m"
     value_error_msg = f"Driver core = {value} outside of valid range ({min_value}, {max_value}) or " \
-                      f"({str(int(min_value*1000))+'m'}, {str(int(max_value*1000))+'m'} and be given to 0.1 cpu (100m)"
+                      f"({str(int(min_value*1000))+'m'}, {str(int(max_value*1000))+'m'}) and be given to 0.1 cpu (100m)"
     return _validate_cores(value, min_value, max_value, format_error_msg, value_error_msg)
 
 
@@ -81,7 +81,7 @@ def _validate_driver_core_limit(value, min_value, max_value):
                        " the number of cpus to the nearest 0.1 or 'Xm' (where Xm is a string and the m " \
                        "represents millicpus). Note: 0.1 == '100m', 1 == 1000m"
     value_error_msg = f"Driver core limit = {value} outside of valid range ({min_value}, {max_value}) or " \
-                      f"({str(int(min_value*1000))+'m'}, {str(int(max_value*1000))+'m'} and be given to 0.1 cpu (100m)"
+                      f"({str(int(min_value*1000))+'m'}, {str(int(max_value*1000))+'m'}) and be given to 0.1 cpu (100m)"
     return _validate_cores(value, min_value, max_value, format_error_msg, value_error_msg)
 
 
@@ -89,7 +89,7 @@ def _validate_driver_memory(value, min_value, max_value):
     format_error_msg = "Driver memory must be a string in the format 'Xm' where X is the number of megabytes, " \
                        "integers are also accepted but are assumed to also be megabytes."
     value_error_msg = f"Driver memory = {value} is outside of valid range " \
-                      f"({str(min_value) + 'm'}, {str(max_value) + 'm'}"
+                      f"({str(min_value) + 'm'}, {str(max_value) + 'm'})"
     return _validate_memory(value, min_value, max_value, format_error_msg, value_error_msg)
 
 
@@ -110,7 +110,7 @@ def _validate_executor_cores(value, min_value, max_value):
                        "the number of cpus to the nearest 0.1 or 'Xm' (where Xm is a string and the m " \
                        "represents millicpus). Note: 0.1 == '100m', 1 == 1000m"
     value_error_msg = f"Executor core = {value} outside of valid range ({min_value}, {max_value}) or " \
-                      f"({str(int(min_value*1000))+'m'}, {str(int(max_value*1000))+'m'} and be given to 0.1 cpu (100m)"
+                      f"({str(int(min_value*1000))+'m'}, {str(int(max_value*1000))+'m'}) and be given to 0.1 cpu (100m)"
     return _validate_cores(value, min_value, max_value, format_error_msg, value_error_msg)
 
 
@@ -118,7 +118,7 @@ def _validate_executor_memory(value, min_value, max_value):
     format_error_msg = "Executor memory must be a string in the format 'Xm' where X is the number of megabytes, " \
                        "integers are also accepted but are assumed to also be megabytes."
     value_error_msg = f"Executor memory = {value} is outside of valid range " \
-                      f"({str(min_value) + 'm'}, {str(max_value) + 'm'}"
+                      f"({str(min_value) + 'm'}, {str(max_value) + 'm'})"
     return _validate_memory(value, min_value, max_value, format_error_msg, value_error_msg)
 
 
