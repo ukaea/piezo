@@ -72,7 +72,7 @@ def build_app(container, use_route_stem=False):
 
 if __name__ == "__main__":
     KUBERNETES_ADAPTER = build_kubernetes_adapter()
-    LOGGER = build_logger("/path/to/log/dir/", "INFO")
+    LOGGER = build_logger("/piezo_web_app/", "INFO")
     CONTAINER = build_container(KUBERNETES_ADAPTER, LOGGER)
     APPLICATION = build_app(CONTAINER, use_route_stem=True)
     APPLICATION.listen(8888)
