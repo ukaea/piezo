@@ -65,7 +65,7 @@ def _validate_multiple_of_a_tenth(key, value, validation_rule):
     if multiples_of_a_tenth % 1 != 0:
         return not_a_tenth_result
 
-    return ValidationResult(True, None, value) \
+    return ValidationResult(True, None, numerical_value) \
         if validation_rule.minimum <= numerical_value <= validation_rule.maximum \
         else ValidationResult(
         False,

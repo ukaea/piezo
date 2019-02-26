@@ -185,7 +185,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                 'sparkVersion': '2.4.0',
                 'restartPolicy': {'type': 'Never'},
                 'driver': {
-                    'cores': '1',
+                    'cores': 1,
                     'coreLimit': '1.2',
                     'memory': '2048m',
                     'labels': {'version': '2.4.0'},
