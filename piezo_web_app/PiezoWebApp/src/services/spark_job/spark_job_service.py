@@ -47,12 +47,18 @@ class SparkJobService(ISparkJobService):
     def get_logs(self, driver_name, namespace):
         try:
             api_response = self._connection.read_namespaced_pod_log(driver_name, namespace)
-            return api_response
+            return {
+                'message': api_response,
+                'status': StatusCodes.Okay.value
+            }
         except ApiException as exception:
             message = f'Kubernetes error when trying to get logs for driver "{driver_name}" in namespace '\
                 f'"{namespace}": {exception.reason}'
             self._logger.error(message)
-            return message
+            return {
+                'message': message,
+                'status': exception.status
+            }
 
     def submit_job(self, body):
         # Validate the body keys

@@ -75,19 +75,23 @@ class TestSparkJobService(TestCase):
         # Act
         result = self.test_service.get_logs('test-driver', 'test-namespace')
         # Assert
-        assert result == "Response"
+        self.assertDictEqual(result, {'message': 'Response', 'status': 200})
         self.mock_kubernetes_adapter.read_namespaced_pod_log.assert_called_once_with('test-driver', 'test-namespace')
 
     def test_get_logs_logs_and_returns_api_exception_reason(self):
         # Arrange
-        self.mock_kubernetes_adapter.read_namespaced_pod_log.side_effect = ApiException(reason="Reason")
+        self.mock_kubernetes_adapter.read_namespaced_pod_log.side_effect = ApiException(reason="Reason", status=101)
         # Act
         result = self.test_service.get_logs('test-driver', 'test-namespace')
         # Assert
         expected_message = \
             'Kubernetes error when trying to get logs for driver "test-driver" in namespace "test-namespace": Reason'
         self.mock_logger.error.assert_called_once_with(expected_message)
-        assert result == expected_message
+        self.assertDictEqual(result, {
+            'status': 101,
+            'message': 'Kubernetes error when trying to get logs for driver "test-driver" '
+                       'in namespace "test-namespace": Reason'
+        })
 
     def test_submit_job_sends_expected_arguments(self):
         # Arrange
