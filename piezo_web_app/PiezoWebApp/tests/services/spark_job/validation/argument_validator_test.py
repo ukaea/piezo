@@ -68,7 +68,7 @@ class TestArgumentValidator:
         assert validation_result.message == '"python_version" input must be a string'
 
     @pytest.mark.parametrize("version", ["1", "4", " ", "", "2.0", "3.6"])
-    def test_validate_python_version_rejects_non_string(self, version):
+    def test_validate_python_version_rejects_string_not_in_list(self, version):
         # Arrange
         validation_rule = self.validation_ruleset.get_validation_rule_for_key("python_version")
         # Act
