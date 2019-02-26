@@ -43,7 +43,7 @@ def _validate_integer(key, value, validation_rule):
     except ValueError or TypeError:
         return ValidationResult(False, f'"{key}" input must be an integer', None)
 
-    return ValidationResult(True, None, value) \
+    return ValidationResult(True, None, numerical_value) \
         if validation_rule.minimum <= numerical_value <= validation_rule.maximum \
         else ValidationResult(
         False,

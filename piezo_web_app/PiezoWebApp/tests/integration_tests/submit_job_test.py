@@ -192,8 +192,8 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                     'serviceAccount': 'spark'
                 },
                 'executor': {
-                    'cores': '4',
-                    'instances': '10',
+                    'cores': 4,
+                    'instances': 10,
                     'memory': '4096m',
                     'labels': {'version': '2.4.0'}
                 }
