@@ -1,5 +1,6 @@
 ### Items included
 * Build formal version of web app
+* Heartbeat handler
 * Configurable use of resources
 * Argument validation
 
