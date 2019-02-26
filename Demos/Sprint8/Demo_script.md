@@ -16,6 +16,9 @@
 * From local machine run `kubectl apply -f app-deployment.yaml` (From correct folder as above)
 * `kubectl get pods` Show app running
 
+### Heartbeat handler
+* In POSTMAN submit a GET request to `http://host-172-16-113-146.nubes.stfc.ac.uk:31924/piezo/` 
+
 ### Submitting a job (all in postman)
 #### Request type = POST
 #### URL = http://host-172-16-113-146.nubes.stfc.ac.uk:31924/piezo/submitjob/
