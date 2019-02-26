@@ -48,8 +48,8 @@ class TestArgumentValidator:
         # Assert
         assert validation_result.is_valid is False
 
-    @pytest.mark.parametrize("version", ["2", "3", 2, 3])
-    def test_validate_python_version_validates_2_and_3(self, version):
+    @pytest.mark.parametrize("version", ["2", "3"])
+    def test_validate_python_version_validates_string_2_or_3(self, version):
         # Arrange
         validation_rule = self.validation_ruleset.get_validation_rule_for_key("python_version")
         # Act
@@ -57,14 +57,25 @@ class TestArgumentValidator:
         # Assert
         assert validation_result.is_valid is True
 
-    @pytest.mark.parametrize("version", [1, 4, 3.7, "1", "4", " ", "", 23, 2.0])
-    def test_validate_python_version_rejects_non_2_or_3(self, version):
+    @pytest.mark.parametrize("version", [2.0, 2, 3, 3.7, None])
+    def test_validate_python_version_rejects_non_string(self, version):
         # Arrange
         validation_rule = self.validation_ruleset.get_validation_rule_for_key("python_version")
         # Act
         validation_result = argument_validator.validate("python_version", version, validation_rule)
         # Assert
         assert validation_result.is_valid is False
+        assert validation_result.message == '"python_version" input must be a string'
+
+    @pytest.mark.parametrize("version", ["1", "4", " ", "", "2.0", "3.6"])
+    def test_validate_python_version_rejects_non_string(self, version):
+        # Arrange
+        validation_rule = self.validation_ruleset.get_validation_rule_for_key("python_version")
+        # Act
+        validation_result = argument_validator.validate("python_version", version, validation_rule)
+        # Assert
+        assert validation_result.is_valid is False
+        assert validation_result.message == '"python_version" input must be one of: "2", "3"'
 
     @pytest.mark.parametrize("path", ["/path/to/file", r"\path\to\file"])
     def test_validate_path_to_main_app_file_validates_non_empty_strings(self, path):
@@ -93,7 +104,7 @@ class TestArgumentValidator:
         # Assert
         assert validation_result.is_valid is True
 
-    @pytest.mark.parametrize("main_class", [" ", "", 123323])
+    @pytest.mark.parametrize("main_class", [" ", "", 123323, None])
     def test_validate_main_class_rejects_empty_strings_and_non_strings(self, main_class):
         # Arrange
         validation_rule = self.validation_ruleset.get_validation_rule_for_key("main_class")
@@ -102,8 +113,8 @@ class TestArgumentValidator:
         # Assert
         assert validation_result.is_valid is False
 
-    @pytest.mark.parametrize("cores", ["100m", "0.1", "200m", "1", "1.0"])
-    def test_validate_driver_cores_accepts_values_in_both_cpu_and_millicpu_within_valid_range(self, cores):
+    @pytest.mark.parametrize("cores", ["0.1", "0.5", "1", "1.0"])
+    def test_validate_driver_cores_accepts_values_within_valid_range(self, cores):
         # Arrange
         validation_rule = self.validation_ruleset.get_validation_rule_for_key("driver_cores")
         # Act
@@ -111,21 +122,42 @@ class TestArgumentValidator:
         # Assert
         assert validation_result.is_valid is True
 
-    @pytest.mark.parametrize("cores", ["1001m", "0.0", "200mn", "1.01", "12e13m", " ", ""])
-    def test_validate_driver_cores_rejects_values_outside_valid_range_or_with_incorrect_format(self, cores):
+    @pytest.mark.parametrize("cores", [" ", "", None, "100m", "200mn", "12e13m"])
+    def test_validate_driver_cores_rejects_empty_strings_and_non_numbers(self, cores):
         # Arrange
         validation_rule = self.validation_ruleset.get_validation_rule_for_key("driver_cores")
         # Act
         validation_result = argument_validator.validate("driver_cores", cores, validation_rule)
         # Assert
         assert validation_result.is_valid is False
+        assert validation_result.message == '"driver_cores" input must be a multiple of 0.1'
+
+    @pytest.mark.parametrize("cores", ["0.51", 0.35])
+    def test_validate_driver_cores_rejects_values_not_a_multiple_of_a_tenth(self, cores):
+        # Arrange
+        validation_rule = self.validation_ruleset.get_validation_rule_for_key("driver_cores")
+        # Act
+        validation_result = argument_validator.validate("driver_cores", cores, validation_rule)
+        # Assert
+        assert validation_result.is_valid is False
+        assert validation_result.message == '"driver_cores" input must be a multiple of 0.1'
+
+    @pytest.mark.parametrize("cores", ["0.0", 0, "1.1", 1.1])
+    def test_validate_driver_cores_rejects_values_outside_valid_range(self, cores):
+        # Arrange
+        validation_rule = self.validation_ruleset.get_validation_rule_for_key("driver_cores")
+        # Act
+        validation_result = argument_validator.validate("driver_cores", cores, validation_rule)
+        # Assert
+        assert validation_result.is_valid is False
+        assert validation_result.message == '"driver_cores" input must be in range [0.1, 1]'
 
     @pytest.mark.parametrize("core_limit", ["400m", "0.4", "200m", "0.2", "0.30"])
     def test_validate_driver_core_limit_accepts_values_in_both_cpu_and_millicpu_within_valid_range(self, core_limit):
         # Arrange
         validation_rule = self.validation_ruleset.get_validation_rule_for_key("driver_core_limit")
         # Act
-        validation_result = argument_validator.validate("driver_cores", core_limit, validation_rule)
+        validation_result = argument_validator.validate("driver_core_limit", core_limit, validation_rule)
         # Assert
         assert validation_result.is_valid is True
 
@@ -134,7 +166,7 @@ class TestArgumentValidator:
         # Arrange
         validation_rule = self.validation_ruleset.get_validation_rule_for_key("driver_core_limit")
         # Act
-        validation_result = argument_validator.validate("driver_cores", core_limit, validation_rule)
+        validation_result = argument_validator.validate("driver_core_limit", core_limit, validation_rule)
         # Assert
         assert validation_result.is_valid is False
 
@@ -173,7 +205,7 @@ class TestArgumentValidator:
         validation_result = argument_validator.validate("executors", executors, validation_rule)
         # Assert
         assert validation_result.is_valid is False
-        assert validation_result.message == f"Executors = {executors} must be an integer"
+        assert validation_result.message == '"executors" input must be an integer'
 
     @pytest.mark.parametrize("executors", ["100", "0", "11", "-1"])
     def test_validate_executors_rejects_values_outside_valid_range(self, executors):
@@ -183,9 +215,9 @@ class TestArgumentValidator:
         validation_result = argument_validator.validate("executors", executors, validation_rule)
         # Assert
         assert validation_result.is_valid is False
-        assert validation_result.message == f"Executors = {executors} outside of valid values range (1, 10)"
+        assert validation_result.message == '"executors" input must be in range [1, 10]'
 
-    @pytest.mark.parametrize("executor_cores", ["1", "2", "3.0", "4", "3000m"])
+    @pytest.mark.parametrize("executor_cores", ["1", "2", "3", "4"])
     def test_validate_executor_cores_accepts_numerical_values_within_valid_range(self, executor_cores):
         # Arrange
         validation_rule = self.validation_ruleset.get_validation_rule_for_key("executor_cores")
@@ -194,7 +226,7 @@ class TestArgumentValidator:
         # Assert
         assert validation_result.is_valid is True
 
-    @pytest.mark.parametrize("executor_cores", ["100", "0", " ", "", "1p", "5000m"])
+    @pytest.mark.parametrize("executor_cores", ["100", "0", " ", "", "1p", "5000m", "3.0"])
     def test_validate_executor_cores_rejects_values_outside_valid_range_or_with_bad_format(self, executor_cores):
         # Arrange
         validation_rule = self.validation_ruleset.get_validation_rule_for_key("executor_cores")

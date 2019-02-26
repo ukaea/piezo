@@ -238,12 +238,10 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
         assert error.value.response.code == 400
         msg = json.loads(error.value.response.body, encoding='utf-8')['data']
         assert msg == "The following errors were found:\n" \
-                      "Driver core = 1.1 outside of valid range " \
-                      "(0.1, 1) or (100m, 1000m) and be given to 0.1 cpu (100m)\n" \
+                      '"driver_cores" input must be in range [0.1, 1]\n' \
                       "Driver core limit = 1.3 outside of valid range " \
                       "(0.2, 1.2) or (200m, 1200m) and be given to 0.1 cpu (100m)\n" \
                       "Driver memory = 2049m is outside of valid range (512m, 2048m)\n" \
-                      "Executors = 11 outside of valid values range (1, 10)\n" \
-                      "Executor core = 5 outside of valid range " \
-                      "(1, 4) or (1000m, 4000m) and be given to 0.1 cpu (100m)\n" \
+                      '"executors" input must be in range [1, 10]\n' \
+                      '"executor_cores" input must be in range [1, 4]\n' \
                       "Executor memory = 4097m is outside of valid range (512m, 4096m)\n"

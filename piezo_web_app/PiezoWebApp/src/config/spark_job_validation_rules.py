@@ -26,5 +26,5 @@ VALIDATION_RULES = {
     "executor_cores": ValidationRule(ArgumentClassification.Optional, 1, minimum=1, maximum=4),
     "executor_memory": ValidationRule(ArgumentClassification.Optional, "512m", minimum=512, maximum=4096),
     "main_class": ValidationRule(ArgumentClassification.Conditional, None),
-    "python_version": ValidationRule(ArgumentClassification.Conditional, None)
+    "python_version": ValidationRule(ArgumentClassification.Conditional, None, options=["2", "3"])
 }
