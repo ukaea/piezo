@@ -1,6 +1,7 @@
 from kubernetes.client.rest import ApiException
 
-from PiezoWebApp.src.services.kubernetes.i_kubernetes_service import IKubernetesService
+from PiezoWebApp.src.services.spark_job.i_spark_job_service import ISparkJobService
+from PiezoWebApp.src.models.return_status import StatusCodes
 
 # str | The custom resource's group name
 CRD_GROUP = 'sparkoperator.k8s.io'
@@ -12,10 +13,12 @@ CRD_PLURAL = 'sparkapplications'
 CRD_VERSION = 'v1beta1'
 
 
-class KubernetesService(IKubernetesService):
-    def __init__(self, kubernetes_adapter, logger):
+class SparkJobService(ISparkJobService):
+    def __init__(self, kubernetes_adapter, logger, manifest_populator, validation_service):
         self._logger = logger
         self._connection = kubernetes_adapter
+        self._manifest_populator = manifest_populator
+        self._argument_validation_service = validation_service
 
     def delete_job(self, job_name, namespace):
         try:
@@ -46,14 +49,27 @@ class KubernetesService(IKubernetesService):
             return message
 
     def submit_job(self, body):
-        # Get the namespace from the body
-        try:
-            namespace = body['metadata']['namespace']
-        except KeyError:
-            message = 'Job submitted without namespace in metadata'
-            self._logger.warning(message)
-            return message
+        # Validate the body keys
+        validated_body_keys = self._argument_validation_service.validate_request_keys(body)
+        if validated_body_keys.is_valid is False:
+            return {
+                'status': StatusCodes.Bad_request.value,
+                'message': validated_body_keys.message
+            }
+
+        # Validate the body values
+        validated_body_values = self._argument_validation_service.validate_request_values(body)
+        if validated_body_values.is_valid is False:
+            return {
+                'status': StatusCodes.Bad_request.value,
+                'message': validated_body_values.message
+            }
+
+        # Populate the manifest
+        body = self._manifest_populator.build_manifest(validated_body_values.validated_value)
+
         # Try to submit the job
+        namespace = body['metadata']['namespace']
         try:
             api_response = self._connection.create_namespaced_custom_object(
                 CRD_GROUP,
@@ -62,8 +78,18 @@ class KubernetesService(IKubernetesService):
                 CRD_PLURAL,
                 body
             )
-            return api_response.content
+            driver_name = f'{api_response["metadata"]["name"]}-driver'
+            result = {
+                'status': StatusCodes.Okay.value,
+                'message': 'Job driver created successfully',
+                'driver_name': driver_name
+            }
+            return result
         except ApiException as exception:
-            message = f'Kubernetes error when trying to submit job in namespace "{namespace}": {exception.reason}'
+            message = f'Kubernetes error when trying to submit job: {exception.reason}'
             self._logger.error(message)
-            return message
+            self._logger.error(body)
+            return {
+                'status': exception.status,
+                'message': message
+            }

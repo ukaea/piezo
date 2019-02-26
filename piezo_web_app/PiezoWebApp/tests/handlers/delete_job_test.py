@@ -28,12 +28,12 @@ class TestDeleteJobHandler(BaseHandlerTest):
     def test_delete_returns_success_confirmation_when_successful(self):
         # Arrange
         body = {'job_name': 'test-spark-job', 'namespace': 'test-namespace'}
-        self.mock_kubernetes_service.delete_job.return_value = \
+        self.mock_spark_job_service.delete_job.return_value = \
             '{"message": "test-spark-job deleted from namespace test-namespace"}'
         # Act
         response_body, response_code = yield self.send_request(body)
         # Assert
-        self.mock_kubernetes_service.delete_job.assert_called_once_with('test-spark-job', 'test-namespace')
+        self.mock_spark_job_service.delete_job.assert_called_once_with('test-spark-job', 'test-namespace')
         self.mock_logger.debug.assert_has_calls([
             call('Trying to delete job "test-spark-job" in namespace "test-namespace".'),
             call('Deleting job "test-spark-job" in namespace "test-namespace" returned result '

@@ -28,11 +28,11 @@ class TestGetLogsHandler(BaseHandlerTest):
     def test_get_returns_logs_when_successful(self):
         # Arrange
         body = {'driver_name': 'test-driver', 'namespace': 'test-namespace'}
-        self.mock_kubernetes_service.get_logs.return_value = '{"log": "success"}'
+        self.mock_spark_job_service.get_logs.return_value = '{"log": "success"}'
         # Act
         response_body, response_code = yield self.send_request(body)
         # Assert
-        self.mock_kubernetes_service.get_logs.assert_called_once_with('test-driver', 'test-namespace')
+        self.mock_spark_job_service.get_logs.assert_called_once_with('test-driver', 'test-namespace')
         self.mock_logger.debug.assert_has_calls([
             call('Trying to delete driver "test-driver" in namespace "test-namespace".'),
             call('Getting logs from driver "test-driver" in namespace "test-namespace" returned result '

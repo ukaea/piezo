@@ -1,3 +1,7 @@
+def get_set_difference(a, b):
+    return list(set(a) - set(b))
+
+
 def set_value_in_nested_dict(nested_dict, path, value):
     current_dict = nested_dict
     for i in range(len(path) - 1):
