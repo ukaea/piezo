@@ -47,7 +47,7 @@ class TestSparkJobService(TestCase):
         # Act
         result = self.test_service.delete_job('test-spark-job', 'test-namespace')
         # Assert
-        assert result == "Response"
+        self.assertDictEqual(result, {'message': 'Response', 'status': 200})
         self.mock_kubernetes_adapter.delete_namespaced_custom_object.assert_called_once_with(
             CRD_GROUP,
             CRD_VERSION,
@@ -59,14 +59,15 @@ class TestSparkJobService(TestCase):
 
     def test_delete_job_logs_and_returns_api_exception_reason(self):
         # Arrange
-        self.mock_kubernetes_adapter.delete_namespaced_custom_object.side_effect = ApiException(reason="Reason")
+        self.mock_kubernetes_adapter.delete_namespaced_custom_object.side_effect = ApiException(reason="Reason", status=101)
         # Act
         result = self.test_service.delete_job('test-spark-job', 'test-namespace')
         # Assert
         expected_message = \
             'Kubernetes error when trying to delete job "test-spark-job" in namespace "test-namespace": Reason'
         self.mock_logger.error.assert_called_once_with(expected_message)
-        assert result == expected_message
+        assert result['status'] == 101
+        assert result['message'] == expected_message
 
     def test_get_logs_sends_expected_arguments(self):
         # Arrange

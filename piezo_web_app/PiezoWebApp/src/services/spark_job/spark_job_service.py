@@ -31,12 +31,18 @@ class SparkJobService(ISparkJobService):
                 job_name,
                 body
             )
-            return api_response.content
+            return {
+                'message': api_response.content,
+                'status': StatusCodes.Okay.value
+            }
         except ApiException as exception:
             message = f'Kubernetes error when trying to delete job "{job_name}" in namespace '\
                 f'"{namespace}": {exception.reason}'
             self._logger.error(message)
-            return message
+            return {
+                'status': exception.status,
+                'message': message
+            }
 
     def get_logs(self, driver_name, namespace):
         try:
