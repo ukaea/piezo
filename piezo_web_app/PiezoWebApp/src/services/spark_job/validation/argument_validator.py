@@ -95,10 +95,10 @@ def _validate_driver_memory(value, min_value, max_value):
 
 def _validate_executors(value, min_value, max_value):
     try:
-        numerical_value = float(value)
+        numerical_value = int(value)
     except ValueError:
-        return ValidationResult(False, f"Executors argument must be an integer", None)
-    is_valid = min_value <= numerical_value <= max_value if numerical_value % 1 == 0 else False
+        return ValidationResult(False, f"Executors = {value} must be an integer", None)
+    is_valid = min_value <= numerical_value <= max_value
     if is_valid is True:
         return ValidationResult(True, None, value)
     return ValidationResult(
@@ -132,7 +132,7 @@ def _validate_memory(value, min_value, max_value, format_error_msg, value_error_
                 False, format_error_msg, None)
     elif isinstance(value, (float, int)):
         is_valid = min_value <= value <= max_value if value % 1 == 0 else False
-        value = f'{int(value)}m'
+        value = f"{int(value)}m"
     else:
         return ValidationResult(False, format_error_msg, None)
     if is_valid:

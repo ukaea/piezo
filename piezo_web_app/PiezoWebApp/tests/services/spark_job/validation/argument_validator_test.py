@@ -156,7 +156,7 @@ class TestArgumentValidator:
         # Assert
         assert validation_result.is_valid is False
 
-    @pytest.mark.parametrize("executors", ["1", "2", "3.0", "4.0", "5"])
+    @pytest.mark.parametrize("executors", ["1", "2", "5"])
     def test_validate_executors_accepts_numerical_values_within_valid_range(self, executors):
         # Arrange
         validation_rule = self.validation_ruleset.get_validation_rule_for_key("executors")
@@ -165,14 +165,25 @@ class TestArgumentValidator:
         # Assert
         assert validation_result.is_valid is True
 
-    @pytest.mark.parametrize("executors", ["100", "0", " ", "", "1p", "3.3"])
-    def test_validate_executors_rejects_values_outside_valid_range_or_with_bad_format(self, executors):
+    @pytest.mark.parametrize("executors", [" ", "", "1p", "3.3", "4.0"])
+    def test_validate_executors_rejects_badly_formatted_inputs(self, executors):
         # Arrange
         validation_rule = self.validation_ruleset.get_validation_rule_for_key("executors")
         # Act
         validation_result = argument_validator.validate("executors", executors, validation_rule)
         # Assert
         assert validation_result.is_valid is False
+        assert validation_result.message == f"Executors = {executors} must be an integer"
+
+    @pytest.mark.parametrize("executors", ["100", "0", "11", "-1"])
+    def test_validate_executors_rejects_values_outside_valid_range(self, executors):
+        # Arrange
+        validation_rule = self.validation_ruleset.get_validation_rule_for_key("executors")
+        # Act
+        validation_result = argument_validator.validate("executors", executors, validation_rule)
+        # Assert
+        assert validation_result.is_valid is False
+        assert validation_result.message == f"Executors = {executors} outside of valid values range (1, 10)"
 
     @pytest.mark.parametrize("executor_cores", ["1", "2", "3.0", "4", "3000m"])
     def test_validate_executor_cores_accepts_numerical_values_within_valid_range(self, executor_cores):
