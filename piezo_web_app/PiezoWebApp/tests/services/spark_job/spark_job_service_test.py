@@ -59,7 +59,10 @@ class TestSparkJobService(TestCase):
 
     def test_delete_job_logs_and_returns_api_exception_reason(self):
         # Arrange
-        self.mock_kubernetes_adapter.delete_namespaced_custom_object.side_effect = ApiException(reason="Reason", status=101)
+        self.mock_kubernetes_adapter.delete_namespaced_custom_object.side_effect = ApiException(
+            reason="Reason",
+            status=101
+        )
         # Act
         result = self.test_service.delete_job('test-spark-job', 'test-namespace')
         # Assert
