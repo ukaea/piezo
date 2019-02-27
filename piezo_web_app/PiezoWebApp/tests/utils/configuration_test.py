@@ -4,7 +4,7 @@ import tempfile
 
 import pytest
 
-from DittoWebApi.src.utils.configurations import Configuration
+from PiezoWebApp.src.utils.configurations import Configuration
 
 
 class SampleConfigurationCreator:
@@ -21,30 +21,17 @@ class SampleConfigurationCreator:
         template = SampleConfigurationCreator.add_element_to_temp_file(template,
                                                                        "LoggingLevel",
                                                                        logging_level)
+        template += "[Application]\n"
         template = SampleConfigurationCreator.add_element_to_temp_file(template,
                                                                        "ApplicationPort",
                                                                        app_port)
         template = SampleConfigurationCreator.add_element_to_temp_file(template,
                                                                        "RunEnvironment",
-                                                                       s3_host)
+                                                                       run_environment)
         template = SampleConfigurationCreator.add_element_to_temp_file(template,
-                                                                       "S3port",
-                                                                       s3_port)
-        template = SampleConfigurationCreator.add_element_to_temp_file(template,
-                                                                       "S3AccessKey",
-                                                                       s3_access_key)
-        template = SampleConfigurationCreator.add_element_to_temp_file(template,
-                                                                       "S3SecretKey",
-                                                                       s3_secret_key)
-        template = SampleConfigurationCreator.add_element_to_temp_file(template,
-                                                                       "S3Secure",
-                                                                       s3_use_secure)
-        template = SampleConfigurationCreator.add_element_to_temp_file(template,
-                                                                       "BucketStandardisation",
-                                                                       bucket_standard)
-        template = SampleConfigurationCreator.add_element_to_temp_file(template,
-                                                                       "ArchiveFileName",
-                                                                       archive_file_name)
+                                                                       "K8sClusterConfigFile",
+                                                                       k8s_cluster_config_file)
+
         return SampleConfigurationCreator.write_sample_configuration_file(template)
 
     @staticmethod
@@ -75,69 +62,25 @@ def test_configuration_raises_when_path_is_not_correct():
            " Provide a configuration file" in str(exception_info.value))
 
 
-def test_configuration_can_be_read_when_s3_secure():
+def test_configuration_parses_with_arguments():
     # Arrange
     current = os.getcwd()
     configuration_path = SampleConfigurationCreator.create_configuration(current,
                                                                          "INFO",
-                                                                         "dittoadmin",
                                                                          "8888",
-                                                                         "0.0.0.0",
-                                                                         "9000",
-                                                                         "access",
-                                                                         "secret",
-                                                                         "true",
-                                                                         "test",
-                                                                         "test2")
+                                                                         "SYSTEM",
+                                                                         "Some/Path")
 
     # Act
     configuration = Configuration(configuration_path)
 
     # Assert
     assert configuration.log_folder_location == current
-    assert configuration.admin_groups == ["dittoadmin"]
+    assert configuration.logging_level == "INFO"
     assert configuration.app_port == 8888
-    assert configuration.s3_host == "0.0.0.0"
-    assert configuration.s3_port == 9000
-    assert configuration.s3_access_key == "access"
-    assert configuration.s3_secret_key == "secret"
-    assert configuration.s3_use_secure is True
-    assert configuration.bucket_standard == "test"
-    assert configuration.archive_file_name == "test2"
+    assert configuration.run_environment == "SYSTEM"
+    assert configuration.k8s_cluster_config_file == "Some/Path"
 
     # Clean up
     SampleConfigurationCreator.remove_file(configuration_path)
 
-
-def test_configuration_can_be_read_when_s3_not_secure():
-    # Arrange
-    current = os.getcwd()
-    configuration_path = SampleConfigurationCreator.create_configuration(current,
-                                                                         "INFO",
-                                                                         "dittoadmin",
-                                                                         "8888",
-                                                                         "0.0.0.0",
-                                                                         "9000",
-                                                                         "access",
-                                                                         "secret",
-                                                                         "false",
-                                                                         "test",
-                                                                         "test2")
-
-    # Act
-    configuration = Configuration(configuration_path)
-
-    # Assert
-    assert configuration.log_folder_location == current
-    assert configuration.admin_groups == ["dittoadmin"]
-    assert configuration.app_port == 8888
-    assert configuration.s3_host == "0.0.0.0"
-    assert configuration.s3_port == 9000
-    assert configuration.s3_access_key == "access"
-    assert configuration.s3_secret_key == "secret"
-    assert configuration.s3_use_secure is False
-    assert configuration.bucket_standard == "test"
-    assert configuration.archive_file_name == "test2"
-
-    # Clean up
-    SampleConfigurationCreator.remove_file(configuration_path)
