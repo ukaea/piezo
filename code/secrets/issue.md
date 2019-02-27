@@ -1,1 +1,0 @@
-I'm trying to use secrets to connect to an instance of minio s3 storage I am usign for development. 
