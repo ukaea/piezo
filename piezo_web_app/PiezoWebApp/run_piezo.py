@@ -20,9 +20,9 @@ from PiezoWebApp.src.utils.configurations import Configuration
 
 
 def build_kubernetes_adapter(configuration):
-    if configuration.run_environment == "system":
+    if configuration.run_environment == "SYSTEM":
         config = kubernetes.config.load_kube_config(config_file=configuration.k8s_cluster_config_file)
-    elif configuration.run_environment == "k8s_cluster":
+    elif configuration.run_environment == "K8S":
         config = kubernetes.config.load_incluster_config()
     else:
         raise RuntimeError("Invalid running environment specified in config file")
@@ -83,5 +83,5 @@ if __name__ == "__main__":
     LOGGER = build_logger(CONFIGURATION)
     CONTAINER = build_container(KUBERNETES_ADAPTER, LOGGER)
     APPLICATION = build_app(CONTAINER, use_route_stem=True)
-    APPLICATION.listen(8888)
+    APPLICATION.listen(CONFIGURATION.app_port)
     tornado.ioloop.IOLoop.current().start()
