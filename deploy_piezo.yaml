@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: piezo_web_app
+  name: piezo-web-app
   labels:
     run: piezo
 spec:
