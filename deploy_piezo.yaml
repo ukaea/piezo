@@ -6,10 +6,10 @@ metadata:
     run: piezo
 spec:
   replicas: 1
-  selector: # which pods to manage
+  selector:
     matchLabels:
       run: piezo
-  template: # Defining the pods
+  template: 
     metadata:
       labels:
         run: piezo
@@ -40,12 +40,10 @@ kind: Ingress
 metadata:
   annotations:
     kubernetes.io/ingress.class: nginx
-    # nginx.ingress.kubernetes.io/rewrite-target: /
   name: piezo-ingress
 spec:
   rules:
     - host: host-172-16-113-146.nubes.stfc.ac.uk
-    #- host: prometheus.piezo.ac.uk
       http:
         paths:
           - backend:
