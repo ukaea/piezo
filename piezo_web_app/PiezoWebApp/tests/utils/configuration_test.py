@@ -83,4 +83,3 @@ def test_configuration_parses_with_arguments():
 
     # Clean up
     SampleConfigurationCreator.remove_file(configuration_path)
-

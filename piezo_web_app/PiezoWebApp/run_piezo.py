@@ -77,8 +77,8 @@ def build_app(container, use_route_stem=False):
 
 
 if __name__ == "__main__":
-    configuration_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'configuration.ini'))
-    CONFIGURATION = Configuration(configuration_path)
+    CONFIGURATION_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), 'configuration.ini'))
+    CONFIGURATION = Configuration(CONFIGURATION_PATH)
     KUBERNETES_ADAPTER = build_kubernetes_adapter(CONFIGURATION)
     LOGGER = build_logger(CONFIGURATION)
     CONTAINER = build_container(KUBERNETES_ADAPTER, LOGGER)
