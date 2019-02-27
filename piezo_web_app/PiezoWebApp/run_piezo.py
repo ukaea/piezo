@@ -16,10 +16,12 @@ from PiezoWebApp.src.services.spark_job.validation.validation_ruleset import Val
 from PiezoWebApp.src.services.spark_job.spark_job_service import SparkJobService
 from PiezoWebApp.src.services.spark_job.validation.validation_service import ValidationService
 from PiezoWebApp.src.utils.route_helper import format_route_specification
+from PiezoWebApp.src.utils.configurations import Configuration
 
 
 def build_kubernetes_adapter():
-    config = kubernetes.config.load_incluster_config()
+    config = kubernetes.config.load_kube_config(config_file=r"C:\Users\taro\.kube\openstack")
+    # config = kubernetes.config.load_incluster_config()
     adapter = KubernetesAdapter(config)
     return adapter
 
@@ -71,6 +73,9 @@ def build_app(container, use_route_stem=False):
 
 
 if __name__ == "__main__":
+    # Read configuration
+    configuration_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'configuration.ini'))
+    CONFIGURATION = Configuration(configuration_path)
     KUBERNETES_ADAPTER = build_kubernetes_adapter()
     LOGGER = build_logger("/path/to/log/dir/", "INFO")
     CONTAINER = build_container(KUBERNETES_ADAPTER, LOGGER)
