@@ -1,4 +1,7 @@
+import json
 from mock import call
+import pytest
+from tornado.httpclient import HTTPClientError
 from tornado.testing import gen_test
 
 from PiezoWebApp.tests.handlers.base_handler_test import BaseHandlerTest
@@ -28,17 +31,37 @@ class TestDeleteJobHandler(BaseHandlerTest):
     def test_delete_returns_success_confirmation_when_successful(self):
         # Arrange
         body = {'job_name': 'test-spark-job', 'namespace': 'test-namespace'}
-        self.mock_spark_job_service.delete_job.return_value = \
-            '{"message": "test-spark-job deleted from namespace test-namespace"}'
+        self.mock_spark_job_service.delete_job.return_value = {
+            "message": "test-spark-job deleted from namespace test-namespace",
+            'status': 200
+        }
         # Act
         response_body, response_code = yield self.send_request(body)
         # Assert
         self.mock_spark_job_service.delete_job.assert_called_once_with('test-spark-job', 'test-namespace')
         self.mock_logger.debug.assert_has_calls([
             call('Trying to delete job "test-spark-job" in namespace "test-namespace".'),
-            call('Deleting job "test-spark-job" in namespace "test-namespace" returned result '
-                 '"{"message": "test-spark-job deleted from namespace test-namespace"}".')
+            call('Deleting job "test-spark-job" in namespace "test-namespace" returned result "200".')
         ])
         assert response_code == 200
-        assert response_body['status'] == 'success'
-        assert response_body['data'] == '{"message": "test-spark-job deleted from namespace test-namespace"}'
+        self.assertDictEqual(response_body, {
+            'status': 'success',
+            'data': {
+                'message': "test-spark-job deleted from namespace test-namespace"
+            }
+        })
+
+    @gen_test
+    def test_delete_returns_message_and_status_code_when_k8s_error(self):
+        # Arrange
+        body = {'job_name': 'test-spark-job', 'namespace': 'test-namespace'}
+        self.mock_spark_job_service.delete_job.return_value = {
+            "message": "Kubernetes error",
+            'status': 422
+        }
+        # Act
+        with pytest.raises(HTTPClientError) as error:
+            yield self.send_request(body)
+        assert error.value.response.code == 422
+        msg = json.loads(error.value.response.body, encoding='utf-8')['data']
+        assert msg == "Kubernetes error"
