@@ -46,17 +46,18 @@ class Configuration:
     def _parse(self, path):
         config = configparser.ConfigParser()
         config.read(path)
-        settings = config["Settings"]
+        logging = config["Logging"]
+        application = config["Application"]
 
         # Logging
-        self._log_folder_location = self.get_directory(settings, "LogFolderLocation")
-        self._logging_level = settings["LoggingLevel"]
+        self._log_folder_location = self.get_directory(logging, "LogFolderLocation")
+        self._logging_level = logging["LoggingLevel"]
 
         # Application
-        self._app_port = str2non_negative_int(settings['ApplicationPort'])
+        self._app_port = str2non_negative_int(application['ApplicationPort'])
 
-        self._run_environment = settings['RunEnvironment']
-        self._k8s_cluster_config_file = settings['K8sClusterConfigFile']
+        self._run_environment = application['RunEnvironment']
+        self._k8s_cluster_config_file = application['K8sClusterConfigFile']
 
     @staticmethod
     def get_directory(settings, key):
