@@ -1,18 +1,24 @@
 import unittest
 import pytest
+import mock
 
 from PiezoWebApp.src.config.spark_job_validation_rules import LANGUAGE_SPECIFIC_KEYS
 from PiezoWebApp.src.config.spark_job_validation_rules import VALIDATION_RULES
 from PiezoWebApp.src.services.spark_job.validation.manifest_populator import ManifestPopulator
 from PiezoWebApp.src.services.spark_job.validation.validation_ruleset import ValidationRuleset
+from PiezoWebApp.src.utils.configurations import Configuration
 
 
 class TestTemplatePopulator(unittest.TestCase):
     # pylint: disable=attribute-defined-outside-init
     @pytest.fixture(autouse=True)
     def setup(self):
+        mock_configuration = mock.create_autospec(Configuration)
+        mock_configuration.s3_secrets_name = "secret"
+        mock_configuration.s3_access_key_variable = "access_key"
+        mock_configuration.s3_secret_key_variable = "secret_key"
         validation_ruleset = ValidationRuleset(LANGUAGE_SPECIFIC_KEYS, VALIDATION_RULES)
-        self.test_populator = ManifestPopulator(validation_ruleset)
+        self.test_populator = ManifestPopulator(mock_configuration, validation_ruleset)
         self.arguments = {"name": "test",
                           "path_to_main_app_file": "/path/to/file",
                           "driver_cores": "0.1",
@@ -48,13 +54,27 @@ class TestTemplatePopulator(unittest.TestCase):
                                                 "memory": "512m",
                                                 "labels": {
                                                     "version": "2.4.0"},
-                                                "serviceAccount": "spark"},
+                                                "serviceAccount": "spark",
+                                                "envSecretKeyRefs": {
+                                                    "AWS_ACCESS_KEY_ID": {
+                                                        "name": "secret",
+                                                        "key": "access_key"},
+                                                    "AWS_SECRET_ACCESS_KEY": {
+                                                        "name": "secret",
+                                                        "key": "secret_key"}}},
                                             "executor": {
                                                 "cores": "1",
                                                 "instances": "1",
                                                 "memory": "512m",
                                                 "labels": {
-                                                    "version": "2.4.0"}}}})
+                                                    "version": "2.4.0"},
+                                                "envSecretKeyRefs": {
+                                                    "AWS_ACCESS_KEY_ID": {
+                                                        "name": "secret",
+                                                        "key": "access_key"},
+                                                    "AWS_SECRET_ACCESS_KEY": {
+                                                        "name": "secret",
+                                                        "key": "secret_key"}}}}})
 
     def test_build_manifest_builds_scala_job_manifest_for_scala_applications(self):
         # Arrange
@@ -83,13 +103,27 @@ class TestTemplatePopulator(unittest.TestCase):
                                                 "memory": "512m",
                                                 "labels": {
                                                     "version": "2.4.0"},
-                                                "serviceAccount": "spark"},
+                                                "serviceAccount": "spark",
+                                                "envSecretKeyRefs": {
+                                                    "AWS_ACCESS_KEY_ID": {
+                                                        "name": "secret",
+                                                        "key": "access_key"},
+                                                    "AWS_SECRET_ACCESS_KEY": {
+                                                        "name": "secret",
+                                                        "key": "secret_key"}}},
                                             "executor": {
                                                 "cores": "1",
                                                 "instances": "1",
                                                 "memory": "512m",
                                                 "labels": {
-                                                    "version": "2.4.0"}}}})
+                                                    "version": "2.4.0"},
+                                                "envSecretKeyRefs": {
+                                                    "AWS_ACCESS_KEY_ID": {
+                                                        "name": "secret",
+                                                        "key": "access_key"},
+                                                    "AWS_SECRET_ACCESS_KEY": {
+                                                        "name": "secret",
+                                                        "key": "secret_key"}}}}})
 
     def test_default_manifest_returns_a_filled_in_spark_application_template_with_default_values(self):
         # Arrange
@@ -113,10 +147,24 @@ class TestTemplatePopulator(unittest.TestCase):
                                                         "memory": "512m",
                                                         "labels": {
                                                             "version": "2.4.0"},
-                                                        "serviceAccount": "spark"},
+                                                        "serviceAccount": "spark",
+                                                        "envSecretKeyRefs": {
+                                                            "AWS_ACCESS_KEY_ID": {
+                                                                "name": "secret",
+                                                                "key": "access_key"},
+                                                            "AWS_SECRET_ACCESS_KEY": {
+                                                                "name": "secret",
+                                                                "key": "secret_key"}}},
                                                     "executor": {
                                                         "cores": 1,
                                                         "instances": 1,
                                                         "memory": "512m",
                                                         "labels": {
-                                                            "version": "2.4.0"}}}})
+                                                            "version": "2.4.0"},
+                                                        "envSecretKeyRefs": {
+                                                            "AWS_ACCESS_KEY_ID": {
+                                                                "name": "secret",
+                                                                "key": "access_key"},
+                                                            "AWS_SECRET_ACCESS_KEY": {
+                                                                "name": "secret",
+                                                                "key": "secret_key"}}}}})
