@@ -87,7 +87,7 @@ def test_configuration_parses_with_arguments():
                                                                          "8888",
                                                                          "SYSTEM",
                                                                          "Some/Path",
-                                                                         "0.0.0.0"
+                                                                         "0.0.0.0",
                                                                          "some_secret",
                                                                          "access",
                                                                          "secret")
