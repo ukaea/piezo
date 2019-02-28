@@ -19,7 +19,6 @@ class ManifestPopulator(IManifestPopulator):
         self._spec_spark_version = self._validation_rules.get_default_value_for_key("spark_version")
         self._spec_restart_policy_type = self._validation_rules.get_default_value_for_key("restart_policy")
         self._spec_driver_cores = self._validation_rules.get_default_value_for_key("driver_cores")
-        self._spec_driver_core_limit = self._validation_rules.get_default_value_for_key("driver_core_limit")
         self._spec_driver_memory = self._validation_rules.get_default_value_for_key("driver_memory")
         self._spec_driver_label_version = self._validation_rules.get_default_value_for_key("spark_version")
         self._spec_driver_service_account = self._validation_rules.get_default_value_for_key("service_account")
@@ -56,7 +55,6 @@ class ManifestPopulator(IManifestPopulator):
                         "type": self._spec_restart_policy_type},
                     "driver": {
                         "cores": self._spec_driver_cores,
-                        "coreLimit": self._spec_driver_core_limit,
                         "memory": self._spec_driver_memory,
                         "labels": {
                             "version": self._spec_driver_label_version},
@@ -76,7 +74,6 @@ class ManifestPopulator(IManifestPopulator):
                             "main_class": ["spec", "mainClass"],
                             "path_to_main_app_file": ["spec", "mainApplicationFile"],
                             "driver_cores": ["spec", "driver", "cores"],
-                            "driver_core_limit": ["spec", "driver", "coreLimit"],
                             "driver_memory": ["spec", "driver", "memory"],
                             "executors": ["spec", "executor", "instances"],
                             "executor_cores": ["spec", "executor", "cores"],
