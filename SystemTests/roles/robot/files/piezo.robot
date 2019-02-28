@@ -21,18 +21,15 @@ Piezo Heartbeat Returns Ok Response
     Confirm Ok Response  ${response}
 
 Get Logs Of Non Job Returns Not Found Response
-    ${body}=    Create Dictionary   driver_name=dummy   namespace=default
-    ${response}=  Get Request With Json Body   /piezo/getlogs    ${body}
+    ${response}=  Get Logs From Spark Driver    dummy
     Confirm Not Found Response  ${response}
 
 Delete Job Of Non Job Returns Not Found Response
-    ${job_name}=    Set Variable   dummy
-    ${response}=    Delete Spark Job    job_name
+    ${response}=    Delete Spark Job    dummy
     Confirm Not Found Response  ${response}
 
 Submit Spark Pi Job Returns Ok Response
-    ${job_name}=    Set Variable   spark-pi-3f69c
-    ${response}=    Submit SparkPi Job    ${job_name}
+    ${response}=    Submit SparkPi Job    spark-pi-3f69c
     Confirm Ok Response  ${response}
     ${data}=    Get Response Data   ${response}
     Should Be Equal As Strings    ${data["message"]}    Job driver created successfully
@@ -50,8 +47,7 @@ Can Get Logs Of Submitted Spark Job
     Should Be Equal As Strings   ${num_pi_lines}   1
 
 Can Delete Submitted Spark Job
-    ${job_name}=     Set Variable   spark-pi-83783
-    Submit SparkPi Job    ${job_name}
+    Submit SparkPi Job    spark-pi-83783
     Sleep   30 seconds
     ${response}=  Delete Spark Job    ${job_name}
     Confirm Ok Response   ${response}
