@@ -31,29 +31,41 @@ class SparkJobService(ISparkJobService):
                 job_name,
                 body
             )
-            return api_response.content
+            return {
+                'message': api_response.content,
+                'status': StatusCodes.Okay.value
+            }
         except ApiException as exception:
             message = f'Kubernetes error when trying to delete job "{job_name}" in namespace '\
                 f'"{namespace}": {exception.reason}'
             self._logger.error(message)
-            return message
+            return {
+                'status': exception.status,
+                'message': message
+            }
 
     def get_logs(self, driver_name, namespace):
         try:
             api_response = self._connection.read_namespaced_pod_log(driver_name, namespace)
-            return api_response
+            return {
+                'message': api_response,
+                'status': StatusCodes.Okay.value
+            }
         except ApiException as exception:
             message = f'Kubernetes error when trying to get logs for driver "{driver_name}" in namespace '\
                 f'"{namespace}": {exception.reason}'
             self._logger.error(message)
-            return message
+            return {
+                'message': message,
+                'status': exception.status
+            }
 
     def submit_job(self, body):
         # Validate the body keys
         validated_body_keys = self._argument_validation_service.validate_request_keys(body)
         if validated_body_keys.is_valid is False:
             return {
-                'status': StatusCodes.Bad_request,
+                'status': StatusCodes.Bad_request.value,
                 'message': validated_body_keys.message
             }
 
@@ -61,7 +73,7 @@ class SparkJobService(ISparkJobService):
         validated_body_values = self._argument_validation_service.validate_request_values(body)
         if validated_body_values.is_valid is False:
             return {
-                'status': StatusCodes.Bad_request,
+                'status': StatusCodes.Bad_request.value,
                 'message': validated_body_values.message
             }
 
@@ -80,7 +92,7 @@ class SparkJobService(ISparkJobService):
             )
             driver_name = f'{api_response["metadata"]["name"]}-driver'
             result = {
-                'status': StatusCodes.Okay,
+                'status': StatusCodes.Okay.value,
                 'message': 'Job driver created successfully',
                 'driver_name': driver_name
             }
@@ -88,6 +100,7 @@ class SparkJobService(ISparkJobService):
         except ApiException as exception:
             message = f'Kubernetes error when trying to submit job: {exception.reason}'
             self._logger.error(message)
+            self._logger.error(body)
             return {
                 'status': exception.status,
                 'message': message

@@ -39,7 +39,7 @@ class TestSubmitJobHandler(BaseHandlerTest):
             'path_to_main_app_file': '/path/to/main/app.file'
         }
         self.mock_spark_job_service.submit_job.return_value = {
-            'status': StatusCodes.Okay,
+            'status': StatusCodes.Okay.value,
             'message': 'Job driver created successfully',
             'driver_name': 'test-spark-job-driver'
         }
@@ -49,7 +49,7 @@ class TestSubmitJobHandler(BaseHandlerTest):
         self.mock_spark_job_service.submit_job.assert_called_once_with(body)
         self.mock_logger.debug.assert_has_calls([
             call('Trying to submit job "test-spark-job".'),
-            call('Submitting job "test-spark-job" returned status "Okay".')
+            call('Submitting job "test-spark-job" returned status code "200".')
         ])
         assert response_code == 200
         assert response_body['status'] == 'success'

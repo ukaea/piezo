@@ -47,7 +47,7 @@ class TestSparkJobService(TestCase):
         # Act
         result = self.test_service.delete_job('test-spark-job', 'test-namespace')
         # Assert
-        assert result == "Response"
+        self.assertDictEqual(result, {'message': 'Response', 'status': 200})
         self.mock_kubernetes_adapter.delete_namespaced_custom_object.assert_called_once_with(
             CRD_GROUP,
             CRD_VERSION,
@@ -59,14 +59,18 @@ class TestSparkJobService(TestCase):
 
     def test_delete_job_logs_and_returns_api_exception_reason(self):
         # Arrange
-        self.mock_kubernetes_adapter.delete_namespaced_custom_object.side_effect = ApiException(reason="Reason")
+        self.mock_kubernetes_adapter.delete_namespaced_custom_object.side_effect = ApiException(
+            reason="Reason",
+            status=999
+        )
         # Act
         result = self.test_service.delete_job('test-spark-job', 'test-namespace')
         # Assert
         expected_message = \
             'Kubernetes error when trying to delete job "test-spark-job" in namespace "test-namespace": Reason'
         self.mock_logger.error.assert_called_once_with(expected_message)
-        assert result == expected_message
+        assert result['status'] == 999
+        assert result['message'] == expected_message
 
     def test_get_logs_sends_expected_arguments(self):
         # Arrange
@@ -74,19 +78,23 @@ class TestSparkJobService(TestCase):
         # Act
         result = self.test_service.get_logs('test-driver', 'test-namespace')
         # Assert
-        assert result == "Response"
+        self.assertDictEqual(result, {'message': 'Response', 'status': 200})
         self.mock_kubernetes_adapter.read_namespaced_pod_log.assert_called_once_with('test-driver', 'test-namespace')
 
     def test_get_logs_logs_and_returns_api_exception_reason(self):
         # Arrange
-        self.mock_kubernetes_adapter.read_namespaced_pod_log.side_effect = ApiException(reason="Reason")
+        self.mock_kubernetes_adapter.read_namespaced_pod_log.side_effect = ApiException(reason="Reason", status=999)
         # Act
         result = self.test_service.get_logs('test-driver', 'test-namespace')
         # Assert
         expected_message = \
             'Kubernetes error when trying to get logs for driver "test-driver" in namespace "test-namespace": Reason'
         self.mock_logger.error.assert_called_once_with(expected_message)
-        assert result == expected_message
+        self.assertDictEqual(result, {
+            'status': 999,
+            'message': 'Kubernetes error when trying to get logs for driver "test-driver" '
+                       'in namespace "test-namespace": Reason'
+        })
 
     def test_submit_job_sends_expected_arguments(self):
         # Arrange
@@ -114,7 +122,7 @@ class TestSparkJobService(TestCase):
         result = self.test_service.submit_job(body)
         # Assert
         self.assertDictEqual(result, {
-            'status': StatusCodes.Okay,
+            'status': StatusCodes.Okay.value,
             'message': 'Job driver created successfully',
             'driver_name': 'test-spark-job-driver'
         })
@@ -130,7 +138,7 @@ class TestSparkJobService(TestCase):
         result = self.test_service.submit_job(body)
         # Assert
         self.assertDictEqual(result, {
-            'status': StatusCodes.Bad_request,
+            'status': StatusCodes.Bad_request.value,
             'message': 'Msg'
         })
 
@@ -146,7 +154,7 @@ class TestSparkJobService(TestCase):
         result = self.test_service.submit_job(body)
         # Assert
         self.assertDictEqual(result, {
-            'status': StatusCodes.Bad_request,
+            'status': StatusCodes.Bad_request.value,
             'message': 'Msg'
         })
 
@@ -173,13 +181,22 @@ class TestSparkJobService(TestCase):
             }
         }
         self.mock_kubernetes_adapter.create_namespaced_custom_object.side_effect = \
-            ApiException(reason="Reason", status=101)
+            ApiException(reason="Reason", status=999)
         # Act
         result = self.test_service.submit_job(body)
         # Assert
         expected_message = 'Kubernetes error when trying to submit job: Reason'
-        self.mock_logger.error.assert_called_once_with(expected_message)
+        self.mock_logger.error.assert_has_calls([
+            mock.call(expected_message),
+            mock.call({
+                'metadata': {
+                    'namespace': 'example-namespace',
+                    'name': 'test-spark-job',
+                    'language': 'example-language'
+                }
+            })
+        ])
         self.assertDictEqual(result, {
-            'status': 101,
+            'status': 999,
             'message': expected_message
         })

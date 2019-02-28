@@ -129,5 +129,5 @@ class TestValidationService(unittest.TestCase):
         result = self.test_service.validate_request_values(request_body)
         # Assert
         assert result.is_valid is False
-        assert result.message == 'The following errors were found:\nmain_class argument cannot be empty\n'
+        assert result.message == 'The following errors were found:\n"main_class" input cannot be empty\n'
         assert result.validated_value is None

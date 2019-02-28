@@ -19,6 +19,9 @@ class GetLogsHandler(BaseHandler):
         namespace = self.get_body_attribute('namespace', required=True)
         self._logger.debug(f'Trying to delete driver "{driver_name}" in namespace "{namespace}".')
         result = self._spark_job_service.get_logs(driver_name, namespace)
-        self._logger.debug(f'Getting logs from driver "{driver_name}" in namespace "{namespace}" '
-                           f'returned result "{result}".')
+        self._logger.debug(
+            f'Getting logs from driver "{driver_name}" in namespace "{namespace}" returned result "{result["status"]}".'
+        )
+        self.check_request_was_completed_successfully(result)
+        del result['status']
         return result
