@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractmethod
 
 
-class IKubernetesService(metaclass=ABCMeta):
+class ISparkJobService(metaclass=ABCMeta):
 
     @abstractmethod
     def delete_job(self, job_name, namespace):

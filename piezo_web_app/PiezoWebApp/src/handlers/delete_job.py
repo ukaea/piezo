@@ -19,6 +19,10 @@ class DeleteJobHandler(BaseHandler):
         job_name = self.get_body_attribute('job_name', required=True)
         namespace = self.get_body_attribute('namespace', required=True)
         self._logger.debug(f'Trying to delete job "{job_name}" in namespace "{namespace}".')
-        result = self._kubernetes_service.delete_job(job_name, namespace)
-        self._logger.debug(f'Deleting job "{job_name}" in namespace "{namespace}" returned result "{result}".')
+        result = self._spark_job_service.delete_job(job_name, namespace)
+        self._logger.debug(
+            f'Deleting job "{job_name}" in namespace "{namespace}" returned result "{result["status"]}".'
+        )
+        self.check_request_was_completed_successfully(result)
+        del result['status']
         return result

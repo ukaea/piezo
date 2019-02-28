@@ -1,7 +1,7 @@
 ---
 - name: Install Harbor
 
-  hosts: all
+  hosts: localhost
 
   vars:
     - hostname: 172.28.128.170

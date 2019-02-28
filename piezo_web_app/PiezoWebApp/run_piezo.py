@@ -4,26 +4,37 @@ import os
 import kubernetes
 import tornado
 
+from PiezoWebApp.src.config.spark_job_validation_rules import LANGUAGE_SPECIFIC_KEYS
+from PiezoWebApp.src.config.spark_job_validation_rules import VALIDATION_RULES
 from PiezoWebApp.src.handlers.delete_job import DeleteJobHandler
 from PiezoWebApp.src.handlers.get_logs import GetLogsHandler
 from PiezoWebApp.src.handlers.heartbeat_handler import HeartbeatHandler
 from PiezoWebApp.src.handlers.submit_job import SubmitJobHandler
 from PiezoWebApp.src.services.kubernetes.kubernetes_adapter import KubernetesAdapter
-from PiezoWebApp.src.services.kubernetes.kubernetes_service import KubernetesService
+from PiezoWebApp.src.services.spark_job.validation.manifest_populator import ManifestPopulator
+from PiezoWebApp.src.services.spark_job.validation.validation_ruleset import ValidationRuleset
+from PiezoWebApp.src.services.spark_job.spark_job_service import SparkJobService
+from PiezoWebApp.src.services.spark_job.validation.validation_service import ValidationService
 from PiezoWebApp.src.utils.route_helper import format_route_specification
+from PiezoWebApp.src.utils.configurations import Configuration
 
 
-def build_kubernetes_adapter():
-    config = kubernetes.config.load_incluster_config()
+def build_kubernetes_adapter(configuration):
+    if configuration.run_environment == "SYSTEM":
+        config = kubernetes.config.load_kube_config(config_file=configuration.k8s_cluster_config_file)
+    elif configuration.run_environment == "K8S":
+        config = kubernetes.config.load_incluster_config()
+    else:
+        raise RuntimeError("Invalid running environment specified in config file")
     adapter = KubernetesAdapter(config)
     return adapter
 
 
-def build_logger(log_file_location, level):
+def build_logger(configuration):
     # Set  up the logger
     log = logging.getLogger("piezo-web-app")
     formatter = logging.Formatter('%(asctime)s %(name)-12s %(levelname)-8s %(message)s')
-    log.setLevel(level)
+    log.setLevel(configuration.logging_level)
 
     # Set up console logging
     console = logging.StreamHandler()
@@ -32,33 +43,45 @@ def build_logger(log_file_location, level):
 
     # Set up file logging
     log_file_name = "piezo-web-app.log"
-    full_path = os.path.join(log_file_location, log_file_name)
+    full_path = os.path.join(configuration.log_folder_location, log_file_name)
     file_handler = logging.handlers.RotatingFileHandler(full_path, maxBytes=100*1024, backupCount=10)
     file_handler.setFormatter(formatter)
     log.addHandler(file_handler)
     return log
 
 
-def build_app(k8s_adapter, log):
-    kubernetes_service = KubernetesService(k8s_adapter, log)
+def build_container(k8s_adapter, log):
+    validation_ruleset = ValidationRuleset(LANGUAGE_SPECIFIC_KEYS, VALIDATION_RULES)
+    validation_service = ValidationService(validation_ruleset)
+    manifest_populator = ManifestPopulator(validation_ruleset)
+    spark_job_service = SparkJobService(k8s_adapter, log, manifest_populator, validation_service)
     container = dict(
-        kubernetes_service=kubernetes_service,
-        logger=log
+        logger=log,
+        spark_job_service=spark_job_service
     )
+    return container
+
+
+def build_app(container, use_route_stem=False):
+    heartbeat_route = '/piezo(|/)' if use_route_stem else '(|/)'
+    route_stem = 'piezo/' if use_route_stem else ''
     app = tornado.web.Application(
         [
-            ("(|/)", HeartbeatHandler),
-            (format_route_specification("deletejob"), DeleteJobHandler, container),
-            (format_route_specification("getlogs"), GetLogsHandler, container),
-            (format_route_specification("submitjob"), SubmitJobHandler, container)
+            (heartbeat_route, HeartbeatHandler),
+            (format_route_specification(route_stem + 'deletejob'), DeleteJobHandler, container),
+            (format_route_specification(route_stem + 'getlogs'), GetLogsHandler, container),
+            (format_route_specification(route_stem + 'submitjob'), SubmitJobHandler, container)
         ]
     )
     return app
 
 
 if __name__ == "__main__":
-    KUBERNETES_ADAPTER = build_kubernetes_adapter()
-    LOGGER = build_logger("/path/to/log/dir/", "INFO")
-    APPLICATION = build_app(KUBERNETES_ADAPTER, LOGGER)
-    APPLICATION.listen(8888)
+    CONFIGURATION_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), 'configuration.ini'))
+    CONFIGURATION = Configuration(CONFIGURATION_PATH)
+    KUBERNETES_ADAPTER = build_kubernetes_adapter(CONFIGURATION)
+    LOGGER = build_logger(CONFIGURATION)
+    CONTAINER = build_container(KUBERNETES_ADAPTER, LOGGER)
+    APPLICATION = build_app(CONTAINER, use_route_stem=True)
+    APPLICATION.listen(CONFIGURATION.app_port)
     tornado.ioloop.IOLoop.current().start()
