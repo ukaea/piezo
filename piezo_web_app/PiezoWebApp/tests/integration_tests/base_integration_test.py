@@ -40,8 +40,6 @@ class BaseIntegrationTest(tornado.testing.AsyncHTTPTestCase, metaclass=ABCMeta):
         self.mock_configuration = mock.create_autospec(Configuration)
         self.mock_configuration.s3_endpoint = "0.0.0.0"
         self.mock_configuration.s3_secrets_name = "secret"
-        self.mock_configuration.s3_access_key_variable = "access_key"
-        self.mock_configuration.s3_secret_key_variable = "secret_key"
 
     def get_app(self):
         container = build_container(self.mock_configuration, self.mock_k8s_adapter, self.mock_logger)

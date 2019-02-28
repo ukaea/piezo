@@ -66,10 +66,10 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                     'envSecretKeyRefs': {
                         'AWS_ACCESS_KEY_ID': {
                             'name': 'secret',
-                            'key': 'access_key'},
+                            'key': 'accessKey'},
                         'AWS_SECRET_ACCESS_KEY': {
                             'name': 'secret',
-                            'key': 'secret_key'}}
+                            'key': 'secretKey'}}
                 },
                 'executor': {
                     'cores': 1,
@@ -79,10 +79,10 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                     'envSecretKeyRefs': {
                         'AWS_ACCESS_KEY_ID': {
                             'name': 'secret',
-                            'key': 'access_key'},
+                            'key': 'accessKey'},
                         'AWS_SECRET_ACCESS_KEY': {
                             'name': 'secret',
-                            'key': 'secret_key'}}
+                            'key': 'secretKey'}}
                 }
             }
         }
@@ -142,10 +142,10 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                     'envSecretKeyRefs': {
                         'AWS_ACCESS_KEY_ID': {
                             'name': 'secret',
-                            'key': 'access_key'},
+                            'key': 'accessKey'},
                         'AWS_SECRET_ACCESS_KEY': {
                             'name': 'secret',
-                            'key': 'secret_key'}}
+                            'key': 'secretKey'}}
                 },
                 'executor': {
                     'cores': 1,
@@ -155,10 +155,10 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                     'envSecretKeyRefs': {
                         'AWS_ACCESS_KEY_ID': {
                             'name': 'secret',
-                            'key': 'access_key'},
+                            'key': 'accessKey'},
                         'AWS_SECRET_ACCESS_KEY': {
                             'name': 'secret',
-                            'key': 'secret_key'}}
+                            'key': 'secretKey'}}
                 }
             }
         }
@@ -223,10 +223,10 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                     'envSecretKeyRefs': {
                         'AWS_ACCESS_KEY_ID': {
                             'name': 'secret',
-                            'key': 'access_key'},
+                            'key': 'accessKey'},
                         'AWS_SECRET_ACCESS_KEY': {
                             'name': 'secret',
-                            'key': 'secret_key'}}
+                            'key': 'secretKey'}}
                 },
                 'executor': {
                     'cores': 4,
@@ -236,10 +236,10 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                     'envSecretKeyRefs': {
                         'AWS_ACCESS_KEY_ID': {
                             'name': 'secret',
-                            'key': 'access_key'},
+                            'key': 'accessKey'},
                         'AWS_SECRET_ACCESS_KEY': {
                             'name': 'secret',
-                            'key': 'secret_key'}}
+                            'key': 'secretKey'}}
                 }
             }
         }

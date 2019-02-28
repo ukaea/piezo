@@ -24,8 +24,6 @@ class Configuration:
         # Storage
         self._s3_endpoint = None
         self._s3_secrets_name = None
-        self._s3_access_key_variable = None
-        self._s3_secret_key_variable = None
 
         self._parse(self._path_to_configuration_file)
 
@@ -57,14 +55,6 @@ class Configuration:
     def s3_secrets_name(self):
         return self._s3_secrets_name
 
-    @property
-    def s3_access_key_variable(self):
-        return self._s3_access_key_variable
-
-    @property
-    def s3_secrets_key_variable(self):
-        return self._s3_secret_key_variable
-
     def _parse(self, path):
         config = configparser.ConfigParser()
         config.read(path)
@@ -85,8 +75,6 @@ class Configuration:
         # Storage
         self._s3_endpoint = storage['S3Endpoint']
         self._s3_secrets_name = storage['S3KeysSecret']
-        self._s3_access_key_variable = storage['S3AccessKeyVariable']
-        self._s3_secret_key_variable = storage['S3SecretKeyVariable']
 
     @staticmethod
     def get_directory(settings, key):
