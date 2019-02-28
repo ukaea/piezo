@@ -16,7 +16,6 @@ class TestTemplatePopulator(unittest.TestCase):
         self.arguments = {"name": "test",
                           "path_to_main_app_file": "/path/to/file",
                           "driver_cores": "0.1",
-                          "driver_core_limit": "200m",
                           "driver_memory": "512m",
                           "executor_cores": "1",
                           "executors": "1",
@@ -46,7 +45,6 @@ class TestTemplatePopulator(unittest.TestCase):
                                                 "type": "Never"},
                                             "driver": {
                                                 "cores": "0.1",
-                                                "coreLimit": "200m",
                                                 "memory": "512m",
                                                 "labels": {
                                                     "version": "2.4.0"},
@@ -82,7 +80,6 @@ class TestTemplatePopulator(unittest.TestCase):
                                                 "type": "Never"},
                                             "driver": {
                                                 "cores": "0.1",
-                                                "coreLimit": "200m",
                                                 "memory": "512m",
                                                 "labels": {
                                                     "version": "2.4.0"},
@@ -113,7 +110,6 @@ class TestTemplatePopulator(unittest.TestCase):
                                                         "type": "Never"},
                                                     "driver": {
                                                         "cores": 0.1,
-                                                        "coreLimit": "0.2",
                                                         "memory": "512m",
                                                         "labels": {
                                                             "version": "2.4.0"},

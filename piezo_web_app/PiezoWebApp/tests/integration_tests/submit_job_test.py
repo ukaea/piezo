@@ -58,7 +58,6 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                 'restartPolicy': {'type': 'Never'},
                 'driver': {
                     'cores': 0.1,
-                    'coreLimit': '0.2',
                     'memory': '512m',
                     'labels': {'version': '2.4.0'},
                     'serviceAccount': 'spark'
@@ -119,7 +118,6 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                 'restartPolicy': {'type': 'Never'},
                 'driver': {
                     'cores': 0.1,
-                    'coreLimit': '0.2',
                     'memory': '512m',
                     'labels': {'version': '2.4.0'},
                     'serviceAccount': 'spark'
@@ -157,7 +155,6 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             'path_to_main_app_file': '/path_to/file',
             'python_version': '2',
             'driver_cores': '1',
-            'driver_core_limit': '1.2',
             'driver_memory': '2048m',
             'executors': '10',
             'executor_cores': '4',
@@ -186,7 +183,6 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                 'restartPolicy': {'type': 'Never'},
                 'driver': {
                     'cores': 1.0,
-                    'coreLimit': 1.2,
                     'memory': '2048m',
                     'labels': {'version': '2.4.0'},
                     'serviceAccount': 'spark'
@@ -224,7 +220,6 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             'path_to_main_app_file': '/path_to/file',
             'python_version': '2',
             'driver_cores': '1.1',
-            'driver_core_limit': '1.3',
             'driver_memory': '2049m',
             'executors': '11',
             'executor_cores': '5',
@@ -239,7 +234,6 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
         msg = json.loads(error.value.response.body, encoding='utf-8')['data']
         assert msg == "The following errors were found:\n" \
                       '"driver_cores" input must be in range [0.1, 1]\n' \
-                      '"driver_core_limit" input must be in range [0.2, 1.2]\n' \
                       '"driver_memory" input must be in range [512m, 2048m]\n' \
                       '"executors" input must be in range [1, 10]\n' \
                       '"executor_cores" input must be in range [1, 4]\n' \
