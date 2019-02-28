@@ -39,7 +39,7 @@ class SampleConfigurationCreator:
                                                                        "S3KeysSecret",
                                                                        s3_secret_name)
         template = SampleConfigurationCreator.add_element_to_temp_file(template,
-                                                                       "S3AccessKeyVariablee",
+                                                                       "S3AccessKeyVariable",
                                                                        s3_access_key_var)
         template = SampleConfigurationCreator.add_element_to_temp_file(template,
                                                                        "S3SecretKeyVariable",
