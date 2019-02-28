@@ -46,7 +46,7 @@ Can Get Logs Of Submitted Spark Job
     Sleep   1 minute
     ${response}=  Get Logs From Spark Driver    ${driver_name}
     ${joblog}=    Get Response Data Message   ${response}
-    ${pi_lines}=    Get Lines Containing String   ${joblog}   Pi is roughly 3.14
+    ${pi_lines}=    Get Lines Containing String   ${joblog}   Pi is roughly 3
     ${num_pi_lines}=    Get Line Count    ${pi_lines}
     Should Be Equal As Integers   ${num_pi_lines}   1
 
