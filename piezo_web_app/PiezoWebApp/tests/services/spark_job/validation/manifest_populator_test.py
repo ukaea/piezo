@@ -14,6 +14,7 @@ class TestTemplatePopulator(unittest.TestCase):
     @pytest.fixture(autouse=True)
     def setup(self):
         mock_configuration = mock.create_autospec(Configuration)
+        mock_configuration.s3_endpoint = "0.0.0.0"
         mock_configuration.s3_secrets_name = "secret"
         mock_configuration.s3_access_key_variable = "access_key"
         mock_configuration.s3_secret_key_variable = "secret_key"
@@ -49,6 +50,8 @@ class TestTemplatePopulator(unittest.TestCase):
                                             "sparkVersion": "2.4.0",
                                             "restartPolicy": {
                                                 "type": "Never"},
+                                            "hadoopConf": {
+                                                "fs.s3a.endpoint": "0.0.0.0"},
                                             "driver": {
                                                 "cores": "0.1",
                                                 "memory": "512m",
@@ -98,6 +101,8 @@ class TestTemplatePopulator(unittest.TestCase):
                                             "sparkVersion": "2.4.0",
                                             "restartPolicy": {
                                                 "type": "Never"},
+                                            "hadoopConf": {
+                                                "fs.s3a.endpoint": "0.0.0.0"},
                                             "driver": {
                                                 "cores": "0.1",
                                                 "memory": "512m",
@@ -142,6 +147,8 @@ class TestTemplatePopulator(unittest.TestCase):
                                                     "sparkVersion": "2.4.0",
                                                     "restartPolicy": {
                                                         "type": "Never"},
+                                                    "hadoopConf": {
+                                                        "fs.s3a.endpoint": "0.0.0.0"},
                                                     "driver": {
                                                         "cores": 0.1,
                                                         "memory": "512m",

@@ -56,6 +56,8 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                 'mainApplicationFile': '/path_to/file',
                 'sparkVersion': '2.4.0',
                 'restartPolicy': {'type': 'Never'},
+                "hadoopConf": {
+                    "fs.s3a.endpoint": "0.0.0.0"},
                 'driver': {
                     'cores': 0.1,
                     'memory': '512m',
@@ -130,6 +132,8 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                 'mainApplicationFile': '/path_to/file',
                 'sparkVersion': '2.4.0',
                 'restartPolicy': {'type': 'Never'},
+                "hadoopConf": {
+                    "fs.s3a.endpoint": "0.0.0.0"},
                 'driver': {
                     'cores': 0.1,
                     'memory': '512m',
@@ -209,6 +213,8 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                 'mainApplicationFile': '/path_to/file',
                 'sparkVersion': '2.4.0',
                 'restartPolicy': {'type': 'Never'},
+                "hadoopConf": {
+                    "fs.s3a.endpoint": "0.0.0.0"},
                 'driver': {
                     'cores': 1.0,
                     'memory': '2048m',

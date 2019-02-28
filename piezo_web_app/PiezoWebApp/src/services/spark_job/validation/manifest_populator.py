@@ -26,6 +26,7 @@ class ManifestPopulator(IManifestPopulator):
         self._spec_executor_cores = self._validation_rules.get_default_value_for_key("executor_cores")
         self._spec_executor_memory = self._validation_rules.get_default_value_for_key("executor_memory")
         self._spec_executor_label_version = self._validation_rules.get_default_value_for_key("spark_version")
+        self._s3_endpoint = configuration.s3_endpoint
         self._secret_name = configuration.s3_secrets_name
         self._secret_access_key_name = configuration.s3_access_key_variable
         self._secret_secret_key_name = configuration.s3_secret_key_variable
@@ -56,6 +57,8 @@ class ManifestPopulator(IManifestPopulator):
                     "sparkVersion": self._spec_spark_version,
                     "restartPolicy": {
                         "type": self._spec_restart_policy_type},
+                    "hadoopConf": {
+                        "fs.s3a.endpoint": self._s3_endpoint},
                     "driver": {
                         "cores": self._spec_driver_cores,
                         "memory": self._spec_driver_memory,

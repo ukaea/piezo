@@ -14,6 +14,7 @@ class SampleConfigurationCreator:
                              app_port,
                              run_environment,
                              k8s_cluster_config_file,
+                             s3_endpoint,
                              s3_secret_name,
                              s3_access_key_var,
                              s3_secret_key_var):
@@ -35,6 +36,9 @@ class SampleConfigurationCreator:
                                                                        "K8sClusterConfigFile",
                                                                        k8s_cluster_config_file)
         template += "[Storage]\n"
+        template = SampleConfigurationCreator.add_element_to_temp_file(template,
+                                                                       "S3Endpoint",
+                                                                       s3_endpoint)
         template = SampleConfigurationCreator.add_element_to_temp_file(template,
                                                                        "S3KeysSecret",
                                                                        s3_secret_name)
@@ -83,6 +87,7 @@ def test_configuration_parses_with_arguments():
                                                                          "8888",
                                                                          "SYSTEM",
                                                                          "Some/Path",
+                                                                         "0.0.0.0"
                                                                          "some_secret",
                                                                          "access",
                                                                          "secret")
@@ -96,6 +101,7 @@ def test_configuration_parses_with_arguments():
     assert configuration.app_port == 8888
     assert configuration.run_environment == "SYSTEM"
     assert configuration.k8s_cluster_config_file == "Some/Path"
+    assert configuration.s3_endpoint == "0.0.0.0"
     assert configuration.s3_secrets_name == "some_secret"
     assert configuration.s3_access_key_variable == "access"
     assert configuration.s3_secrets_key_variable == "secret"

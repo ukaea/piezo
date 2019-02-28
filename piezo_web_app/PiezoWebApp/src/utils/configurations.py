@@ -22,6 +22,7 @@ class Configuration:
         self._k8s_cluster_config_file = None
 
         # Storage
+        self._s3_endpoint = None
         self._s3_secrets_name = None
         self._s3_access_key_variable = None
         self._s3_secret_key_variable = None
@@ -47,6 +48,10 @@ class Configuration:
     @property
     def k8s_cluster_config_file(self):
         return self._k8s_cluster_config_file
+
+    @property
+    def s3_endpoint(self):
+        return self._s3_endpoint
 
     @property
     def s3_secrets_name(self):
@@ -78,6 +83,7 @@ class Configuration:
         self._k8s_cluster_config_file = application['K8sClusterConfigFile']
 
         # Storage
+        self._s3_endpoint = storage['S3Endpoint']
         self._s3_secrets_name = storage['S3KeysSecret']
         self._s3_access_key_variable = storage['S3AccessKeyVariable']
         self._s3_secret_key_variable = storage['S3SecretKeyVariable']
