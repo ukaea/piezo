@@ -152,45 +152,6 @@ class TestArgumentValidator:
         assert validation_result.is_valid is False
         assert validation_result.message == '"driver_cores" input must be in range [0.1, 1]'
 
-    @pytest.mark.parametrize("core_limit", ["0.2", "0.20", "0.6", "1", "1.2"])
-    def test_validate_driver_core_limit_accepts_values_within_valid_range(self, core_limit):
-        # Arrange
-        validation_rule = self.validation_ruleset.get_validation_rule_for_key("driver_core_limit")
-        # Act
-        validation_result = argument_validator.validate("driver_core_limit", core_limit, validation_rule)
-        # Assert
-        assert validation_result.is_valid is True
-
-    @pytest.mark.parametrize("core_limit", [" ", "", None, "100m", "200mn", "12e13m"])
-    def test_validate_driver_core_limit_rejects_empty_strings_and_non_numbers(self, core_limit):
-        # Arrange
-        validation_rule = self.validation_ruleset.get_validation_rule_for_key("driver_core_limit")
-        # Act
-        validation_result = argument_validator.validate("driver_core_limit", core_limit, validation_rule)
-        # Assert
-        assert validation_result.is_valid is False
-        assert validation_result.message == '"driver_core_limit" input must be a multiple of 0.1'
-
-    @pytest.mark.parametrize("core_limit", ["0.51", 0.35])
-    def test_validate_driver_core_limit_rejects_values_not_a_multiple_of_a_tenth(self, core_limit):
-        # Arrange
-        validation_rule = self.validation_ruleset.get_validation_rule_for_key("driver_core_limit")
-        # Act
-        validation_result = argument_validator.validate("driver_core_limit", core_limit, validation_rule)
-        # Assert
-        assert validation_result.is_valid is False
-        assert validation_result.message == '"driver_core_limit" input must be a multiple of 0.1'
-
-    @pytest.mark.parametrize("core_limit", ["0.0", 0, "0.1", 0.1, "1.3", 1.3])
-    def test_validate_driver_core_limit_rejects_values_outside_valid_range(self, core_limit):
-        # Arrange
-        validation_rule = self.validation_ruleset.get_validation_rule_for_key("driver_core_limit")
-        # Act
-        validation_result = argument_validator.validate("driver_core_limit", core_limit, validation_rule)
-        # Assert
-        assert validation_result.is_valid is False
-        assert validation_result.message == '"driver_core_limit" input must be in range [0.2, 1.2]'
-
     @pytest.mark.parametrize("memory", ["512m", "1000m", "2048m"])
     def test_validate_driver_memory_accepts_values_for_megabytes_as_string(self, memory):
         # Arrange
