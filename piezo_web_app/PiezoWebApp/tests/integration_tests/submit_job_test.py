@@ -56,17 +56,33 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                 'mainApplicationFile': '/path_to/file',
                 'sparkVersion': '2.4.0',
                 'restartPolicy': {'type': 'Never'},
+                "hadoopConf": {
+                    "fs.s3a.endpoint": "0.0.0.0"},
                 'driver': {
                     'cores': 0.1,
                     'memory': '512m',
                     'labels': {'version': '2.4.0'},
-                    'serviceAccount': 'spark'
+                    'serviceAccount': 'spark',
+                    'envSecretKeyRefs': {
+                        'AWS_ACCESS_KEY_ID': {
+                            'name': 'secret',
+                            'key': 'accessKey'},
+                        'AWS_SECRET_ACCESS_KEY': {
+                            'name': 'secret',
+                            'key': 'secretKey'}}
                 },
                 'executor': {
                     'cores': 1,
                     'instances': 1,
                     'memory': '512m',
-                    'labels': {'version': '2.4.0'}
+                    'labels': {'version': '2.4.0'},
+                    'envSecretKeyRefs': {
+                        'AWS_ACCESS_KEY_ID': {
+                            'name': 'secret',
+                            'key': 'accessKey'},
+                        'AWS_SECRET_ACCESS_KEY': {
+                            'name': 'secret',
+                            'key': 'secretKey'}}
                 }
             }
         }
@@ -116,17 +132,33 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                 'mainApplicationFile': '/path_to/file',
                 'sparkVersion': '2.4.0',
                 'restartPolicy': {'type': 'Never'},
+                "hadoopConf": {
+                    "fs.s3a.endpoint": "0.0.0.0"},
                 'driver': {
                     'cores': 0.1,
                     'memory': '512m',
                     'labels': {'version': '2.4.0'},
-                    'serviceAccount': 'spark'
+                    'serviceAccount': 'spark',
+                    'envSecretKeyRefs': {
+                        'AWS_ACCESS_KEY_ID': {
+                            'name': 'secret',
+                            'key': 'accessKey'},
+                        'AWS_SECRET_ACCESS_KEY': {
+                            'name': 'secret',
+                            'key': 'secretKey'}}
                 },
                 'executor': {
                     'cores': 1,
                     'instances': 1,
                     'memory': '512m',
-                    'labels': {'version': '2.4.0'}
+                    'labels': {'version': '2.4.0'},
+                    'envSecretKeyRefs': {
+                        'AWS_ACCESS_KEY_ID': {
+                            'name': 'secret',
+                            'key': 'accessKey'},
+                        'AWS_SECRET_ACCESS_KEY': {
+                            'name': 'secret',
+                            'key': 'secretKey'}}
                 }
             }
         }
@@ -181,17 +213,33 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                 'mainApplicationFile': '/path_to/file',
                 'sparkVersion': '2.4.0',
                 'restartPolicy': {'type': 'Never'},
+                "hadoopConf": {
+                    "fs.s3a.endpoint": "0.0.0.0"},
                 'driver': {
                     'cores': 1.0,
                     'memory': '2048m',
                     'labels': {'version': '2.4.0'},
-                    'serviceAccount': 'spark'
+                    'serviceAccount': 'spark',
+                    'envSecretKeyRefs': {
+                        'AWS_ACCESS_KEY_ID': {
+                            'name': 'secret',
+                            'key': 'accessKey'},
+                        'AWS_SECRET_ACCESS_KEY': {
+                            'name': 'secret',
+                            'key': 'secretKey'}}
                 },
                 'executor': {
                     'cores': 4,
                     'instances': 10,
                     'memory': '4096m',
-                    'labels': {'version': '2.4.0'}
+                    'labels': {'version': '2.4.0'},
+                    'envSecretKeyRefs': {
+                        'AWS_ACCESS_KEY_ID': {
+                            'name': 'secret',
+                            'key': 'accessKey'},
+                        'AWS_SECRET_ACCESS_KEY': {
+                            'name': 'secret',
+                            'key': 'secretKey'}}
                 }
             }
         }

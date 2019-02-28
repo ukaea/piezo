@@ -9,6 +9,7 @@ from tornado.web import Application
 from PiezoWebApp.run_piezo import build_container
 from PiezoWebApp.src.services.kubernetes.i_kubernetes_adapter import IKubernetesAdapter
 from PiezoWebApp.src.utils.route_helper import format_route_specification
+from PiezoWebApp.src.utils.configurations import Configuration
 
 # str | The custom resource's group name
 CRD_GROUP = 'sparkoperator.k8s.io'
@@ -36,9 +37,12 @@ class BaseIntegrationTest(tornado.testing.AsyncHTTPTestCase, metaclass=ABCMeta):
     def setup(self):
         self.mock_k8s_adapter = mock.create_autospec(IKubernetesAdapter)
         self.mock_logger = mock.create_autospec(logging.Logger)
+        self.mock_configuration = mock.create_autospec(Configuration)
+        self.mock_configuration.s3_endpoint = "0.0.0.0"
+        self.mock_configuration.s3_secrets_name = "secret"
 
     def get_app(self):
-        container = build_container(self.mock_k8s_adapter, self.mock_logger)
+        container = build_container(self.mock_configuration, self.mock_k8s_adapter, self.mock_logger)
         application = Application(
             [
                 (format_route_specification("testroute"), self.handler, container)

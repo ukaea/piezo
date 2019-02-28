@@ -50,10 +50,10 @@ def build_logger(configuration):
     return log
 
 
-def build_container(k8s_adapter, log):
+def build_container(configuration, k8s_adapter, log):
     validation_ruleset = ValidationRuleset(LANGUAGE_SPECIFIC_KEYS, VALIDATION_RULES)
     validation_service = ValidationService(validation_ruleset)
-    manifest_populator = ManifestPopulator(validation_ruleset)
+    manifest_populator = ManifestPopulator(configuration, validation_ruleset)
     spark_job_service = SparkJobService(k8s_adapter, log, manifest_populator, validation_service)
     container = dict(
         logger=log,
@@ -81,7 +81,7 @@ if __name__ == "__main__":
     CONFIGURATION = Configuration(CONFIGURATION_PATH)
     KUBERNETES_ADAPTER = build_kubernetes_adapter(CONFIGURATION)
     LOGGER = build_logger(CONFIGURATION)
-    CONTAINER = build_container(KUBERNETES_ADAPTER, LOGGER)
+    CONTAINER = build_container(CONFIGURATION, KUBERNETES_ADAPTER, LOGGER)
     APPLICATION = build_app(CONTAINER, use_route_stem=True)
     APPLICATION.listen(CONFIGURATION.app_port)
     tornado.ioloop.IOLoop.current().start()

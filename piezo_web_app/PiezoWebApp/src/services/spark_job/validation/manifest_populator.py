@@ -3,7 +3,7 @@ from PiezoWebApp.src.utils.dict_argument_helper import set_value_in_nested_dict
 
 
 class ManifestPopulator(IManifestPopulator):
-    def __init__(self, validation_rules):
+    def __init__(self, configuration, validation_rules):
         self._validation_rules = validation_rules
         self._api_version = self._validation_rules.get_default_value_for_key("apiVersion")
         self._kind = self._validation_rules.get_default_value_for_key("kind")
@@ -26,6 +26,8 @@ class ManifestPopulator(IManifestPopulator):
         self._spec_executor_cores = self._validation_rules.get_default_value_for_key("executor_cores")
         self._spec_executor_memory = self._validation_rules.get_default_value_for_key("executor_memory")
         self._spec_executor_label_version = self._validation_rules.get_default_value_for_key("spark_version")
+        self._s3_endpoint = configuration.s3_endpoint
+        self._secret_name = configuration.s3_secrets_name
 
     def build_manifest(self, validated_parameters_dict):
         manifest = self._default_spark_application_manifest()
@@ -53,18 +55,34 @@ class ManifestPopulator(IManifestPopulator):
                     "sparkVersion": self._spec_spark_version,
                     "restartPolicy": {
                         "type": self._spec_restart_policy_type},
+                    "hadoopConf": {
+                        "fs.s3a.endpoint": self._s3_endpoint},
                     "driver": {
                         "cores": self._spec_driver_cores,
                         "memory": self._spec_driver_memory,
                         "labels": {
                             "version": self._spec_driver_label_version},
-                        "serviceAccount": self._spec_driver_service_account},
+                        "serviceAccount": self._spec_driver_service_account,
+                        "envSecretKeyRefs": {
+                            "AWS_ACCESS_KEY_ID": {
+                                "name": self._secret_name,
+                                "key": "accessKey"},
+                            "AWS_SECRET_ACCESS_KEY": {
+                                "name": self._secret_name,
+                                "key": "secretKey"}}},
                     "executor": {
                         "cores": self._spec_executor_cores,
                         "instances": self._spec_executor_instances,
                         "memory": self._spec_executor_memory,
                         "labels": {
-                            "version": self._spec_executor_label_version}}}}
+                            "version": self._spec_executor_label_version},
+                        "envSecretKeyRefs": {
+                            "AWS_ACCESS_KEY_ID": {
+                                "name": self._secret_name,
+                                "key": "accessKey"},
+                            "AWS_SECRET_ACCESS_KEY": {
+                                "name": self._secret_name,
+                                "key": "secretKey"}}}}}
 
     @staticmethod
     def _variable_to_manifest_path(var):

@@ -21,6 +21,10 @@ class Configuration:
         self._run_environment = None
         self._k8s_cluster_config_file = None
 
+        # Storage
+        self._s3_endpoint = None
+        self._s3_secrets_name = None
+
         self._parse(self._path_to_configuration_file)
 
     @property
@@ -43,11 +47,20 @@ class Configuration:
     def k8s_cluster_config_file(self):
         return self._k8s_cluster_config_file
 
+    @property
+    def s3_endpoint(self):
+        return self._s3_endpoint
+
+    @property
+    def s3_secrets_name(self):
+        return self._s3_secrets_name
+
     def _parse(self, path):
         config = configparser.ConfigParser()
         config.read(path)
         logging = config["Logging"]
         application = config["Application"]
+        storage = config["Storage"]
 
         # Logging
         self._log_folder_location = self.get_directory(logging, "LogFolderLocation")
@@ -58,6 +71,10 @@ class Configuration:
 
         self._run_environment = application['RunEnvironment']
         self._k8s_cluster_config_file = application['K8sClusterConfigFile']
+
+        # Storage
+        self._s3_endpoint = storage['S3Endpoint']
+        self._s3_secrets_name = storage['S3KeysSecret']
 
     @staticmethod
     def get_directory(settings, key):
