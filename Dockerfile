@@ -10,6 +10,7 @@ WORKDIR /piezo_web_app/
 ENV PATH /piezo_web_app:$PATH
 ENV PYTHONPATH /piezo_web_app/
 
-EXPOSE 8888
+# Port where Piezo is exposed on
+EXPOSE 8888 
 
 CMD ["python", "./PiezoWebApp/run_piezo.py"]

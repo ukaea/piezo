@@ -16,10 +16,10 @@ spec:
     spec:
       containers:
       - name: piezo
-        image: host-172-16-113-64.nubes.stfc.ac.uk/piezo-resources/web_app:latest
+        image: host-172-16-113-64.nubes.stfc.ac.uk/piezo-resources/web_app:latest # Path to docker image on harbor registry
         imagePullPolicy: Always
         ports:
-        - containerPort: 8888
+        - containerPort: 8888 # Port where the application is exposed on 
 ---
 kind: Service
 apiVersion: v1
@@ -33,7 +33,7 @@ spec:
     run: piezo
   ports:
   - name: web
-    port: 8888
+    port: 8888 # Port where the application is exposed on in the container (to be picked up by ingress)
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -43,7 +43,7 @@ metadata:
   name: piezo-ingress
 spec:
   rules:
-    - host: host-172-16-113-146.nubes.stfc.ac.uk
+    - host: host-172-16-113-146.nubes.stfc.ac.uk # Node where ingress controller is run (kuberenetes master)
       http:
         paths:
           - backend:
