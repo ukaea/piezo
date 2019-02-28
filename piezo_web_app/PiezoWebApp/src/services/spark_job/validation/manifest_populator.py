@@ -3,7 +3,7 @@ from PiezoWebApp.src.utils.dict_argument_helper import set_value_in_nested_dict
 
 
 class ManifestPopulator(IManifestPopulator):
-    def __init__(self, validation_rules):
+    def __init__(self, configuration, validation_rules):
         self._validation_rules = validation_rules
         self._api_version = self._validation_rules.get_default_value_for_key("apiVersion")
         self._kind = self._validation_rules.get_default_value_for_key("kind")
@@ -26,9 +26,9 @@ class ManifestPopulator(IManifestPopulator):
         self._spec_executor_cores = self._validation_rules.get_default_value_for_key("executor_cores")
         self._spec_executor_memory = self._validation_rules.get_default_value_for_key("executor_memory")
         self._spec_executor_label_version = self._validation_rules.get_default_value_for_key("spark_version")
-        self._secret_name = self._validation_rules.get_default_value_for_key("secret_name")
-        self._secret_access_key_name = self._validation_rules.get_default_value_for_key("access_key_name")
-        self._secret_secret_key_name = self._validation_rules.get_default_value_for_key("secret_key_name")
+        self._secret_name = configuration.s3_secrets_name
+        self._secret_access_key_name = configuration.s3_access_key_variable
+        self._secret_secret_key_name = configuration.s3_secret_key_variable
 
     def build_manifest(self, validated_parameters_dict):
         manifest = self._default_spark_application_manifest()
@@ -65,7 +65,10 @@ class ManifestPopulator(IManifestPopulator):
                         "envSecretKeyRefs": {
                             "AWS_ACCESS_KEY_ID": {
                                 "name": self._secret_name,
-                                "key": self._secret_access_key_name}}},
+                                "key": self._secret_access_key_name},
+                            "AWS_SECRET_ACCESS_KEY": {
+                                "name": self._secret_name,
+                                "key": self._secret_secret_key_name}}},
                     "executor": {
                         "cores": self._spec_executor_cores,
                         "instances": self._spec_executor_instances,
@@ -74,6 +77,9 @@ class ManifestPopulator(IManifestPopulator):
                             "version": self._spec_executor_label_version},
                         "envSecretKeyRefs": {
                             "AWS_ACCESS_KEY_ID": {
+                                "name": self._secret_name,
+                                "key": self._secret_access_key_name},
+                            "AWS_SECRET_ACCESS_KEY": {
                                 "name": self._secret_name,
                                 "key": self._secret_secret_key_name}}}}}
 
