@@ -71,8 +71,9 @@ def build_app(container, use_route_stem=False):
             (heartbeat_route, HeartbeatHandler),
             (format_route_specification(route_stem + 'deletejob'), DeleteJobHandler, container),
             (format_route_specification(route_stem + 'getlogs'), GetLogsHandler, container),
-            (format_route_specification(route_stem + 'submitjob'), SubmitJobHandler, container),
-            (format_route_specification(route_stem + 'jobstatus'), JobStatusHandler, container)
+            (format_route_specification(route_stem + 'jobstatus'), JobStatusHandler, container),
+            (format_route_specification(route_stem + 'submitjob'), SubmitJobHandler, container)
+
         ]
     )
     return app
