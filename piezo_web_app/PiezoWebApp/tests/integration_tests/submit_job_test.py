@@ -286,3 +286,25 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                       '"executors" input must be in range [1, 10]\n' \
                       '"executor_cores" input must be in range [1, 4]\n' \
                       '"executor_memory" input must be in range [512m, 4096m]\n'
+
+    @gen_test
+    def test_unrecognised_input_returns_400_with_explanation(self):
+        # Arrange
+        body = {
+            # Expected inputs
+            'name': 'test_python_job',
+            'language': 'Python',
+            'path_to_main_app_file': '/path_to/file',
+            'python_version': '2',
+            # Unrecognised input
+            'dummy-key': 'dummy-value'
+        }
+        # Act
+        with pytest.raises(HTTPClientError) as error:
+            yield self.send_request(body)
+        # Assert
+        assert self.mock_k8s_adapter.create_namespaced_custom_object.assert_not_called
+        msg = json.loads(error.value.response.body, encoding='utf-8')['data']
+        assert error.value.response.code == 400
+        assert msg == "The following errors were found:\n" \
+                      'Unsupported input "dummy-key" provided\n'

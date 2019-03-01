@@ -55,3 +55,21 @@ class TestSubmitJobHandler(BaseHandlerTest):
         assert response_body['status'] == 'success'
         assert response_body['data']['message'] == 'Job driver created successfully'
         assert response_body['data']['driver_name'] == 'test-spark-job-driver'
+
+    @gen_test
+    def test_post_accepts_unrecognised_input(self):
+        # The handler input schema does not reject this, and so it becomes the responsibility of the validation service.
+        # See integration tests for submitting jobs.
+        body = {
+            'name': 'example-spark-job',
+            'language': 'example-language',
+            'path_to_main_app_file': '/path/to/main/app.file',
+            'dummy-key': 'dummy-value'
+        }
+        self.mock_spark_job_service.submit_job.return_value = {
+            'status': StatusCodes.Okay.value,
+            'message': 'Job driver created successfully',
+            'driver_name': 'test-spark-job-driver'
+        }
+        response_body, response_code = yield self.send_request(body)
+        assert response_code == 200
