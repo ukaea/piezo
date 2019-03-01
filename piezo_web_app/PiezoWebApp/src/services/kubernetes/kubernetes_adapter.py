@@ -25,4 +25,4 @@ class KubernetesAdapter(IKubernetesAdapter):
 
     def get_namespaced_custom_object_status(self, group, version, namespace, plural, name):
         return \
-            self._custom_connection.get_namespaced_custom_object_status(self, group, version, namespace, plural, name)
+            self._custom_connection.get_namespaced_custom_object_status(group, version, namespace, plural, name)

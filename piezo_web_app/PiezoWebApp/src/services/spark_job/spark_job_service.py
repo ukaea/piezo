@@ -44,19 +44,22 @@ class SparkJobService(ISparkJobService):
                 'message': message
             }
 
-    def get_job_status(self, job_name, namespace):
+    def get_job_status(self, job_driver_name, namespace):
         try:
             api_response = self._connection.get_namespaced_custom_object_status(
                 CRD_GROUP,
                 CRD_VERSION,
                 namespace,
                 CRD_PLURAL,
-                job_name,
+                job_driver_name
             )
-            return api_response
+            return {
+                'message': api_response,
+                'status': StatusCodes.Okay.value
+            }
         except ApiException as exception:
-            message = f'Kubernetes error when trying to get status of job "{job_name}" in namespace ' \
-                      f'"{namespace}": {exception.reason}'
+            message = f'Kubernetes error when trying to get status of job with driver "{job_driver_name}" in ' \
+                      f'namespace "{namespace}": {exception.reason}'
             self._logger.error(message)
             return {
                 'status': exception.status,
