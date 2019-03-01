@@ -203,9 +203,10 @@ class TestSparkJobService(TestCase):
 
     def test_get_job_status_sends_expected_arguments(self):
         # Arrange
-        self.mock_kubernetes_adapter.get_namespaced_custom_object.return_value = {'status':
-                                                                                       {'applicationState':
-                                                                                            {'state': 'Running'}}}
+        self.mock_kubernetes_adapter.get_namespaced_custom_object.return_value = {
+            'status': {
+                'applicationState': {
+                    'state': 'Running'}}}
         # Act
         result = self.test_service.get_job_status('test-job', 'test-namespace')
         # Assert
