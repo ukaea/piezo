@@ -37,12 +37,11 @@ class TestJobStatusIntegration(BaseIntegrationTest):
         response_body, response_code = yield self.send_request(body)
         # Assert
         assert self.mock_k8s_adapter.get_namespaced_custom_object.call_count == 1
-        call_args = self.mock_k8s_adapter.get_namespaced_custom_object.call_args[0]
-        assert call_args[0] == CRD_GROUP
-        assert call_args[1] == CRD_VERSION
-        assert call_args[2] == 'default'
-        assert call_args[3] == CRD_PLURAL
-        assert call_args[4] == 'test-spark-job'
+        self.mock_k8s_adapter.get_namespaced_custom_object.assert_called_once_with(CRD_GROUP,
+                                                                                   CRD_VERSION,
+                                                                                   'default',
+                                                                                   CRD_PLURAL,
+                                                                                   'test-spark-job')
         assert response_code == 200
         self.assertDictEqual(response_body, {
             'status': 'success',
