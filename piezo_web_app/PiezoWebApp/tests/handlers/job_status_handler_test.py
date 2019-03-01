@@ -1,4 +1,8 @@
+import json
+import pytest
+
 from mock import call
+from tornado.httpclient import HTTPClientError
 from tornado.testing import gen_test
 
 from PiezoWebApp.tests.handlers.base_handler_test import BaseHandlerTest
@@ -48,3 +52,18 @@ class TestJobStatusHandler(BaseHandlerTest):
                 'message': 'status'
             }
         })
+
+    @gen_test
+    def test_get_returns_message_and_status_code_when_k8s_error(self):
+        # Arrange
+        body = {'spark_job': 'test-job', 'namespace': 'test-namespace'}
+        self.mock_spark_job_service.get_job_status.return_value = {
+            "message": "Kubernetes error",
+            "status": 404
+        }
+        # Act
+        with pytest.raises(HTTPClientError) as error:
+            yield self.send_request(body)
+        assert error.value.response.code == 404
+        msg = json.loads(error.value.response.body, encoding='utf-8')['data']
+        assert msg == "Kubernetes error"
