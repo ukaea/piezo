@@ -23,6 +23,5 @@ class KubernetesAdapter(IKubernetesAdapter):
     def create_namespaced_custom_object(self, group, version, namespace, plural, body):
         return self._custom_connection.create_namespaced_custom_object(group, version, namespace, plural, body)
 
-    def get_namespaced_custom_object_status(self, group, version, namespace, plural, name):
-        return \
-            self._custom_connection.get_namespaced_custom_object_status(group, version, namespace, plural, name)
+    def get_namespaced_custom_object(self, group, version, namespace, plural, name):
+        return self._custom_connection.get_namespaced_custom_object(group, version, namespace, plural, name)

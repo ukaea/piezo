@@ -22,5 +22,5 @@ class IKubernetesAdapter(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def get_namespaced_custom_object_status(self, group, version, namespace, plural, name):
+    def get_namespaced_custom_object(self, group, version, namespace, plural, name):
         pass
