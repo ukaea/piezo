@@ -308,3 +308,34 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
         assert error.value.response.code == 400
         assert msg == "The following errors were found:\n" \
                       'Unsupported input "dummy-key" provided\n'
+
+    @gen_test
+    def test_optional_inputs_in_wrong_format_returns_400_with_explanation(self):
+        # Arrange
+        body = {
+            'name': 'test_python_job',
+            'language': 'Python',
+            'path_to_main_app_file': '/path_to/file',
+            'python_version': '2.3',
+            'driver_cores': '500m',
+            'driver_memory': '1024',
+            'executors': 'Maximum',
+            'executor_cores': '3.5',
+            'executor_memory': '2048'
+        }
+        # Act
+        with pytest.raises(HTTPClientError) as error:
+            yield self.send_request(body)
+        # Assert
+        assert self.mock_k8s_adapter.create_namespaced_custom_object.assert_not_called
+        assert error.value.response.code == 400
+        msg = json.loads(error.value.response.body, encoding='utf-8')['data']
+        assert msg == "The following errors were found:\n" \
+                      '"python_version" input must be one of: "2", "3"\n' \
+                      '"driver_cores" input must be a multiple of 0.1\n' \
+                      '"driver_memory" input must be a string integer value ending in "m" ' \
+                      '(e.g. "512m" for 512 megabytes)\n' \
+                      '"executors" input must be an integer\n' \
+                      '"executor_cores" input must be an integer\n' \
+                      '"executor_memory" input must be a string integer value ending in "m" ' \
+                      '(e.g. "512m" for 512 megabytes)\n'
