@@ -226,11 +226,11 @@ class TestSparkJobService(TestCase):
         result = self.test_service.get_job_status('test-job', 'test-namespace')
         # Assert
         expected_message = \
-            'Kubernetes error when trying to get status of job "test-job" in ' \
+            'Kubernetes error when trying to get status of spark job "test-job" in ' \
             'namespace "test-namespace": Reason'
         self.mock_logger.error.assert_called_once_with(expected_message)
         self.assertDictEqual(result, {
             'status': 999,
-            'message': 'Kubernetes error when trying to get status of job "test-job" in namespace'
+            'message': 'Kubernetes error when trying to get status of spark job "test-job" in namespace'
                        ' "test-namespace": Reason'
         })

@@ -59,7 +59,7 @@ class SparkJobService(ISparkJobService):
                 'status': StatusCodes.Okay.value
             }
         except ApiException as exception:
-            message = f'Kubernetes error when trying to get status of job "{job_name}" in ' \
+            message = f'Kubernetes error when trying to get status of spark job "{job_name}" in ' \
                       f'namespace "{namespace}": {exception.reason}'
             self._logger.error(message)
             return {
