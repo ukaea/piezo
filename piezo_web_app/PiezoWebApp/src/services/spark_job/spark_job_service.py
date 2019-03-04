@@ -22,7 +22,13 @@ class SparkJobService(ISparkJobService):
 
     def delete_job(self, job_name, namespace):
         try:
-            body = self._connection.delete_options()
+            body = {'api_version': None,
+                    'dry_run': None,
+                    'grace_period_seconds': None,
+                    'kind': None,
+                    'orphan_dependents': None,
+                    'preconditions': None,
+                    'propagation_policy': None}
             api_response = self._connection.delete_namespaced_custom_object(
                 CRD_GROUP,
                 CRD_VERSION,
@@ -32,7 +38,7 @@ class SparkJobService(ISparkJobService):
                 body
             )
             return {
-                'message': api_response.content,
+                'message': f"Job {job_name} deleted successfully",
                 'status': StatusCodes.Okay.value
             }
         except ApiException as exception:

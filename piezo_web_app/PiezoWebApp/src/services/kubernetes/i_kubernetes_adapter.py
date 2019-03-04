@@ -9,10 +9,6 @@ class IKubernetesAdapter(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def delete_options(self, **kwargs):
-        pass
-
-    @abstractmethod
     def read_namespaced_pod_log(self, driver_name, namespace):
         pass
 

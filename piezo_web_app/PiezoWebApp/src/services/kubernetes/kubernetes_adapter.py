@@ -13,9 +13,6 @@ class KubernetesAdapter(IKubernetesAdapter):
     def delete_namespaced_custom_object(self, group, version, namespace, plural, name, body):
         return self._custom_connection.delete_namespaced_custom_object(group, version, namespace, plural, name, body)
 
-    def delete_options(self, **kwargs):
-        return kubernetes.client.V1DeleteOptions(kwargs)
-
     def read_namespaced_pod_log(self, driver_name, namespace):
         return self._core_connection.read_namespaced_pod_log(driver_name, namespace)
 
