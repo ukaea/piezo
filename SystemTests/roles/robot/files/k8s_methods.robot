@@ -59,3 +59,9 @@ Submit SparkPi Job
     ${submitbody}=    Create Dictionary   name=${job_name}   language=Scala   main_class=org.apache.spark.examples.SparkPi    path_to_main_app_file=local:///opt/spark/examples/jars/spark-examples_2.11-2.4.0.jar
     ${response}=    Post Request With Json Body   /piezo/submitjob    ${submitbody}
     [return]  ${response}
+
+Get Status Of Spark Job
+    [Arguments] ${job_name}
+    ${body}=    Create Dictionary job_name=${job_name} namespace=default
+    ${response}=    Get Request With Json Body /piezo/jobstatus $body
+    [return]    ${response}

@@ -55,3 +55,11 @@ Can Delete Submitted Spark Job
     Sleep   1 minute
     ${response}=  Delete Spark Job    ${job_name}
     Confirm Ok Response   ${response}
+
+Can Get Status Of Submitted Spark Job
+    Submit SparkPi Job    spark-pi-5jk23s
+    Sleep   1 minute
+    ${response}=  Get Status Of Spark Job ${job_name}
+    Confirm Ok Response ${response}
+    ${data}= Get Response Data ${response}
+    Should Be Equal As String ${data["message"]} Completed

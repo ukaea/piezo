@@ -67,15 +67,16 @@ class SparkJobService(ISparkJobService):
                 'message': message
             }
 
-    def get_logs(self, driver_name, namespace):
+    def get_logs(self, job_name, namespace):
         try:
+            driver_name = job_name + "-driver"
             api_response = self._connection.read_namespaced_pod_log(driver_name, namespace)
             return {
                 'message': api_response,
                 'status': StatusCodes.Okay.value
             }
         except ApiException as exception:
-            message = f'Kubernetes error when trying to get logs for driver "{driver_name}" in namespace '\
+            message = f'Kubernetes error when trying to get logs for spark job "{job_name}" in namespace '\
                 f'"{namespace}": {exception.reason}'
             self._logger.error(message)
             return {

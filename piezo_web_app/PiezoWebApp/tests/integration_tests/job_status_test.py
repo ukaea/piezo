@@ -30,7 +30,7 @@ class TestJobStatusIntegration(BaseIntegrationTest):
     @gen_test
     def test_status_is_returned_from_correct_spark_job(self):
         # Arrange
-        body = {'spark_job': 'test-spark-job', 'namespace': 'default'}
+        body = {'job_name': 'test-spark-job', 'namespace': 'default'}
         kubernetes_response = {'status': {'applicationState': {'state': 'Running'}}}
         self.mock_k8s_adapter.get_namespaced_custom_object.return_value = kubernetes_response
         # Act
@@ -53,7 +53,7 @@ class TestJobStatusIntegration(BaseIntegrationTest):
     @gen_test
     def test_trying_to_get_status_of_non_existent_job_returns_404_with_reason(self):
         # Arrange
-        body = {'spark_job': 'test-spark-job', 'namespace': 'default'}
+        body = {'job_name': 'test-spark-job', 'namespace': 'default'}
         self.mock_k8s_adapter.get_namespaced_custom_object.side_effect = ApiException(status=404, reason="Not Found")
         # Act
         with pytest.raises(HTTPClientError) as exception:
