@@ -28,9 +28,9 @@ Get Driver Name
     ${driver_name}=   Catenate    SEPARATOR=    ${job_name}   -driver
     [return]    ${driver_name}
 
-Get Logs From Spark Driver
-    [Arguments]   ${driver_name}
-    ${body}=    Create Dictionary   driver_name=${driver_name}   namespace=default
+Get Logs For Spark Job
+    [Arguments]   ${job_name}
+    ${body}=    Create Dictionary   job_name=${job_name}   namespace=default
     ${response}=  Get Request With Json Body   /piezo/getlogs    ${body}
     [return]    ${response}
 
@@ -46,6 +46,13 @@ Get Request With Json Body
     Create Session    k8s   ${K8S_ENDPOINT}
     ${response}=  Get Request   k8s   ${route}    headers=${headers}    json=${body}
     [return]  ${response}
+
+Get Status Of Spark Job
+    [Arguments]   ${job_name}
+    ${body}=    Create Dictionary   job_name=${job_name}   namespace=default
+    ${response}=  Get Request With Json Body   /piezo/jobstatus    ${body}
+    [return]    ${response}
+
 
 Post Request With Json Body
     [Arguments]   ${route}    ${body}

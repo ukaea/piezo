@@ -25,7 +25,11 @@ Piezo Heartbeat Returns Ok Response
     Dictionaries Should Be Equal    ${data}   ${expected}
 
 Get Logs Of Non Job Returns Not Found Response
-    ${response}=  Get Logs From Spark Driver    dummy
+    ${response}=  Get Logs For Spark Job    dummy
+    Confirm Not Found Response  ${response}
+
+Get Status Of Non Job Returns Not Found Response
+    ${response}=  Get Status Of Spark Job    dummy
     Confirm Not Found Response  ${response}
 
 Delete Job Of Non Job Returns Not Found Response
@@ -41,17 +45,26 @@ Submit Spark Pi Job Returns Ok Response
 
 Can Get Logs Of Submitted Spark Job
     ${job_name}=     Set Variable   spark-pi-fe244
-    ${driver_name}=   Get Driver Name   ${job_name}
     Submit SparkPi Job    ${job_name}
     Sleep   1 minute
-    ${response}=  Get Logs From Spark Driver    ${driver_name}
+    ${response}=  Get Logs For Spark Job    ${job_name}
     ${joblog}=    Get Response Data Message   ${response}
     ${pi_lines}=    Get Lines Containing String   ${joblog}   Pi is roughly 3
     ${num_pi_lines}=    Get Line Count    ${pi_lines}
     Should Be Equal As Integers   ${num_pi_lines}   1
 
 Can Delete Submitted Spark Job
-    Submit SparkPi Job    spark-pi-83783
+    ${job_name}=    Set Variable        spark-pi-83783
+    Submit SparkPi Job   ${job_name}
     Sleep   1 minute
     ${response}=  Delete Spark Job    ${job_name}
     Confirm Ok Response   ${response}
+
+Can Get Status Of Submitted Spark Job
+    ${job_name}=     Set Variable       spark-pi-5jk23s
+    Submit SparkPi Job    ${job_name}
+    Sleep   1 minute
+    ${response}=  Get Status Of Spark Job   ${job_name}
+    Confirm Ok Response     ${response}
+    ${data}=  Get Response Data     ${response}
+    Should Be Equal As Strings       ${data["message"]}        COMPLETED

@@ -22,3 +22,6 @@ class KubernetesAdapter(IKubernetesAdapter):
     # pylint: disable=too-many-arguments
     def create_namespaced_custom_object(self, group, version, namespace, plural, body):
         return self._custom_connection.create_namespaced_custom_object(group, version, namespace, plural, body)
+
+    def get_namespaced_custom_object(self, group, version, namespace, plural, name):
+        return self._custom_connection.get_namespaced_custom_object(group, version, namespace, plural, name)

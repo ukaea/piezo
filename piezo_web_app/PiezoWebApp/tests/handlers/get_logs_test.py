@@ -21,13 +21,13 @@ class TestGetLogsHandler(BaseHandlerTest):
 
     @gen_test
     def test_get_returns_400_when_namespace_is_missing(self):
-        body = {'driver_name': 'test-driver'}
+        body = {'job_name': 'test-job'}
         yield self.assert_request_returns_400(body)
 
     @gen_test
     def test_get_returns_logs_when_successful(self):
         # Arrange
-        body = {'driver_name': 'test-driver', 'namespace': 'test-namespace'}
+        body = {'job_name': 'test-job', 'namespace': 'test-namespace'}
         self.mock_spark_job_service.get_logs.return_value = {
             "message": "logs",
             "status": 200
@@ -35,10 +35,10 @@ class TestGetLogsHandler(BaseHandlerTest):
         # Act
         response_body, response_code = yield self.send_request(body)
         # Assert
-        self.mock_spark_job_service.get_logs.assert_called_once_with('test-driver', 'test-namespace')
+        self.mock_spark_job_service.get_logs.assert_called_once_with('test-job', 'test-namespace')
         self.mock_logger.debug.assert_has_calls([
-            call('Trying to delete driver "test-driver" in namespace "test-namespace".'),
-            call('Getting logs from driver "test-driver" in namespace "test-namespace" returned result "200".')
+            call('Trying to get logs from spark job "test-job" in namespace "test-namespace".'),
+            call('Getting logs from spark job "test-job" in namespace "test-namespace" returned result "200".')
         ])
         assert response_code == 200
         self.assertDictEqual(response_body, {
