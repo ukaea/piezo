@@ -8,14 +8,14 @@ from PiezoWebApp.src.handlers.schema.schema_helpers import create_object_schema_
 class JobStatusHandler(BaseHandler):
     @schema.validate(
         input_schema=create_object_schema_with_string_properties(
-            ['spark_job', 'namespace'], required=['spark_job', 'namespace']),
+            ['job_name', 'namespace'], required=['job_name', 'namespace']),
         input_example={
-            'spark_job': 'example-driver',
+            'job_name': 'example-driver',
             'namespace': 'default'
         }
     )
     def get(self, *args, **kwargs):
-        spark_job = self.get_body_attribute('spark_job', required=True)
+        spark_job = self.get_body_attribute('job_name', required=True)
         namespace = self.get_body_attribute('namespace', required=True)
         self._logger.debug(f'Trying to get status of spark job "{spark_job}" in namespace "{namespace}".')
         result = self._spark_job_service.get_job_status(spark_job, namespace)
