@@ -3,15 +3,14 @@ import pytest
 from PiezoWebApp.src.models.validation_rule import ValidationRule
 from PiezoWebApp.src.handlers.schema.schema_helpers import create_object_schema_from_validation_rules
 from PiezoWebApp.src.handlers.schema.schema_helpers import create_object_schema_with_string_properties
-from PiezoWebApp.src.models.spark_job_argument_classification import ArgumentClassification
 
 
 def test_create_object_schema_from_validation_rules_returns_schema_with_all_optional_properties_with_none_required():
     # Arrange
     rules_dict = {
-        'a': ValidationRule(ArgumentClassification.Optional, None),
-        'b': ValidationRule(ArgumentClassification.Optional, None),
-        'c': ValidationRule(ArgumentClassification.Optional, None)
+        'a': ValidationRule({'classification': 'Optional'}),
+        'b': ValidationRule({'classification': 'Optional'}),
+        'c': ValidationRule({'classification': 'Optional'})
     }
     # Act
     schema = create_object_schema_from_validation_rules(rules_dict)
@@ -29,9 +28,9 @@ def test_create_object_schema_from_validation_rules_returns_schema_with_all_opti
 def test_create_object_schema_from_validation_rules_returns_schema_with_all_conditional_properties_with_none_required():
     # Arrange
     rules_dict = {
-        'a': ValidationRule(ArgumentClassification.Conditional, None),
-        'b': ValidationRule(ArgumentClassification.Conditional, None),
-        'c': ValidationRule(ArgumentClassification.Conditional, None)
+        'a': ValidationRule({'classification': 'Conditional'}),
+        'b': ValidationRule({'classification': 'Conditional'}),
+        'c': ValidationRule({'classification': 'Conditional'})
     }
     # Act
     schema = create_object_schema_from_validation_rules(rules_dict)
@@ -49,9 +48,9 @@ def test_create_object_schema_from_validation_rules_returns_schema_with_all_cond
 def test_create_object_schema_from_validation_rules_returns_schema_with_all_required_properties_with_all_required():
     # Arrange
     rules_dict = {
-        'a': ValidationRule(ArgumentClassification.Required, None),
-        'b': ValidationRule(ArgumentClassification.Required, None),
-        'c': ValidationRule(ArgumentClassification.Required, None)
+        'a': ValidationRule({'classification': 'Required'}),
+        'b': ValidationRule({'classification': 'Required'}),
+        'c': ValidationRule({'classification': 'Required'})
     }
     # Act
     schema = create_object_schema_from_validation_rules(rules_dict)
@@ -70,9 +69,9 @@ def test_create_object_schema_from_validation_rules_returns_schema_with_all_requ
 def test_create_object_schema_from_validation_rules_raises_value_error_with_all_fixed():
     # Arrange
     rules_dict = {
-        'a': ValidationRule(ArgumentClassification.Fixed, None),
-        'b': ValidationRule(ArgumentClassification.Fixed, None),
-        'c': ValidationRule(ArgumentClassification.Fixed, None)
+        'a': ValidationRule({'classification': 'Fixed'}),
+        'b': ValidationRule({'classification': 'Fixed'}),
+        'c': ValidationRule({'classification': 'Fixed'})
     }
     # Act & Assert
     with pytest.raises(ValueError, match='No properties provided for the schema'):
@@ -90,10 +89,10 @@ def test_create_object_schema_from_validation_rules_raises_value_error_with_empt
 def test_create_object_schema_from_validation_rules_returns_expected_schema_with_mixed_rules():
     # Arrange
     rules_dict = {
-        'fixed': ValidationRule(ArgumentClassification.Fixed, None),
-        'required': ValidationRule(ArgumentClassification.Required, None),
-        'optional': ValidationRule(ArgumentClassification.Optional, None),
-        'conditional': ValidationRule(ArgumentClassification.Conditional, None)
+        'fixed': ValidationRule({'classification': 'Fixed'}),
+        'required': ValidationRule({'classification': 'Required'}),
+        'optional': ValidationRule({'classification': 'Optional'}),
+        'conditional': ValidationRule({'classification': 'Conditional'})
     }
     # Act
     schema = create_object_schema_from_validation_rules(rules_dict)

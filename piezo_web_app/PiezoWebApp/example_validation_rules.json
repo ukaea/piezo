@@ -10,6 +10,11 @@
     "default": "SparkApplication"
   },
   {
+    "input_name": "namespace",
+    "classification": "Fixed",
+    "default": "default"
+  },
+  {
     "input_name": "mode",
     "classification": "Fixed",
     "default": "cluster"
@@ -55,11 +60,15 @@
   {
     "input_name": "python_version",
     "classification": "Conditional",
-    "options": ["2", "3"]
+    "options": ["2", "3"],
+    "conditional_input_name": "language",
+    "conditional_input_value": "Python"
   },
   {
     "input_name": "main_class",
-    "classification": "Conditional"
+    "classification": "Conditional",
+    "conditional_input_name": "language",
+    "conditional_input_value": "Scala"
   },
   {
     "input_name": "driver_cores",

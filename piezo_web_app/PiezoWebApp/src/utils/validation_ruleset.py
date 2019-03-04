@@ -2,7 +2,7 @@ import json
 import os
 
 from PiezoWebApp.src.models.spark_job_argument_classification import ArgumentClassification
-from PiezoWebApp.src.models.validation_rule_new import ValidationRule
+from PiezoWebApp.src.models.validation_rule import ValidationRule
 
 
 class ValidationRuleset:
@@ -29,14 +29,16 @@ class ValidationRuleset:
 
     def get_keys_of_required_inputs(self):
         return [
-            key for key in self._validation_dict
-            if self._validation_dict[key].classification is ArgumentClassification.Required
+            input_name
+            for input_name, rule in self._validation_dict.items()
+            if rule.classification is ArgumentClassification.Required
         ]
 
     def get_keys_of_optional_inputs(self):
         return [
-            key for key in self._validation_dict
-            if self._validation_dict[key].classification is ArgumentClassification.Optional
+            input_name
+            for input_name, rule in self._validation_dict.items()
+            if rule.classification is ArgumentClassification.Optional
         ]
 
     def get_default_value_for_key(self, key):
@@ -44,6 +46,8 @@ class ValidationRuleset:
         return validation_rule.default
 
     def get_keys_for_language(self, language):
-        if language in self._language_specific_keys:
-            return self._language_specific_keys[language]
-        return []
+        return [
+            input_name
+            for input_name, rule in self._validation_dict.items()
+            if rule.conditional_input_name == 'language' and rule.conditional_input_value == language
+        ]

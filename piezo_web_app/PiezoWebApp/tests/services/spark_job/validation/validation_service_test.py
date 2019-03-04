@@ -98,7 +98,7 @@ class TestValidationService(unittest.TestCase):
         # Arrange
         self.mock_validation_ruleset.get_validation_rule_for_key.side_effect = lambda key: {
             'name': None,
-            'language': ValidationRule(None, None, options=['example-language']),
+            'language': ValidationRule({"classification": "Required", "options": ['example-language']}),
             'main_class': None
         }[key]
         request_body = {
@@ -117,7 +117,7 @@ class TestValidationService(unittest.TestCase):
         # Arrange
         self.mock_validation_ruleset.get_validation_rule_for_key.side_effect = lambda key: {
             'name': None,
-            'language': ValidationRule(None, None, options=['example-language']),
+            'language': ValidationRule({"classification": "Required", "options": ['example-language']}),
             'main_class': None
         }[key]
         request_body = {

@@ -2,10 +2,8 @@ import unittest
 import pytest
 import mock
 
-from PiezoWebApp.src.config.spark_job_validation_rules import LANGUAGE_SPECIFIC_KEYS
-from PiezoWebApp.src.config.spark_job_validation_rules import VALIDATION_RULES
 from PiezoWebApp.src.services.spark_job.validation.manifest_populator import ManifestPopulator
-from PiezoWebApp.src.services.spark_job.validation.validation_ruleset import ValidationRuleset
+from PiezoWebApp.src.utils.validation_ruleset import ValidationRuleset
 from PiezoWebApp.src.utils.configurations import Configuration
 
 
@@ -16,8 +14,30 @@ class TestTemplatePopulator(unittest.TestCase):
         mock_configuration = mock.create_autospec(Configuration)
         mock_configuration.s3_endpoint = "0.0.0.0"
         mock_configuration.s3_secrets_name = "secret"
-        validation_ruleset = ValidationRuleset(LANGUAGE_SPECIFIC_KEYS, VALIDATION_RULES)
-        self.test_populator = ManifestPopulator(mock_configuration, validation_ruleset)
+        mock_validation_ruleset = mock.create_autospec(ValidationRuleset)
+        mock_validation_ruleset.get_default_value_for_key.side_effect = \
+            lambda input_name: {
+                'apiVersion': "sparkoperator.k8s.io/v1beta1",
+                'kind': 'SparkApplication',
+                'namespace': 'default',
+                'mode': 'cluster',
+                'image': 'gcr.io/spark-operator/spark:v2.4.0',
+                'image_pull_policy': 'Always',
+                'spark_version': '2.4.0',
+                'restart_policy': 'Never',
+                'service_account': 'spark',
+                'name': None,
+                'path_to_main_app_file': None,
+                'language': None,
+                'python_version': None,
+                'main_class': None,
+                'driver_cores': 0.1,
+                'driver_memory': "512m",
+                'executors': 1,
+                'executor_cores': 1,
+                'executor_memory': "512m"
+            }[input_name]
+        self.test_populator = ManifestPopulator(mock_configuration, mock_validation_ruleset)
         self.arguments = {"name": "test",
                           "path_to_main_app_file": "/path/to/file",
                           "driver_cores": "0.1",
