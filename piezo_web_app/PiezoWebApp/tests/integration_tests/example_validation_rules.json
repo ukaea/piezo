@@ -1,0 +1,108 @@
+[
+  {
+    "input_name": "apiVersion",
+    "classification": "Fixed",
+    "default": "sparkoperator.k8s.io/v1beta1"
+  },
+  {
+    "input_name": "kind",
+    "classification": "Fixed",
+    "default": "SparkApplication"
+  },
+  {
+    "input_name": "namespace",
+    "classification": "Fixed",
+    "default": "default"
+  },
+  {
+    "input_name": "mode",
+    "classification": "Fixed",
+    "default": "cluster"
+  },
+  {
+    "input_name": "image",
+    "classification": "Fixed",
+    "default": "gcr.io/spark-operator/spark:v2.4.0"
+  },
+  {
+    "input_name": "image_pull_policy",
+    "classification": "Fixed",
+    "default": "Always"
+  },
+  {
+    "input_name": "spark_version",
+    "classification": "Fixed",
+    "default": "2.4.0"
+  },
+  {
+    "input_name": "restart_policy",
+    "classification": "Fixed",
+    "default": "Never"
+  },
+  {
+    "input_name": "service_account",
+    "classification": "Fixed",
+    "default": "spark"
+  },
+  {
+    "input_name": "name",
+    "classification": "Required"
+  },
+  {
+    "input_name": "path_to_main_app_file",
+    "classification": "Required"
+  },
+  {
+    "input_name": "language",
+    "classification": "Required",
+    "options": ["Python", "Scala"]
+  },
+  {
+    "input_name": "python_version",
+    "classification": "Conditional",
+    "options": ["2", "3"],
+    "conditional_input_name": "language",
+    "conditional_input_value": "Python"
+  },
+  {
+    "input_name": "main_class",
+    "classification": "Conditional",
+    "conditional_input_name": "language",
+    "conditional_input_value": "Scala"
+  },
+  {
+    "input_name": "driver_cores",
+    "classification": "Optional",
+    "default": 0.1,
+    "minimum": 0.1,
+    "maximum": 1
+  },
+  {
+    "input_name": "driver_memory",
+    "classification": "Optional",
+    "default": "512m",
+    "minimum": 512,
+    "maximum": 2048
+  },
+  {
+    "input_name": "executors",
+    "classification": "Optional",
+    "default": 1,
+    "minimum": 1,
+    "maximum": 10
+  },
+  {
+    "input_name": "executor_cores",
+    "classification": "Optional",
+    "default": 1,
+    "minimum": 1,
+    "maximum": 4
+  },
+  {
+    "input_name": "executor_memory",
+    "classification": "Optional",
+    "default": "512m",
+    "minimum": 512,
+    "maximum": 4096
+  }
+]

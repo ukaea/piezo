@@ -1,16 +1,13 @@
-from PiezoWebApp.src.models.spark_job_argument_classification import ArgumentClassification
-
-
-def create_object_schema_from_validation_rules(rules_dict):
-    all_properties = [
-        key for key, rule in rules_dict.items()
-        if rule.classification is not ArgumentClassification.Fixed
-    ]
-    required_properties = [
-        key for key, rule in rules_dict.items()
-        if rule.classification is ArgumentClassification.Required
-    ]
-    return create_object_schema_with_string_properties(all_properties, required=required_properties)
+def create_object_schema_from_validation_ruleset(ruleset):
+    property_types = ruleset.get_key_type_pairs_allowed_as_input()
+    required_properties = ruleset.get_keys_of_required_inputs()
+    schema = {"type": "object",
+              "properties":
+                  {prop_name: {"type": prop_type} for prop_name, prop_type in property_types.items()},
+              }
+    if required_properties:
+        schema["required"] = required_properties
+    return schema
 
 
 def create_object_schema_with_string_properties(list_of_properties, required=None):

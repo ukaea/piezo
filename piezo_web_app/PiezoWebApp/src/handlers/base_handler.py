@@ -7,9 +7,14 @@ from PiezoWebApp.src.utils.str_helper import is_str_empty
 # pylint: disable=abstract-method
 class BaseHandler(APIHandler):
     # pylint: disable=arguments-differ
-    def initialize(self, logger, spark_job_service):
+    def initialize(self, logger, spark_job_service, validation_ruleset):
         self._logger = logger
         self._spark_job_service = spark_job_service
+        self._validation_ruleset = validation_ruleset
+
+    @property
+    def validation_ruleset(self):
+        return self._validation_ruleset
 
     def get_body_attribute(self, key, default=None, required=False, value_type=str):
         # pylint: disable=no-member

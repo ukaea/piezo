@@ -2,8 +2,8 @@ import unittest
 import pytest
 import mock
 
+from PiezoWebApp.src.services.spark_job.validation.validation_ruleset import ValidationRuleset
 from PiezoWebApp.src.services.spark_job.validation.manifest_populator import ManifestPopulator
-from PiezoWebApp.src.utils.validation_ruleset import ValidationRuleset
 from PiezoWebApp.src.utils.configurations import Configuration
 
 

@@ -22,7 +22,7 @@ class TestSubmitJobHandler(BaseHandlerTest):
 
     @gen_test
     def test_post_returns_400_when_language_is_missing(self):
-        body = {'name': 'example-spark-job', 'path_to_main_app_file': '/path/to/main/app.file'}
+        body = {'name': 'example-spark-job', '': '/path/to/main/app.file'}
         yield self.assert_request_returns_400(body)
 
     @gen_test

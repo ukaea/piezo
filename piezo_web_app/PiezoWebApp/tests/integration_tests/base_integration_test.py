@@ -2,14 +2,17 @@ from abc import ABCMeta, abstractmethod
 import json
 import logging
 import mock
+import os
 import pytest
 import tornado.testing
 from tornado.web import Application
 
 from PiezoWebApp.run_piezo import build_container
+from PiezoWebApp.src.services.spark_job.validation.validation_ruleset import ValidationRuleset
 from PiezoWebApp.src.services.kubernetes.i_kubernetes_adapter import IKubernetesAdapter
-from PiezoWebApp.src.utils.route_helper import format_route_specification
 from PiezoWebApp.src.utils.configurations import Configuration
+from PiezoWebApp.src.utils.route_helper import format_route_specification
+from PiezoWebApp.src.utils.validation_ruleset_parser import ValidationRulesetParser
 
 # str | The custom resource's group name
 CRD_GROUP = 'sparkoperator.k8s.io'
@@ -35,14 +38,22 @@ class BaseIntegrationTest(tornado.testing.AsyncHTTPTestCase, metaclass=ABCMeta):
     # pylint: disable=attribute-defined-outside-init
     @pytest.fixture(autouse=True)
     def setup(self):
-        self.mock_k8s_adapter = mock.create_autospec(IKubernetesAdapter)
-        self.mock_logger = mock.create_autospec(logging.Logger)
         self.mock_configuration = mock.create_autospec(Configuration)
         self.mock_configuration.s3_endpoint = "0.0.0.0"
         self.mock_configuration.s3_secrets_name = "secret"
+        self.mock_k8s_adapter = mock.create_autospec(IKubernetesAdapter)
+        self.mock_logger = mock.create_autospec(logging.Logger)
+        ruleset_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'example_validation_rules.json'))
+        ruleset = ValidationRulesetParser().parse(ruleset_path)
+        self.validation_ruleset = ValidationRuleset(ruleset)
 
     def get_app(self):
-        container = build_container(self.mock_configuration, self.mock_k8s_adapter, self.mock_logger)
+        container = build_container(
+            self.mock_configuration,
+            self.mock_k8s_adapter,
+            self.mock_logger,
+            self.validation_ruleset
+        )
         application = Application(
             [
                 (format_route_specification("testroute"), self.handler, container)

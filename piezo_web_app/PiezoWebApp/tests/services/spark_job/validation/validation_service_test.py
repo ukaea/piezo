@@ -4,8 +4,8 @@ import mock
 import pytest
 
 from PiezoWebApp.src.models.validation_rule import ValidationRule
-from PiezoWebApp.src.services.spark_job.validation.validation_service import ValidationService
 from PiezoWebApp.src.services.spark_job.validation.validation_ruleset import ValidationRuleset
+from PiezoWebApp.src.services.spark_job.validation.validation_service import ValidationService
 
 
 class TestValidationService(unittest.TestCase):

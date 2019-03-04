@@ -5,7 +5,7 @@ import tempfile
 import pytest
 
 from PiezoWebApp.src.models.spark_job_argument_classification import ArgumentClassification
-from PiezoWebApp.src.utils.validation_ruleset import ValidationRuleset
+from PiezoWebApp.src.utils.validation_ruleset_parser import ValidationRulesetParser
 
 
 class SampleValidationRulesCreator:
@@ -23,14 +23,14 @@ class SampleValidationRulesCreator:
             os.remove(file_path)
 
 
-def test_validation_rules_raises_when_path_is_not_correct():
+def test_validation_rules_parser_raises_when_path_is_not_correct():
     with pytest.raises(RuntimeError) as exception_info:
         path = "dummy_path"
-        ValidationRuleset(path)
+        ValidationRulesetParser().parse(path)
     assert('The validation rules file "dummy_path" does not seem to exist.' in str(exception_info.value))
 
 
-def test_validation_rules_parses_with_arguments():
+def test_validation_rules_parser_parses_with_arguments():
     # Arrange
     rules_path = SampleValidationRulesCreator.create_rules([
         {
@@ -55,19 +55,19 @@ def test_validation_rules_parses_with_arguments():
         }
     ])
     # Act
-    rules = ValidationRuleset(rules_path)
+    rules = ValidationRulesetParser().parse(rules_path)
     # Assert
-    fixed = rules.get_validation_rule_for_key('fixed')
+    fixed = rules['fixed']
     assert fixed.classification is ArgumentClassification.Fixed
     assert fixed.default == 'fixed_value'
-    required_no_default = rules.get_validation_rule_for_key('required_no_default')
+    required_no_default = rules['required_no_default']
     assert required_no_default.classification is ArgumentClassification.Required
     assert required_no_default.default is None
-    optional_with_range = rules.get_validation_rule_for_key('optional_with_range')
+    optional_with_range = rules['optional_with_range']
     assert optional_with_range.classification is ArgumentClassification.Optional
     assert optional_with_range.minimum is 1
     assert optional_with_range.maximum is 10
-    conditional_with_options = rules.get_validation_rule_for_key('conditional_with_options')
+    conditional_with_options = rules['conditional_with_options']
     assert conditional_with_options.classification is ArgumentClassification.Conditional
     assert conditional_with_options.options == ['option1', 'option2']
     # Clean up
