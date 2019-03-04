@@ -27,7 +27,7 @@ def test_validation_rules_parser_raises_when_path_is_not_correct():
     with pytest.raises(RuntimeError) as exception_info:
         path = "dummy_path"
         ValidationRulesetParser().parse(path)
-    assert('The validation rules file "dummy_path" does not seem to exist.' in str(exception_info.value))
+    assert 'The validation rules file "dummy_path" does not seem to exist.' in str(exception_info.value)
 
 
 def test_validation_rules_parser_parses_with_arguments():

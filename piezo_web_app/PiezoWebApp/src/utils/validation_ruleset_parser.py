@@ -9,8 +9,8 @@ class ValidationRulesetParser:
         self._validation_dict = {}
 
     def _parse(self, path):
-        with open(path, 'rb') as f:
-            raw_content = json.load(f)
+        with open(path, 'rb') as rules_file:
+            raw_content = json.load(rules_file)
         for rule_dict in raw_content:
             self._parse_rule(rule_dict)
 

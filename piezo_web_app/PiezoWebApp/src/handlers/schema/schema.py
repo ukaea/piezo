@@ -5,18 +5,18 @@ from functools import wraps
 
 import jsonschema
 import tornado.gen
-from tornado_json.schema import input_schema_clean
-
 from tornado_json.exceptions import APIError
+from tornado_json.schema import input_schema_clean
+from tornado_json.utils import container
 
 try:
     from tornado.concurrent import is_future
 except ImportError:
     # For tornado 3.x.x
     from tornado.concurrent import Future
-    is_future = lambda x: isinstance(x, Future)
-
-from tornado_json.utils import container
+    
+    def is_future(x):
+        isinstance(x, Future)
 
 from PiezoWebApp.src.handlers.schema.schema_helpers import create_object_schema_from_validation_ruleset
 
@@ -74,8 +74,8 @@ def validate(output_schema=None,
                             "required": ["result"]
                         }
                     )
-                except jsonschema.ValidationError as e:
-                    raise TypeError(str(e))
+                except jsonschema.ValidationError as error:
+                    raise TypeError(str(error))
 
             self.success(output)
 
