@@ -65,12 +65,10 @@ def test_validation_rules_parser_parses_with_arguments():
     assert required_no_default.default is None
     optional_with_range = rules['optional_with_range']
     assert optional_with_range.classification is ArgumentClassification.Optional
-    assert optional_with_range.minimum is 1
-    assert optional_with_range.maximum is 10
+    assert optional_with_range.minimum == 1
+    assert optional_with_range.maximum == 10
     conditional_with_options = rules['conditional_with_options']
     assert conditional_with_options.classification is ArgumentClassification.Conditional
     assert conditional_with_options.options == ['option1', 'option2']
     # Clean up
     SampleValidationRulesCreator.remove_file(rules_path)
-
-
