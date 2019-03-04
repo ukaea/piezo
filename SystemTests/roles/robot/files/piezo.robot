@@ -67,4 +67,4 @@ Can Get Status Of Submitted Spark Job
     ${response}=  Get Status Of Spark Job   ${job_name}
     Confirm Ok Response     ${response}
     ${data}=  Get Response Data     ${response}
-    Should Be Equal As String       ${data["message"]}        Completed
+    Should Be Equal As Strings       ${data["message"]}        COMPLETED
