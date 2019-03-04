@@ -43,16 +43,14 @@ class BaseIntegrationTest(tornado.testing.AsyncHTTPTestCase, metaclass=ABCMeta):
         self.mock_configuration.s3_secrets_name = "secret"
         self.mock_k8s_adapter = mock.create_autospec(IKubernetesAdapter)
         self.mock_logger = mock.create_autospec(logging.Logger)
-        ruleset_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'example_validation_rules.json'))
-        ruleset = ValidationRulesetParser().parse(ruleset_path)
-        self.validation_ruleset = ValidationRuleset(ruleset)
+        self.ruleset_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'example_validation_rules.json'))
 
     def get_app(self):
         container = build_container(
             self.mock_configuration,
             self.mock_k8s_adapter,
             self.mock_logger,
-            self.validation_ruleset
+            self.ruleset_path
         )
         application = Application(
             [
