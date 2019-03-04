@@ -14,7 +14,7 @@ try:
 except ImportError:
     # For tornado 3.x.x
     from tornado.concurrent import Future
-    
+
     def is_future(x):
         isinstance(x, Future)
 

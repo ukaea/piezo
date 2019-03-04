@@ -8,11 +8,9 @@ import tornado.testing
 from tornado.web import Application
 
 from PiezoWebApp.run_piezo import build_container
-from PiezoWebApp.src.services.spark_job.validation.validation_ruleset import ValidationRuleset
 from PiezoWebApp.src.services.kubernetes.i_kubernetes_adapter import IKubernetesAdapter
 from PiezoWebApp.src.utils.configurations import Configuration
 from PiezoWebApp.src.utils.route_helper import format_route_specification
-from PiezoWebApp.src.utils.validation_ruleset_parser import ValidationRulesetParser
 
 # str | The custom resource's group name
 CRD_GROUP = 'sparkoperator.k8s.io'
