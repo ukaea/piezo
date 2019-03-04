@@ -28,9 +28,9 @@ Get Driver Name
     ${driver_name}=   Catenate    SEPARATOR=    ${job_name}   -driver
     [return]    ${driver_name}
 
-Get Logs From Spark Driver
-    [Arguments]   ${driver_name}
-    ${body}=    Create Dictionary   driver_name=${driver_name}   namespace=default
+Get Logs For Spark Job
+    [Arguments]   ${job_name}
+    ${body}=    Create Dictionary   job_name=${job_name}   namespace=default
     ${response}=  Get Request With Json Body   /piezo/getlogs    ${body}
     [return]    ${response}
 
@@ -47,6 +47,13 @@ Get Request With Json Body
     ${response}=  Get Request   k8s   ${route}    headers=${headers}    json=${body}
     [return]  ${response}
 
+Get Status Of Spark Job
+    [Arguments]   ${job_name}
+    ${body}=    Create Dictionary   job_name=${job_name}   namespace=default
+    ${response}=  Get Request With Json Body   /piezo/jobstatus    ${body}
+    [return]    ${response}
+
+
 Post Request With Json Body
     [Arguments]   ${route}    ${body}
     ${headers}=   Json Header
@@ -59,9 +66,3 @@ Submit SparkPi Job
     ${submitbody}=    Create Dictionary   name=${job_name}   language=Scala   main_class=org.apache.spark.examples.SparkPi    path_to_main_app_file=local:///opt/spark/examples/jars/spark-examples_2.11-2.4.0.jar
     ${response}=    Post Request With Json Body   /piezo/submitjob    ${submitbody}
     [return]  ${response}
-
-Get Status Of Spark Job
-    [Arguments] ${job_name}
-    ${body}=    Create Dictionary job_name=${job_name} namespace=default
-    ${response}=    Get Request With Json Body /piezo/jobstatus $body
-    [return]    ${response}

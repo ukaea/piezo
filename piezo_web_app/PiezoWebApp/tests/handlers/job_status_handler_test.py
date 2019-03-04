@@ -25,13 +25,13 @@ class TestJobStatusHandler(BaseHandlerTest):
 
     @gen_test
     def test_get_returns_400_when_namespace_is_missing(self):
-        body = {'spark_job': 'test-driver'}
+        body = {'job_name': 'test-driver'}
         yield self.assert_request_returns_400(body)
 
     @gen_test
     def test_get_returns_status_when_successful(self):
         # Arrange
-        body = {'spark_job': 'test-job', 'namespace': 'test-namespace'}
+        body = {'job_name': 'test-job', 'namespace': 'test-namespace'}
         self.mock_spark_job_service.get_job_status.return_value = {
             "message": "status",
             "status": 200
@@ -56,7 +56,7 @@ class TestJobStatusHandler(BaseHandlerTest):
     @gen_test
     def test_get_returns_message_and_status_code_when_k8s_error(self):
         # Arrange
-        body = {'spark_job': 'test-job', 'namespace': 'test-namespace'}
+        body = {'job_name': 'test-job', 'namespace': 'test-namespace'}
         self.mock_spark_job_service.get_job_status.return_value = {
             "message": "Kubernetes error",
             "status": 404
