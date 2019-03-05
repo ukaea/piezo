@@ -8,6 +8,7 @@ from PiezoWebApp.src.handlers.delete_job import DeleteJobHandler
 from PiezoWebApp.src.handlers.get_logs import GetLogsHandler
 from PiezoWebApp.src.handlers.heartbeat_handler import HeartbeatHandler
 from PiezoWebApp.src.handlers.submit_job import SubmitJobHandler
+from PiezoWebApp.src.handlers.job_status import JobStatusHandler
 from PiezoWebApp.src.services.spark_job.validation.validation_ruleset import ValidationRuleset
 from PiezoWebApp.src.services.kubernetes.kubernetes_adapter import KubernetesAdapter
 from PiezoWebApp.src.services.spark_job.validation.manifest_populator import ManifestPopulator
@@ -71,7 +72,9 @@ def build_app(container, use_route_stem=False):
             (heartbeat_route, HeartbeatHandler),
             (format_route_specification(route_stem + 'deletejob'), DeleteJobHandler, container),
             (format_route_specification(route_stem + 'getlogs'), GetLogsHandler, container),
+            (format_route_specification(route_stem + 'jobstatus'), JobStatusHandler, container),
             (format_route_specification(route_stem + 'submitjob'), SubmitJobHandler, container)
+
         ]
     )
     return app
