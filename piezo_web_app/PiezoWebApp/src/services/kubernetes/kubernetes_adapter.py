@@ -14,8 +14,8 @@ class KubernetesAdapter(IKubernetesAdapter):
         return self._custom_connection.delete_namespaced_custom_object(group, version, namespace, plural, name, body)
 
     # pylint: disable=too-many-arguments
-    @staticmethod
-    def delete_options(api_version=None,
+    def delete_options(self,
+                       api_version=None,
                        dry_run=None,
                        grace_period_seconds=None,
                        kind=None, orphan_dependents=None,

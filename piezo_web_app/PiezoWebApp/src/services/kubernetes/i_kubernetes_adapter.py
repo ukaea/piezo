@@ -9,8 +9,9 @@ class IKubernetesAdapter(metaclass=ABCMeta):
         pass
 
     # pylint: disable=too-many-arguments
-    @staticmethod
-    def delete_options(api_version=None,
+    @abstractmethod
+    def delete_options(self,
+                       api_version=None,
                        dry_run=None,
                        grace_period_seconds=None,
                        kind=None, orphan_dependents=None,

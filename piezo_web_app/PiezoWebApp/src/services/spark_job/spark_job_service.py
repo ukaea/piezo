@@ -22,13 +22,7 @@ class SparkJobService(ISparkJobService):
 
     def delete_job(self, job_name, namespace):
         try:
-            body = {'api_version': None,
-                    'dry_run': None,
-                    'grace_period_seconds': None,
-                    'kind': None,
-                    'orphan_dependents': None,
-                    'preconditions': None,
-                    'propagation_policy': None}
+            body = self._connection.delete_options()
             api_response = self._connection.delete_namespaced_custom_object(
                 CRD_GROUP,
                 CRD_VERSION,
