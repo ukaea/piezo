@@ -1,7 +1,8 @@
 [
   {
     "input_name": "arguments",
-    "classification": "Optional"
+    "classification": "Optional",
+    "type": "array"
   },
   {
     "input_name": "apiVersion",
