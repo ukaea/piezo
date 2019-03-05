@@ -16,14 +16,6 @@ CRD_PLURAL = 'sparkapplications'
 # str | The custom resource's version
 CRD_VERSION = 'v1beta1'
 
-DELETE_OPTIONS = {'api_version': None,
-                  'dry_run': None,
-                  'grace_period_seconds': None,
-                  'kind': None,
-                  'orphan_dependents': None,
-                  'preconditions': None,
-                  'propagation_policy': None}
-
 
 class DeleteJobIntegrationTest(BaseIntegrationTest):
     @property
@@ -40,6 +32,7 @@ class DeleteJobIntegrationTest(BaseIntegrationTest):
         body = {"job_name": "test-spark-job", "namespace": "default"}
         kubernetes_response = {'status': 'Success'}
         self.mock_k8s_adapter.delete_namespaced_custom_object.return_value = kubernetes_response
+        self.mock_k8s_adapter.delete_options.return_value = "Options"
         # Act
         response_body, response_code = yield self.send_request(body)
         # Assert
@@ -49,7 +42,7 @@ class DeleteJobIntegrationTest(BaseIntegrationTest):
                                                                                       'default',
                                                                                       CRD_PLURAL,
                                                                                       'test-spark-job',
-                                                                                      DELETE_OPTIONS)
+                                                                                      "Options")
         assert response_code == 200
         self.assertDictEqual(response_body, {
             'status': 'success',
