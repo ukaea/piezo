@@ -1,5 +1,4 @@
 from logging import Logger
-from types import SimpleNamespace
 from unittest import TestCase
 
 from kubernetes.client.rest import ApiException
