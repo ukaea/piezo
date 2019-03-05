@@ -46,7 +46,8 @@ Submit Spark Pi Job Returns Ok Response
 Can Get Logs Of Submitted Spark Job
     ${job_name}=     Set Variable   spark-pi-fe244
     Submit SparkPi Job    ${job_name}
-    Sleep   1 minute
+    ${finished}=    Wait For Spark Job To Finish        ${job_name}
+    Should Be True      ${finished}
     ${response}=  Get Logs For Spark Job    ${job_name}
     ${joblog}=    Get Response Data Message   ${response}
     ${pi_lines}=    Get Lines Containing String   ${joblog}   Pi is roughly 3
@@ -56,15 +57,14 @@ Can Get Logs Of Submitted Spark Job
 Can Delete Submitted Spark Job
     ${job_name}=    Set Variable        spark-pi-83783
     Submit SparkPi Job   ${job_name}
-    Sleep   1 minute
+    ${finished}=    Wait For Spark Job To Finish        ${job_name}
+    Should Be True    ${finished} 
     ${response}=  Delete Spark Job    ${job_name}
     Confirm Ok Response   ${response}
 
 Can Get Status Of Submitted Spark Job
     ${job_name}=     Set Variable       spark-pi-5jk23s
     Submit SparkPi Job    ${job_name}
-    Sleep   1 minute
+    Sleep       5 seconds
     ${response}=  Get Status Of Spark Job   ${job_name}
     Confirm Ok Response     ${response}
-    ${data}=  Get Response Data     ${response}
-    Should Be Equal As Strings       ${data["message"]}        COMPLETED

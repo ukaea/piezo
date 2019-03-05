@@ -8,8 +8,16 @@ class IKubernetesAdapter(metaclass=ABCMeta):
     def delete_namespaced_custom_object(self, group, version, namespace, plural, name, body):
         pass
 
+    # pylint: disable=too-many-arguments
     @abstractmethod
-    def delete_options(self, **kwargs):
+    def delete_options(self,
+                       api_version=None,
+                       dry_run=None,
+                       grace_period_seconds=None,
+                       kind=None,
+                       orphan_dependents=None,
+                       pre_conditions=None,
+                       propagation_policy=None):
         pass
 
     @abstractmethod
