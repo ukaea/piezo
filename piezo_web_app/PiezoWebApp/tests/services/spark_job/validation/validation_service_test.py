@@ -4,8 +4,8 @@ import mock
 import pytest
 
 from PiezoWebApp.src.models.validation_rule import ValidationRule
-from PiezoWebApp.src.services.spark_job.validation.validation_service import ValidationService
 from PiezoWebApp.src.services.spark_job.validation.validation_ruleset import ValidationRuleset
+from PiezoWebApp.src.services.spark_job.validation.validation_service import ValidationService
 
 
 class TestValidationService(unittest.TestCase):
@@ -98,7 +98,7 @@ class TestValidationService(unittest.TestCase):
         # Arrange
         self.mock_validation_ruleset.get_validation_rule_for_key.side_effect = lambda key: {
             'name': None,
-            'language': ValidationRule(None, None, options=['example-language']),
+            'language': ValidationRule({"classification": "Required", "options": ['example-language']}),
             'main_class': None
         }[key]
         request_body = {
@@ -117,7 +117,7 @@ class TestValidationService(unittest.TestCase):
         # Arrange
         self.mock_validation_ruleset.get_validation_rule_for_key.side_effect = lambda key: {
             'name': None,
-            'language': ValidationRule(None, None, options=['example-language']),
+            'language': ValidationRule({"classification": "Required", "options": ['example-language']}),
             'main_class': None
         }[key]
         request_body = {

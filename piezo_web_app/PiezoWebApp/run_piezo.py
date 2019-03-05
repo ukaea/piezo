@@ -4,20 +4,19 @@ import os
 import kubernetes
 import tornado
 
-from PiezoWebApp.src.config.spark_job_validation_rules import LANGUAGE_SPECIFIC_KEYS
-from PiezoWebApp.src.config.spark_job_validation_rules import VALIDATION_RULES
 from PiezoWebApp.src.handlers.delete_job import DeleteJobHandler
 from PiezoWebApp.src.handlers.get_logs import GetLogsHandler
 from PiezoWebApp.src.handlers.heartbeat_handler import HeartbeatHandler
 from PiezoWebApp.src.handlers.submit_job import SubmitJobHandler
 from PiezoWebApp.src.handlers.job_status import JobStatusHandler
 from PiezoWebApp.src.services.kubernetes.kubernetes_adapter import KubernetesAdapter
+from PiezoWebApp.src.services.spark_job.spark_job_service import SparkJobService
 from PiezoWebApp.src.services.spark_job.validation.manifest_populator import ManifestPopulator
 from PiezoWebApp.src.services.spark_job.validation.validation_ruleset import ValidationRuleset
-from PiezoWebApp.src.services.spark_job.spark_job_service import SparkJobService
 from PiezoWebApp.src.services.spark_job.validation.validation_service import ValidationService
-from PiezoWebApp.src.utils.route_helper import format_route_specification
 from PiezoWebApp.src.utils.configurations import Configuration
+from PiezoWebApp.src.utils.route_helper import format_route_specification
+from PiezoWebApp.src.utils.validation_ruleset_parser import ValidationRulesetParser
 
 
 def build_kubernetes_adapter(configuration):
@@ -51,14 +50,16 @@ def build_logger(configuration):
     return log
 
 
-def build_container(configuration, k8s_adapter, log):
-    validation_ruleset = ValidationRuleset(LANGUAGE_SPECIFIC_KEYS, VALIDATION_RULES)
+def build_container(configuration, k8s_adapter, log, validation_rules_path):
+    validation_rules = ValidationRulesetParser().parse(validation_rules_path)
+    validation_ruleset = ValidationRuleset(validation_rules)
     validation_service = ValidationService(validation_ruleset)
     manifest_populator = ManifestPopulator(configuration, validation_ruleset)
     spark_job_service = SparkJobService(k8s_adapter, log, manifest_populator, validation_service)
     container = dict(
         logger=log,
-        spark_job_service=spark_job_service
+        spark_job_service=spark_job_service,
+        validation_ruleset=validation_ruleset
     )
     return container
 
@@ -82,9 +83,10 @@ def build_app(container, use_route_stem=False):
 if __name__ == "__main__":
     CONFIGURATION_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), 'configuration.ini'))
     CONFIGURATION = Configuration(CONFIGURATION_PATH)
+    VALIDATION_RULES_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), 'validation_rules.json'))
     KUBERNETES_ADAPTER = build_kubernetes_adapter(CONFIGURATION)
     LOGGER = build_logger(CONFIGURATION)
-    CONTAINER = build_container(CONFIGURATION, KUBERNETES_ADAPTER, LOGGER)
+    CONTAINER = build_container(CONFIGURATION, KUBERNETES_ADAPTER, LOGGER, VALIDATION_RULES_PATH)
     APPLICATION = build_app(CONTAINER, use_route_stem=True)
     APPLICATION.listen(CONFIGURATION.app_port)
     tornado.ioloop.IOLoop.current().start()

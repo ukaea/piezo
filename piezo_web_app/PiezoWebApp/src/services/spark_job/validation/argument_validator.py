@@ -36,16 +36,18 @@ def _validate_string_from_list(key, value, validation_rule):
 def _validate_integer(key, value, validation_rule):
     try:
         numerical_value = int(value)
-    except ValueError or TypeError:
+    except ValueError:
+        return ValidationResult(False, f'"{key}" input must be an integer', None)
+    except TypeError:
         return ValidationResult(False, f'"{key}" input must be an integer', None)
 
     return ValidationResult(True, None, numerical_value) \
         if validation_rule.minimum <= numerical_value <= validation_rule.maximum \
         else ValidationResult(
-        False,
-        f'"{key}" input must be in range [{validation_rule.minimum}, {validation_rule.maximum}]',
-        None
-    )
+            False,
+            f'"{key}" input must be in range [{validation_rule.minimum}, {validation_rule.maximum}]',
+            None
+        )
 
 
 def _validate_multiple_of_a_tenth(key, value, validation_rule):
@@ -64,10 +66,10 @@ def _validate_multiple_of_a_tenth(key, value, validation_rule):
     return ValidationResult(True, None, numerical_value) \
         if validation_rule.minimum <= numerical_value <= validation_rule.maximum \
         else ValidationResult(
-        False,
-        f'"{key}" input must be in range [{validation_rule.minimum}, {validation_rule.maximum}]',
-        None
-    )
+            False,
+            f'"{key}" input must be in range [{validation_rule.minimum}, {validation_rule.maximum}]',
+            None
+        )
 
 
 def _validate_byte_quantity(key, value, validation_rule):
@@ -91,7 +93,7 @@ def _validate_byte_quantity(key, value, validation_rule):
     return ValidationResult(True, None, value) \
         if validation_rule.minimum <= numerical_value <= validation_rule.maximum \
         else ValidationResult(
-        False,
-        f'"{key}" input must be in range [{validation_rule.minimum}m, {validation_rule.maximum}m]',
-        None
-    )
+            False,
+            f'"{key}" input must be in range [{validation_rule.minimum}m, {validation_rule.maximum}m]',
+            None
+        )

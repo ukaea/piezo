@@ -1,5 +1,5 @@
-def get_set_difference(a, b):
-    return list(set(a) - set(b))
+def get_set_difference(first, second):
+    return list(set(first) - set(second))
 
 
 def set_value_in_nested_dict(nested_dict, path, value):
