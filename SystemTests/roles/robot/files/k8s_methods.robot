@@ -74,5 +74,5 @@ Wait For Spark Job To Finish
     \   ${response}=   Get Status Of Spark Job   ${job_name}
     \   ${message}=  Get Response Data Message     ${response}
     \   ${finished}=    Set Variable If     '${message}'=='COMPLETED'   ${True}     ${False}
-    \   Exit For Loop If    ${finished}==${True}
+    \   Exit For Loop If    ${finished}
     [return]    ${finished}
