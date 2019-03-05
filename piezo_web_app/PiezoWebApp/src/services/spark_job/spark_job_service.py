@@ -37,8 +37,11 @@ class SparkJobService(ISparkJobService):
                 job_name,
                 body
             )
+
+            msg = f"{job_name} deleted from namespace {namespace}" if api_response['status'] == "Success"\
+                else f"Trying to delete job {job_name} resulted in status: {api_response['status']}"
             return {
-                'message': f"Deleting job {job_name} completed with status {api_response['status']}",
+                'message': msg,
                 'status': StatusCodes.Okay.value
             }
         except ApiException as exception:
