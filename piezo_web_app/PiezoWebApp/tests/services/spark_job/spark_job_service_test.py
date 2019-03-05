@@ -40,13 +40,12 @@ class TestSparkJobService(TestCase):
 
     def test_delete_job_sends_expected_arguments(self):
         # Arrange
-        k8s_response = SimpleNamespace()
-        k8s_response.content = "Response"
+        k8s_response = {'status': 'Success'}
         self.mock_kubernetes_adapter.delete_namespaced_custom_object.return_value = k8s_response
         # Act
         result = self.test_service.delete_job('test-spark-job', 'test-namespace')
         # Assert
-        self.assertDictEqual(result, {'message': 'Response', 'status': 200})
+        self.assertDictEqual(result, {'message': 'test-spark-job deleted from namespace test-namespace', 'status': 200})
         self.mock_kubernetes_adapter.delete_namespaced_custom_object.assert_called_once_with(
             CRD_GROUP,
             CRD_VERSION,
