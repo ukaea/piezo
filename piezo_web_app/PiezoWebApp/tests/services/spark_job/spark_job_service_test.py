@@ -40,6 +40,7 @@ class TestSparkJobService(TestCase):
     def test_delete_job_sends_expected_arguments(self):
         # Arrange
         k8s_response = {'status': 'Success'}
+        self.mock_kubernetes_adapter.delete_options.return_value = "Options"
         self.mock_kubernetes_adapter.delete_namespaced_custom_object.return_value = k8s_response
         # Act
         result = self.test_service.delete_job('test-spark-job', 'test-namespace')
@@ -51,13 +52,7 @@ class TestSparkJobService(TestCase):
             'test-namespace',
             CRD_PLURAL,
             'test-spark-job',
-            {'api_version': None,
-             'dry_run': None,
-             'grace_period_seconds': None,
-             'kind': None,
-             'orphan_dependents': None,
-             'preconditions': None,
-             'propagation_policy': None}
+            "Options"
         )
 
     def test_delete_job_logs_and_returns_api_exception_reason(self):
