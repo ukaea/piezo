@@ -32,7 +32,7 @@ class DeleteJobIntegrationTest(BaseIntegrationTest):
         body = {"job_name": "test-spark-job", "namespace": "default"}
         kubernetes_response = {'status': 'Success'}
         self.mock_k8s_adapter.delete_namespaced_custom_object.return_value = kubernetes_response
-        self.mock_k8s_adapter.delete_options.return_value = "Options"
+        self.mock_k8s_adapter.delete_options.return_value = {"api_version": "version", "other_values": "values"}
         # Act
         response_body, response_code = yield self.send_request(body)
         # Assert
@@ -42,7 +42,10 @@ class DeleteJobIntegrationTest(BaseIntegrationTest):
                                                                                       'default',
                                                                                       CRD_PLURAL,
                                                                                       'test-spark-job',
-                                                                                      "Options")
+                                                                                      {
+                                                                                          "api_version": "version",
+                                                                                          "other_values": "values"
+                                                                                      })
         assert response_code == 200
         self.assertDictEqual(response_body, {
             'status': 'success',

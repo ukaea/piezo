@@ -18,7 +18,8 @@ class KubernetesAdapter(IKubernetesAdapter):
                        api_version=None,
                        dry_run=None,
                        grace_period_seconds=None,
-                       kind=None, orphan_dependents=None,
+                       kind=None,
+                       orphan_dependents=None,
                        pre_conditions=None,
                        propagation_policy=None):
         return {'api_version': api_version,
