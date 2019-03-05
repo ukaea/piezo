@@ -30,7 +30,14 @@ class BaseHandlerTest(AsyncHTTPTestCase, metaclass=ABCMeta):
         self.mock_validation_ruleset.get_key_type_pairs_allowed_as_input.return_value = {
             'name': 'string',
             'language': 'string',
-            'path_to_main_app_file': 'string'
+            'path_to_main_app_file': 'string',
+            'python_version': 'string',
+            'main_class': 'string',
+            'driver_cores': 'string',
+            'driver_memory': 'string',
+            'executors': 'string',
+            'executor_cores': 'string',
+            'executor_memory': 'string'
         }
         self.mock_validation_ruleset.get_keys_of_required_inputs.return_value = [
             'name',
