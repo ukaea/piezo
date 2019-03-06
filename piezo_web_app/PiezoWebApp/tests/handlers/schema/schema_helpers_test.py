@@ -51,12 +51,13 @@ def test_create_object_schema_from_validation_ruleset_returns_schema_with_all_re
     }
 
 
-def test_create_object_schema_from_validation_ruleset_returns_expected_schema_with_mixed_rules():
+def test_create_object_schema_from_validation_ruleset_returns_expected_schema_with_mixed_rules_and_mixed_types():
     # Arrange
     ruleset = mock.create_autospec(ValidationRuleset)
     ruleset.get_key_type_pairs_allowed_as_input.return_value = {
         'required': 'string',
         'optional': 'string',
+        'optional2': 'array',
         'conditional': 'string'
     }
     ruleset.get_keys_of_required_inputs.return_value = ['required']
@@ -68,6 +69,7 @@ def test_create_object_schema_from_validation_ruleset_returns_expected_schema_wi
         'properties': {
             'required': {'type': 'string'},
             'optional': {'type': 'string'},
+            'optional2': {'type': 'array'},
             'conditional': {'type': 'string'}
         },
         'required': ['required']
