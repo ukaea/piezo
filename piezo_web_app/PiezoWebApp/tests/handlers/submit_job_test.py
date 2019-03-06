@@ -67,7 +67,8 @@ class TestSubmitJobHandler(BaseHandlerTest):
             'language': 'test-language',
             'path_to_main_app_file': '/path/to/main/app.file',
             'driver_cores': '1',
-            'driver_memory': '1024m'
+            'driver_memory': '1024m',
+            'arguments': ["arg1", "arg2", 10]
         }
         self.mock_spark_job_service.submit_job.return_value = {
             'status': StatusCodes.Okay.value,
