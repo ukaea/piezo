@@ -56,3 +56,7 @@ class ValidationRule:
     @property
     def options(self):
         return self._options
+
+    @property
+    def type(self):
+        return self._type
