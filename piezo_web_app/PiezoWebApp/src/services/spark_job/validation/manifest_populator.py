@@ -22,13 +22,11 @@ class ManifestPopulator(IManifestPopulator):
         self._spec_restart_policy_type = self._validation_rules.get_default_value_for_key("restart_policy")
         self._spec_driver_cores = self._validation_rules.get_default_value_for_key("driver_cores")
         self._spec_driver_memory = self._validation_rules.get_default_value_for_key("driver_memory")
-        self._spec_driver_label_custom = self._validation_rules.get_default_value_for_key("label")
         self._spec_driver_label_version = self._validation_rules.get_default_value_for_key("spark_version")
         self._spec_driver_service_account = self._validation_rules.get_default_value_for_key("service_account")
         self._spec_executor_instances = self._validation_rules.get_default_value_for_key("executors")
         self._spec_executor_cores = self._validation_rules.get_default_value_for_key("executor_cores")
         self._spec_executor_memory = self._validation_rules.get_default_value_for_key("executor_memory")
-        self._spec_executor_label_custom = self._validation_rules.get_default_value_for_key("label")
         self._spec_executor_label_version = self._validation_rules.get_default_value_for_key("spark_version")
         self._s3_endpoint = configuration.s3_endpoint
         self._secret_name = configuration.s3_secrets_name
@@ -65,8 +63,7 @@ class ManifestPopulator(IManifestPopulator):
                         "cores": self._spec_driver_cores,
                         "memory": self._spec_driver_memory,
                         "labels": {
-                            "version": self._spec_driver_label_version,
-                            "tag": self._spec_driver_label_custom},
+                            "version": self._spec_driver_label_version},
                         "serviceAccount": self._spec_driver_service_account,
                         "envSecretKeyRefs": {
                             "AWS_ACCESS_KEY_ID": {
@@ -80,8 +77,7 @@ class ManifestPopulator(IManifestPopulator):
                         "instances": self._spec_executor_instances,
                         "memory": self._spec_executor_memory,
                         "labels": {
-                            "version": self._spec_executor_label_version,
-                            "tag": self._spec_executor_label_custom},
+                            "version": self._spec_executor_label_version},
                         "envSecretKeyRefs": {
                             "AWS_ACCESS_KEY_ID": {
                                 "name": self._secret_name,
@@ -93,7 +89,7 @@ class ManifestPopulator(IManifestPopulator):
     @staticmethod
     def _variable_to_manifest_path(var):
         var_to_path_dict = {"name": ["metadata", "name"],
-                            "label": ["metadata", "labels", "tag"],
+                            "label": ["metadata", "labels", "userLabel"],
                             "arguments": ["spec", "arguments"],
                             "language": ["spec", "type"],
                             "python_version": ["spec", "pythonVersion"],
