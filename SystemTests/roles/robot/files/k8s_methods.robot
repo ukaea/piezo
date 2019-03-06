@@ -63,7 +63,7 @@ Post Request With Json Body
 
 Submit SparkPi Job
     [Arguments]   ${job_name}
-    ${submitbody}=    Create Dictionary   name=${job_name}   language=Scala   main_class=org.apache.spark.examples.SparkPi    path_to_main_app_file=local:///opt/spark/examples/jars/spark-examples_2.11-2.4.0.jar
+    ${submitbody}=    Create Dictionary   name=${job_name}   language=Scala   main_class=org.apache.spark.examples.SparkPi    path_to_main_app_file=local:///opt/spark/examples/jars/spark-examples_2.11-2.4.0.jar      arguments=["10"]
     ${response}=    Post Request With Json Body   /piezo/submitjob    ${submitbody}
     [return]  ${response}
 
