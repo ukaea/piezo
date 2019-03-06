@@ -31,6 +31,7 @@ class TestTemplatePopulator(unittest.TestCase):
                 'language': None,
                 'python_version': None,
                 'main_class': None,
+                'arguments': None,
                 'driver_cores': 0.1,
                 'driver_memory': "512m",
                 'executors': 1,
@@ -44,7 +45,8 @@ class TestTemplatePopulator(unittest.TestCase):
                           "driver_memory": "512m",
                           "executor_cores": "1",
                           "executors": "1",
-                          "executor_memory": "512m"}
+                          "executor_memory": "512m",
+                          "arguments": ["1000", "100"]}
 
     def test_build_manifest_builds_python_job_manifest_for_python_applications(self):
         # Arrange
@@ -70,6 +72,7 @@ class TestTemplatePopulator(unittest.TestCase):
                                                 "type": "Never"},
                                             "hadoopConf": {
                                                 "fs.s3a.endpoint": "0.0.0.0"},
+                                            "arguments": ["1000", "100"],
                                             "driver": {
                                                 "cores": "0.1",
                                                 "memory": "512m",
@@ -121,6 +124,7 @@ class TestTemplatePopulator(unittest.TestCase):
                                                 "type": "Never"},
                                             "hadoopConf": {
                                                 "fs.s3a.endpoint": "0.0.0.0"},
+                                            "arguments": ["1000", "100"],
                                             "driver": {
                                                 "cores": "0.1",
                                                 "memory": "512m",
