@@ -37,7 +37,8 @@ class BaseHandlerTest(AsyncHTTPTestCase, metaclass=ABCMeta):
             'driver_memory': 'string',
             'executors': 'string',
             'executor_cores': 'string',
-            'executor_memory': 'string'
+            'executor_memory': 'string',
+            'arguments': 'array'
         }
         self.mock_validation_ruleset.get_keys_of_required_inputs.return_value = [
             'name',
