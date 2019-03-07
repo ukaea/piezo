@@ -92,7 +92,6 @@ class SparkJobService(ISparkJobService):
                 'message': message
             }
 
-
     def get_logs(self, job_name, namespace):
         try:
             driver_name = job_name + "-driver"

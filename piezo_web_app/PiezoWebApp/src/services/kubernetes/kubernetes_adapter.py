@@ -41,4 +41,4 @@ class KubernetesAdapter(IKubernetesAdapter):
         return self._custom_connection.get_namespaced_custom_object(group, version, namespace, plural, name)
 
     def list_namespaced_custom_object(self, group, version, namespace, plural):
-        return  self._custom_connection.list_namespaced_custom_object(group, version, namespace, plural)
+        return self._custom_connection.list_namespaced_custom_object(group, version, namespace, plural)
