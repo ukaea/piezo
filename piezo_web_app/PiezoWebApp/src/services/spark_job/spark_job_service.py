@@ -70,6 +70,29 @@ class SparkJobService(ISparkJobService):
                 'message': message
             }
 
+    def get_jobs(self):
+        try:
+            api_response = self._connection.list_namespaced_custom_object(
+                CRD_GROUP,
+                CRD_VERSION,
+                'default',
+                CRD_PLURAL,
+            )
+            items = api_response['items']
+            names = [item['metadata']['name'] for item in items]
+            return {
+                'message': f"The following sparkapplications were found: {names}",
+                'status': StatusCodes.Okay.value
+            }
+        except ApiException as exception:
+            message = f'Kubernetes error when trying to get a list of current spark applications: {exception.reason}'
+            self._logger.error(message)
+            return {
+                'status': exception.status,
+                'messsage': message
+            }
+
+
     def get_logs(self, job_name, namespace):
         try:
             driver_name = job_name + "-driver"
