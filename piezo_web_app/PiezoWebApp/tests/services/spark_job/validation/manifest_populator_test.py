@@ -77,6 +77,13 @@ class TestTemplatePopulator(unittest.TestCase):
                                             "hadoopConf": {
                                                 "fs.s3a.endpoint": "0.0.0.0"},
                                             "arguments": ["1000", "100"],
+                                            "volumes": [
+                                                {
+                                                    "name": "secret",
+                                                    "secret": {
+                                                        "secretName": "secret"}
+                                                }
+                                            ],
                                             "driver": {
                                                 "cores": "0.1",
                                                 "memory": "512m",
@@ -131,6 +138,13 @@ class TestTemplatePopulator(unittest.TestCase):
                                             "hadoopConf": {
                                                 "fs.s3a.endpoint": "0.0.0.0"},
                                             "arguments": ["1000", "100"],
+                                            "volumes": [
+                                                {
+                                                    "name": "secret",
+                                                    "secret": {
+                                                        "secretName": "secret"}
+                                                }
+                                            ],
                                             "driver": {
                                                 "cores": "0.1",
                                                 "memory": "512m",
@@ -177,6 +191,13 @@ class TestTemplatePopulator(unittest.TestCase):
                                                         "type": "Never"},
                                                     "hadoopConf": {
                                                         "fs.s3a.endpoint": "0.0.0.0"},
+                                                    "volumes": [
+                                                        {
+                                                            "name": "secret",
+                                                            "secret": {
+                                                                "secretName": "secret"}
+                                                        }
+                                                    ],
                                                     "driver": {
                                                         "cores": 0.1,
                                                         "memory": "512m",
