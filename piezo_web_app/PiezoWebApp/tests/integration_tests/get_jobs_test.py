@@ -1,8 +1,4 @@
-import json
-import pytest
-from tornado.httpclient import HTTPClientError
 from tornado.testing import gen_test
-from kubernetes.client.rest import ApiException
 
 from PiezoWebApp.src.handlers.get_jobs import GetJobsHandler
 from PiezoWebApp.tests.integration_tests.base_integration_test import BaseIntegrationTest
