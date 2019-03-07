@@ -1,5 +1,5 @@
 from kubernetes.client.rest import ApiException
-from uuid import uuid4
+import uuid
 
 from PiezoWebApp.src.services.spark_job.i_spark_job_namer import ISparkJobNamer
 from PiezoWebApp.src.services.spark_job.spark_job_constants import CRD_GROUP
@@ -39,5 +39,5 @@ class SparkJobNamer(ISparkJobNamer):
 
     @staticmethod
     def _tag_job_name_with_uuid(base_name):
-        uuid_tag = uuid4()
+        uuid_tag = uuid.uuid4()
         return f'{base_name}-{uuid_tag}'

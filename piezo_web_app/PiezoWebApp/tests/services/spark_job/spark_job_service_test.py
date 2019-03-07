@@ -6,6 +6,7 @@ import mock
 import pytest
 
 from PiezoWebApp.src.services.kubernetes.i_kubernetes_adapter import IKubernetesAdapter
+from PiezoWebApp.src.services.spark_job.i_spark_job_namer import ISparkJobNamer
 from PiezoWebApp.src.services.spark_job.spark_job_service import SparkJobService
 from PiezoWebApp.src.services.spark_job.validation.i_manifest_populator import IManifestPopulator
 from PiezoWebApp.src.services.spark_job.validation.i_validation_service import IValidationService
@@ -29,11 +30,13 @@ class TestSparkJobService(TestCase):
         self.mock_kubernetes_adapter = mock.create_autospec(IKubernetesAdapter)
         self.mock_logger = mock.create_autospec(Logger)
         self.mock_manifest_populator = mock.create_autospec(IManifestPopulator)
+        self.mock_spark_job_namer = mock.create_autospec(ISparkJobNamer)
         self.mock_validation_service = mock.create_autospec(IValidationService)
         self.test_service = SparkJobService(
             self.mock_kubernetes_adapter,
             self.mock_logger,
             self.mock_manifest_populator,
+            self.mock_spark_job_namer,
             self.mock_validation_service
         )
 
@@ -103,27 +106,36 @@ class TestSparkJobService(TestCase):
         }
         self.mock_validation_service.validate_request_keys.return_value = ValidationResult(True, "", None)
         self.mock_validation_service.validate_request_values.return_value = ValidationResult(True, "", body)
-        self.mock_manifest_populator.build_manifest.return_value = {
+        self.mock_spark_job_namer.rename_job.return_value = 'test-spark-job-123abc'
+        manifest = {
             'metadata': {
                 'namespace': 'example-namespace',
-                'name': 'test-spark-job',
+                'name': 'test-spark-job-123abc',
                 'language': 'example-language'
             }
         }
+        self.mock_manifest_populator.build_manifest.return_value = manifest
         self.mock_kubernetes_adapter.create_namespaced_custom_object.return_value = {
             'metadata': {
                 'namespace': 'example-namespace',
-                'name': 'test-spark-job',
+                'name': 'test-spark-job-123abc',
                 'language': 'example-language'
             }
         }
         # Act
         result = self.test_service.submit_job(body)
         # Assert
+        self.mock_kubernetes_adapter.create_namespaced_custom_object.assert_called_once_with(
+            CRD_GROUP,
+            CRD_VERSION,
+            'example-namespace',
+            CRD_PLURAL,
+            manifest
+        )
         self.assertDictEqual(result, {
             'status': StatusCodes.Okay.value,
             'message': 'Job driver created successfully',
-            'driver_name': 'test-spark-job-driver'
+            'job_name': 'test-spark-job-123abc'
         })
 
     def test_submit_job_returns_invalid_body_keys(self):
@@ -136,6 +148,7 @@ class TestSparkJobService(TestCase):
         # Act
         result = self.test_service.submit_job(body)
         # Assert
+        self.mock_kubernetes_adapter.create_namespaced_custom_object.assert_not_called()
         self.assertDictEqual(result, {
             'status': StatusCodes.Bad_request.value,
             'message': 'Msg'
@@ -152,6 +165,7 @@ class TestSparkJobService(TestCase):
         # Act
         result = self.test_service.submit_job(body)
         # Assert
+        self.mock_kubernetes_adapter.create_namespaced_custom_object.assert_not_called()
         self.assertDictEqual(result, {
             'status': StatusCodes.Bad_request.value,
             'message': 'Msg'
@@ -165,32 +179,34 @@ class TestSparkJobService(TestCase):
         }
         self.mock_validation_service.validate_request_keys.return_value = ValidationResult(True, "", None)
         self.mock_validation_service.validate_request_values.return_value = ValidationResult(True, "", body)
-        self.mock_manifest_populator.build_manifest.return_value = {
+        self.mock_spark_job_namer.rename_job.return_value = 'test-spark-job-123abc'
+        manifest = {
             'metadata': {
                 'namespace': 'example-namespace',
-                'name': 'test-spark-job',
+                'name': 'test-spark-job-123abc',
                 'language': 'example-language'
             }
         }
-        self.mock_kubernetes_adapter.create_namespaced_custom_object.return_value = {
-            'metadata': {
-                'namespace': 'example-namespace',
-                'name': 'test-spark-job',
-                'language': 'example-language'
-            }
-        }
+        self.mock_manifest_populator.build_manifest.return_value = manifest
         self.mock_kubernetes_adapter.create_namespaced_custom_object.side_effect = \
             ApiException(reason="Reason", status=999)
         # Act
         result = self.test_service.submit_job(body)
         # Assert
+        self.mock_kubernetes_adapter.create_namespaced_custom_object.assert_called_once_with(
+            CRD_GROUP,
+            CRD_VERSION,
+            'example-namespace',
+            CRD_PLURAL,
+            manifest
+        )
         expected_message = 'Kubernetes error when trying to submit job: Reason'
         self.mock_logger.error.assert_has_calls([
             mock.call(expected_message),
             mock.call({
                 'metadata': {
                     'namespace': 'example-namespace',
-                    'name': 'test-spark-job',
+                    'name': 'test-spark-job-123abc',
                     'language': 'example-language'
                 }
             })

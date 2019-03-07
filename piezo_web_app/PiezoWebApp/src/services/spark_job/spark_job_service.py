@@ -8,16 +8,17 @@ from PiezoWebApp.src.services.spark_job.spark_job_constants import CRD_VERSION
 
 
 class SparkJobService(ISparkJobService):
-    def __init__(self, kubernetes_adapter, logger, manifest_populator, validation_service):
+    def __init__(self, kubernetes_adapter, logger, manifest_populator, spark_job_namer, validation_service):
+        self._kubernetes_adapter = kubernetes_adapter
         self._logger = logger
-        self._connection = kubernetes_adapter
         self._manifest_populator = manifest_populator
-        self._argument_validation_service = validation_service
+        self._spark_job_namer = spark_job_namer
+        self._validation_service = validation_service
 
     def delete_job(self, job_name, namespace):
         try:
-            body = self._connection.delete_options()
-            api_response = self._connection.delete_namespaced_custom_object(
+            body = self._kubernetes_adapter.delete_options()
+            api_response = self._kubernetes_adapter.delete_namespaced_custom_object(
                 CRD_GROUP,
                 CRD_VERSION,
                 namespace,
@@ -43,7 +44,7 @@ class SparkJobService(ISparkJobService):
 
     def get_job_status(self, job_name, namespace):
         try:
-            api_response = self._connection.get_namespaced_custom_object(
+            api_response = self._kubernetes_adapter.get_namespaced_custom_object(
                 CRD_GROUP,
                 CRD_VERSION,
                 namespace,
@@ -67,7 +68,7 @@ class SparkJobService(ISparkJobService):
     def get_logs(self, job_name, namespace):
         try:
             driver_name = job_name + "-driver"
-            api_response = self._connection.read_namespaced_pod_log(driver_name, namespace)
+            api_response = self._kubernetes_adapter.read_namespaced_pod_log(driver_name, namespace)
             return {
                 'message': api_response,
                 'status': StatusCodes.Okay.value
@@ -83,7 +84,7 @@ class SparkJobService(ISparkJobService):
 
     def submit_job(self, body):
         # Validate the body keys
-        validated_body_keys = self._argument_validation_service.validate_request_keys(body)
+        validated_body_keys = self._validation_service.validate_request_keys(body)
         if validated_body_keys.is_valid is False:
             return {
                 'status': StatusCodes.Bad_request.value,
@@ -91,7 +92,7 @@ class SparkJobService(ISparkJobService):
             }
 
         # Validate the body values
-        validated_body_values = self._argument_validation_service.validate_request_values(body)
+        validated_body_values = self._validation_service.validate_request_values(body)
         if validated_body_values.is_valid is False:
             return {
                 'status': StatusCodes.Bad_request.value,
@@ -99,7 +100,9 @@ class SparkJobService(ISparkJobService):
             }
 
         # Make the job name unique
-
+        job_name = self._spark_job_namer.rename_job(body['name'])
+        validated_body_values.validated_value['name'] = job_name
+        self._logger.debug(f'Renamed job "{body["name"]}" to "{job_name}"')
 
         # Populate the manifest
         body = self._manifest_populator.build_manifest(validated_body_values.validated_value)
@@ -107,18 +110,17 @@ class SparkJobService(ISparkJobService):
         # Try to submit the job
         namespace = body['metadata']['namespace']
         try:
-            api_response = self._connection.create_namespaced_custom_object(
+            self._kubernetes_adapter.create_namespaced_custom_object(
                 CRD_GROUP,
                 CRD_VERSION,
                 namespace,
                 CRD_PLURAL,
                 body
             )
-            driver_name = f'{api_response["metadata"]["name"]}-driver'
             result = {
                 'status': StatusCodes.Okay.value,
                 'message': 'Job driver created successfully',
-                'driver_name': driver_name
+                'job_name': job_name
             }
             return result
         except ApiException as exception:

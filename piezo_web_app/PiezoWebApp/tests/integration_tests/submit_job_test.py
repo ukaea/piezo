@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 import json
 import pytest
 from tornado.httpclient import HTTPClientError
@@ -38,13 +40,14 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
         kubernetes_response = {'metadata': {'name': 'test_python_job'}}
         self.mock_k8s_adapter.create_namespaced_custom_object.return_value = kubernetes_response
         # Act
-        response_body, response_code = yield self.send_request(body)
+        with patch('uuid.uuid4', return_value='abc123'):
+            response_body, response_code = yield self.send_request(body)
         # Assert
         expected_body = {
             'apiVersion': 'sparkoperator.k8s.io/v1beta1',
             'kind': 'SparkApplication',
             'metadata': {
-                'name': 'test_python_job',
+                'name': 'test_python_job-abc123',
                 'namespace': 'default'
             },
             'spec': {
@@ -98,7 +101,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             'status': 'success',
             'data': {
                 'message': 'Job driver created successfully',
-                'driver_name': 'test_python_job-driver'
+                'job_name': 'test_python_job-abc123'
             }
         })
 
@@ -114,13 +117,14 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
         kubernetes_response = {'metadata': {'name': 'test_scala_job'}}
         self.mock_k8s_adapter.create_namespaced_custom_object.return_value = kubernetes_response
         # Act
-        response_body, response_code = yield self.send_request(body)
+        with patch('uuid.uuid4', return_value='abc123'):
+            response_body, response_code = yield self.send_request(body)
         # Assert
         expected_body = {
             'apiVersion': 'sparkoperator.k8s.io/v1beta1',
             'kind': 'SparkApplication',
             'metadata': {
-                'name': 'test_scala_job',
+                'name': 'test_scala_job-abc123',
                 'namespace': 'default'
             },
             'spec': {
@@ -174,7 +178,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             'status': 'success',
             'data': {
                 'message': 'Job driver created successfully',
-                'driver_name': 'test_scala_job-driver'
+                'job_name': 'test_scala_job-abc123'
             }
         })
 
@@ -195,13 +199,14 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
         kubernetes_response = {'metadata': {'name': 'test_python_job'}}
         self.mock_k8s_adapter.create_namespaced_custom_object.return_value = kubernetes_response
         # Act
-        response_body, response_code = yield self.send_request(body)
+        with patch('uuid.uuid4', return_value='abc123'):
+            response_body, response_code = yield self.send_request(body)
         # Assert
         expected_body = {
             'apiVersion': 'sparkoperator.k8s.io/v1beta1',
             'kind': 'SparkApplication',
             'metadata': {
-                'name': 'test_python_job',
+                'name': 'test_python_job-abc123',
                 'namespace': 'default'
             },
             'spec': {
@@ -255,7 +260,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             'status': 'success',
             'data': {
                 'message': 'Job driver created successfully',
-                'driver_name': 'test_python_job-driver'
+                'job_name': 'test_python_job-abc123'
             }
         })
 

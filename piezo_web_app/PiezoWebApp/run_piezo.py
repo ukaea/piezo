@@ -10,6 +10,7 @@ from PiezoWebApp.src.handlers.heartbeat_handler import HeartbeatHandler
 from PiezoWebApp.src.handlers.submit_job import SubmitJobHandler
 from PiezoWebApp.src.handlers.job_status import JobStatusHandler
 from PiezoWebApp.src.services.kubernetes.kubernetes_adapter import KubernetesAdapter
+from PiezoWebApp.src.services.spark_job.spark_job_namer import SparkJobNamer
 from PiezoWebApp.src.services.spark_job.spark_job_service import SparkJobService
 from PiezoWebApp.src.services.spark_job.validation.manifest_populator import ManifestPopulator
 from PiezoWebApp.src.services.spark_job.validation.validation_ruleset import ValidationRuleset
@@ -55,7 +56,8 @@ def build_container(configuration, k8s_adapter, log, validation_rules_path):
     validation_ruleset = ValidationRuleset(validation_rules)
     validation_service = ValidationService(validation_ruleset)
     manifest_populator = ManifestPopulator(configuration, validation_ruleset)
-    spark_job_service = SparkJobService(k8s_adapter, log, manifest_populator, validation_service)
+    spark_job_namer = SparkJobNamer(k8s_adapter, validation_ruleset)
+    spark_job_service = SparkJobService(k8s_adapter, log, manifest_populator, spark_job_namer, validation_service)
     container = dict(
         logger=log,
         spark_job_service=spark_job_service,
@@ -74,7 +76,6 @@ def build_app(container, use_route_stem=False):
             (format_route_specification(route_stem + 'getlogs'), GetLogsHandler, container),
             (format_route_specification(route_stem + 'jobstatus'), JobStatusHandler, container),
             (format_route_specification(route_stem + 'submitjob'), SubmitJobHandler, container)
-
         ]
     )
     return app
