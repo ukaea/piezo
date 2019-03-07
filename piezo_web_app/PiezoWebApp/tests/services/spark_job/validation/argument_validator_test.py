@@ -386,4 +386,3 @@ def test_validate_label_rejects_empty_strings_and_non_strings(label):
     validation_result = argument_validator.validate("label", label, validation_rule)
     # Assert
     assert validation_result.is_valid is False
-
