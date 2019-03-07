@@ -89,7 +89,7 @@ class SparkJobService(ISparkJobService):
             self._logger.error(message)
             return {
                 'status': exception.status,
-                'messsage': message
+                'message': message
             }
 
 
