@@ -2,7 +2,7 @@ from PiezoWebApp.src.handlers.base_handler import BaseHandler
 
 
 # pylint: disable=abstract-method
-class JobStatusHandler(BaseHandler):
+class GetJobsHandler(BaseHandler):
     def get(self, *args, **kwargs):
         result = self._spark_job_service.get_jobs()
         self._logger.debug(f'Getting list of spark applications present returned: "{result}"')
