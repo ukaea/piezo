@@ -43,6 +43,13 @@ Submit Spark Pi Job Returns Ok Response
     Should Be Equal As Strings    ${data["message"]}    Job driver created successfully
     Should Be Equal As Strings    ${data["driver_name"]}   spark-pi-3f69c-driver
 
+Submit GroupByTest Spark Job With Arguments Returns Ok Response
+    ${response}=    Submit SparkGroupByTest Job    spark-group-by-test-8s2xp
+    Confirm Ok Response  ${response}
+    ${data}=    Get Response Data   ${response}
+    Should Be Equal As Strings    ${data["message"]}    Job driver created successfully
+    Should Be Equal As Strings    ${data["driver_name"]}   spark-group-by-test-8s2xp-driver
+
 Can Get Logs Of Submitted Spark Job
     ${job_name}=     Set Variable   spark-pi-fe244
     Submit SparkPi Job    ${job_name}

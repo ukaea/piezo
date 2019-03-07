@@ -15,19 +15,13 @@ class ValidationRule:
         self._maximum = self._safe_get_value('maximum', rule_dict)
         self._options = self._safe_get_value('options', rule_dict)
 
-        self._type = self._safe_get_type('type', rule_dict)
+        self._type = self._safe_get_value('type', rule_dict, value_if_missing="string")
 
     @staticmethod
-    def _safe_get_value(key, dictionary):
+    def _safe_get_value(key, dictionary, value_if_missing=None):
         if key in dictionary:
             return dictionary[key]
-        return None
-
-    @staticmethod
-    def _safe_get_type(key, dictionary):
-        if key in dictionary:
-            return dictionary[key]
-        return "string"
+        return value_if_missing
 
     @property
     def classification(self):
