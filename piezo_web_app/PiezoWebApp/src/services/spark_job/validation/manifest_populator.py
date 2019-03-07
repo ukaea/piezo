@@ -59,6 +59,10 @@ class ManifestPopulator(IManifestPopulator):
                         "type": self._spec_restart_policy_type},
                     "hadoopConf": {
                         "fs.s3a.endpoint": self._s3_endpoint},
+                    "volumes": {
+                        "name": self._secret_name,
+                        "secret": {
+                            "secretName": self._secret_name}},
                     "driver": {
                         "cores": self._spec_driver_cores,
                         "memory": self._spec_driver_memory,
