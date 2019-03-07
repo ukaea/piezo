@@ -67,9 +67,16 @@ Submit SparkPi Job
     ${response}=    Post Request With Json Body   /piezo/submitjob    ${submitbody}
     [return]  ${response}
 
+Submit SparkGroupByTest Job With Arguments
+    [Arguments]   ${job_name}
+    ${arguments}=   Create List   10  670  1300   3
+    ${submitbody}=    Create Dictionary   name=${job_name}   language=Scala   main_class=org.apache.spark.examples.GroupByTest    path_to_main_app_file=local:///opt/spark/examples/jars/spark-examples_2.11-2.4.0.jar      arguments=${arguments}
+    ${response}=    Post Request With Json Body   /piezo/submitjob    ${submitbody}
+    [return]  ${response}
+
 Wait For Spark Job To Finish
     [Arguments]    ${job_name}
-    :For    ${i}    IN RANGE   0    24    
+    :For    ${i}    IN RANGE   0    24
     \   Sleep     5 seconds
     \   ${response}=   Get Status Of Spark Job   ${job_name}
     \   ${message}=  Get Response Data Message     ${response}

@@ -67,7 +67,8 @@ class TestSubmitJobHandler(BaseHandlerTest):
             'language': 'test-language',
             'path_to_main_app_file': '/path/to/main/app.file',
             'driver_cores': '1',
-            'driver_memory': '1024m'
+            'driver_memory': '1024m',
+            'arguments': ["arg1", "arg2", 10]
         }
         self.mock_spark_job_service.submit_job.return_value = {
             'status': StatusCodes.Okay.value,
@@ -81,7 +82,7 @@ class TestSubmitJobHandler(BaseHandlerTest):
         assert response_code == 200
 
     @gen_test
-    def test_post_returns_400_error_when_optional_inputs_are_not_strings(self):
+    def test_post_returns_400_error_when_optional_string_inputs_are_not_strings(self):
         # Arrange
         body = {
             'name': 'test-spark-job',
@@ -89,6 +90,25 @@ class TestSubmitJobHandler(BaseHandlerTest):
             'path_to_main_app_file': '/path/to/main/app.file',
             'driver_cores': 0.8,
             'driver_memory': 1024
+        }
+        self.mock_spark_job_service.submit_job.return_value = {
+            'status': StatusCodes.Okay.value,
+            'message': 'Job driver created successfully',
+            'driver_name': 'test-spark-job-driver'
+        }
+        # Act
+        yield self.assert_request_returns_400(body)
+        # Assert
+        self.mock_spark_job_service.submit_job.assert_not_called()
+
+    @gen_test
+    def test_post_returns_400_error_when_optional_array_inputs_are_not_arrays(self):
+        # Arrange
+        body = {
+            'name': 'test-spark-job',
+            'language': 'test-language',
+            'path_to_main_app_file': '/path/to/main/app.file',
+            'arguments': 11
         }
         self.mock_spark_job_service.submit_job.return_value = {
             'status': StatusCodes.Okay.value,

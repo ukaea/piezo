@@ -10,8 +10,7 @@ class ValidationRuleset:
         return validation_rule.default
 
     def get_key_type_pairs_allowed_as_input(self):
-        # TODO variable type other than string
-        return {key: 'string' for key in self._validation_dict.keys()}
+        return {key: self._validation_dict[key].type for key in self._validation_dict.keys()}
 
     def get_keys_for_language(self, language):
         return [

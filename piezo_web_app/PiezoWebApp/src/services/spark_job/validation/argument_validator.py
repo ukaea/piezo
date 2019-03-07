@@ -13,6 +13,8 @@ def validate(key, value, validation_rule):
         return _validate_multiple_of_a_tenth(key, value, validation_rule)
     if key in ["driver_memory", "executor_memory"]:
         return _validate_byte_quantity(key, value, validation_rule)
+    if key in ["arguments"]:
+        return ValidationResult(True, None, value)
     raise ValueError(f"Unexpected argument {key}")
 
 
