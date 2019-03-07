@@ -1,16 +1,10 @@
 from kubernetes.client.rest import ApiException
 
-from PiezoWebApp.src.services.spark_job.i_spark_job_service import ISparkJobService
 from PiezoWebApp.src.models.return_status import StatusCodes
-
-# str | The custom resource's group name
-CRD_GROUP = 'sparkoperator.k8s.io'
-
-# str | The custom resource's plural name. For TPRs this would be lowercase plural kind.
-CRD_PLURAL = 'sparkapplications'
-
-# str | The custom resource's version
-CRD_VERSION = 'v1beta1'
+from PiezoWebApp.src.services.spark_job.i_spark_job_service import ISparkJobService
+from PiezoWebApp.src.services.spark_job.spark_job_constants import CRD_GROUP
+from PiezoWebApp.src.services.spark_job.spark_job_constants import CRD_PLURAL
+from PiezoWebApp.src.services.spark_job.spark_job_constants import CRD_VERSION
 
 
 class SparkJobService(ISparkJobService):
@@ -103,6 +97,9 @@ class SparkJobService(ISparkJobService):
                 'status': StatusCodes.Bad_request.value,
                 'message': validated_body_values.message
             }
+
+        # Make the job name unique
+
 
         # Populate the manifest
         body = self._manifest_populator.build_manifest(validated_body_values.validated_value)
