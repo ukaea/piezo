@@ -30,17 +30,29 @@ class TestGetJobsIntegration(BaseIntegrationTest):
         kubernetes_response = {"items": [
             {
                 "metadata":
-                    {"name": "job1"},
+                    {
+                        "name": "job1"
+                    },
                 "status":
-                    {"applicationState":
-                         {"state": "RUNNING"}}
+                    {
+                        "applicationState":
+                            {
+                                "state": "RUNNING"
+                            }
+                    }
             },
             {
                 "metadata":
-                    {"name": "job2"},
+                    {
+                        "name": "job2"
+                    },
                 "status":
-                    {"applicationState":
-                         {"state": "COMPLETED"}}
+                    {
+                        "applicationState":
+                            {
+                                "state": "COMPLETED"
+                            }
+                    }
             }
         ]}
         self.mock_k8s_adapter.list_namespaced_custom_object.return_value = kubernetes_response
