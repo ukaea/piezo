@@ -44,7 +44,7 @@ Submit Spark Pi Job Returns Ok Response
     Should Be Equal As Strings    ${data["driver_name"]}   spark-pi-3f69c-driver
 
 Submit GroupByTest Spark Job With Arguments Returns Ok Response
-    ${response}=    Submit SparkGroupByTest Job    spark-group-by-test-8s2xp
+    ${response}=    Submit SparkGroupByTest Job With Arguments   spark-group-by-test-8s2xp
     Confirm Ok Response  ${response}
     ${data}=    Get Response Data   ${response}
     Should Be Equal As Strings    ${data["message"]}    Job driver created successfully
@@ -61,11 +61,26 @@ Can Get Logs Of Submitted Spark Job
     ${num_pi_lines}=    Get Line Count    ${pi_lines}
     Should Be Equal As Integers   ${num_pi_lines}   1
 
+Arguments Have Been Read And Appear In Logs
+    ${job_name}=  Set Variable  spark-group-by-test-3ewc7
+    ${response}=    Submit SparkGroupByTest Job With Arguments   ${job_name}
+    Confirm Ok Response  ${response}
+    ${finished}=    Wait For Spark Job To Finish        ${job_name}
+    Should Be True      ${finished}
+    ${logresponse}=  Get Logs For Spark Job    ${job_name}
+    ${joblog}=  Get Response Data Message   ${logresponse}
+    ${arg_1_lines}=    Get Lines Containing String   ${joblog}   Adding task set 0.0 with 10 tasks
+    ${arg_4_lines}=    Get Lines Containing String   ${joblog}   Adding task set 2.0 with 3 tasks
+    ${num_arg_1_lines}=    Get Line Count    ${arg_1_lines}
+    ${num_arg_4_lines}=    Get Line Count    ${arg_4_lines}
+    Should Be Equal As Integers   ${num_arg_1_lines}   1
+    Should Be Equal As Integers   ${num_arg_4_lines}   1
+
 Can Delete Submitted Spark Job
     ${job_name}=    Set Variable        spark-pi-83783
     Submit SparkPi Job   ${job_name}
     ${finished}=    Wait For Spark Job To Finish        ${job_name}
-    Should Be True    ${finished} 
+    Should Be True    ${finished}
     ${response}=  Delete Spark Job    ${job_name}
     Confirm Ok Response   ${response}
 
