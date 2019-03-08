@@ -71,6 +71,11 @@
     "conditional_input_value": "Scala"
   },
   {
+    "input_name": "arguments",
+    "classification": "Optional",
+    "type": "array"
+  },
+  {
     "input_name": "driver_cores",
     "classification": "Optional",
     "default": 0.1,
@@ -104,5 +109,9 @@
     "default": "512m",
     "minimum": 512,
     "maximum": 4096
+  },
+  {
+    "input_name": "label",
+    "classification": "Optional"
   }
 ]

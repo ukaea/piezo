@@ -52,6 +52,11 @@ def test_validation_rules_parser_parses_with_arguments():
             'input_name': 'conditional_with_options',
             'classification': 'Conditional',
             'options': ['option1', 'option2']
+        },
+        {
+            'input_name': 'optional_type_array',
+            'classification': 'Optional',
+            'type': 'array'
         }
     ])
     # Act
@@ -63,6 +68,7 @@ def test_validation_rules_parser_parses_with_arguments():
     required_no_default = rules['required_no_default']
     assert required_no_default.classification is ArgumentClassification.Required
     assert required_no_default.default is None
+    assert required_no_default.type == 'string'
     optional_with_range = rules['optional_with_range']
     assert optional_with_range.classification is ArgumentClassification.Optional
     assert optional_with_range.minimum == 1
@@ -70,5 +76,8 @@ def test_validation_rules_parser_parses_with_arguments():
     conditional_with_options = rules['conditional_with_options']
     assert conditional_with_options.classification is ArgumentClassification.Conditional
     assert conditional_with_options.options == ['option1', 'option2']
+    optional_type_array = rules['optional_type_array']
+    assert optional_type_array.classification is ArgumentClassification.Optional
+    assert optional_type_array.type == 'array'
     # Clean up
     SampleValidationRulesCreator.remove_file(rules_path)

@@ -35,7 +35,8 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             'name': 'test_python_job',
             'language': 'Python',
             'path_to_main_app_file': '/path_to/file',
-            'python_version': '2'
+            'python_version': '2',
+            'arguments': ["1000"]
         }
         kubernetes_response = {'metadata': {'name': 'test_python_job'}}
         self.mock_k8s_adapter.create_namespaced_custom_object.return_value = kubernetes_response
@@ -59,8 +60,9 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                 'mainApplicationFile': '/path_to/file',
                 'sparkVersion': '2.4.0',
                 'restartPolicy': {'type': 'Never'},
-                "hadoopConf": {
-                    "fs.s3a.endpoint": "0.0.0.0"},
+                'hadoopConf': {
+                    'fs.s3a.endpoint': '0.0.0.0'},
+                'arguments': ['1000'],
                 'driver': {
                     'cores': 0.1,
                     'memory': '512m',
@@ -112,7 +114,8 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             'name': 'test_scala_job',
             'language': 'Scala',
             'path_to_main_app_file': '/path_to/file',
-            'main_class': 'main.class'
+            'main_class': 'main.class',
+            'arguments': ["1000"]
         }
         kubernetes_response = {'metadata': {'name': 'test_scala_job'}}
         self.mock_k8s_adapter.create_namespaced_custom_object.return_value = kubernetes_response
@@ -136,8 +139,9 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                 'mainApplicationFile': '/path_to/file',
                 'sparkVersion': '2.4.0',
                 'restartPolicy': {'type': 'Never'},
-                "hadoopConf": {
-                    "fs.s3a.endpoint": "0.0.0.0"},
+                'hadoopConf': {
+                    'fs.s3a.endpoint': '0.0.0.0'},
+                'arguments': ['1000'],
                 'driver': {
                     'cores': 0.1,
                     'memory': '512m',
@@ -194,7 +198,8 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             'driver_memory': '2048m',
             'executors': '10',
             'executor_cores': '4',
-            'executor_memory': '4096m'
+            'executor_memory': '4096m',
+            'label': 'my_label'
         }
         kubernetes_response = {'metadata': {'name': 'test_python_job'}}
         self.mock_k8s_adapter.create_namespaced_custom_object.return_value = kubernetes_response
@@ -208,6 +213,9 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             'metadata': {
                 'name': 'test_python_job-abcd1234',
                 'namespace': 'default'
+                'labels': {
+                    'userLabel': 'my_label'
+                }
             },
             'spec': {
                 'type': 'Python',
