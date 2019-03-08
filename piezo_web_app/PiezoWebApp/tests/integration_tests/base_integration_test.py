@@ -1,8 +1,9 @@
 from abc import ABCMeta, abstractmethod
 import json
 import logging
-import mock
 import os
+
+import mock
 import pytest
 import tornado.testing
 from tornado.web import Application

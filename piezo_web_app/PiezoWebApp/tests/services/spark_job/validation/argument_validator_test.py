@@ -202,7 +202,7 @@ def test_validate_driver_memory_accepts_values_for_megabytes_as_string(memory):
         'default': '512m',
         'minimum': 512,
         'maximum': 2048
-      })
+    })
     # Act
     validation_result = argument_validator.validate("driver_memory", memory, validation_rule)
     # Assert
