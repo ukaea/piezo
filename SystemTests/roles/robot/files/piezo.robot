@@ -93,12 +93,11 @@ Can Get Status Of Submitted Spark Job
 
 Job Can Use Data And Code On S3 And Write Back Results
     ${job_name}=    Set Variable      wordcount-9lkw3w
-    ${output-folder}=   Set Variable    ${job_name}-output
-    Directory Should Not Exist In S3 Bucket   kubernetes    outputs/${output-folder}
-    ${response}=    Submit Wordcount On Minio Job   ${job_name}   ${output-folder}
+    Directory Should Not Exist In S3 Bucket   kubernetes    outputs/${job_name}
+    ${response}=    Submit Wordcount On Minio Job   ${job_name}
     Confirm Ok Response  ${response}
     ${finished}=    Wait For Spark Job To Finish        ${job_name}
     Should Be True    ${finished}
-    Directory Should Exist In S3 Bucket   kubernetes    outputs/${output-folder}
-    Directory Should Not Be Empty In S3 bucket  kubernetes    outputs/${output-folder}
-    File Should Exist In S3 Bucket    kubernetes      outputs/${output-folder}/_SUCCESS
+    Directory Should Exist In S3 Bucket   kubernetes    outputs/${job_name}
+    Directory Should Not Be Empty In S3 bucket  kubernetes    outputs/${job_name}
+    File Should Exist In S3 Bucket    kubernetes      outputs/${job_name}/_SUCCESS
