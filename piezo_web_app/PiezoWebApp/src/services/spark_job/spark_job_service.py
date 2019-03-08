@@ -87,7 +87,7 @@ class SparkJobService(ISparkJobService):
                 'status': StatusCodes.Okay.value
             }
         except ApiException as exception:
-            message = f'Kubernetes error when trying to get a list of current jobs: {exception.reason}'
+            message = f'Kubernetes error when trying to get a list of current spark jobs: {exception.reason}'
             self._logger.error(message)
             return {
                 'status': exception.status,

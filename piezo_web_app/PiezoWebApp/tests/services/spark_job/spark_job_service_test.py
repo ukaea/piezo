@@ -76,7 +76,7 @@ class TestSparkJobService(TestCase):
         # Act
         result = self.test_service.get_jobs()
         # Assert
-        self.assertDictEqual(result, {'message': 'The following spark applications were found: []', 'status': 200})
+        self.assertDictEqual(result, {'message': 'Found 0 spark jobs', 'spark_jobs': {}, 'status': 200})
         self.mock_kubernetes_adapter.list_namespaced_custom_object.assert_called_once_with(
             CRD_GROUP, CRD_VERSION, 'default', CRD_PLURAL)
 
@@ -88,11 +88,11 @@ class TestSparkJobService(TestCase):
         result = self.test_service.get_jobs()
         # Assert
         expected_message = \
-            'Kubernetes error when trying to get a list of current spark applications: Reason'
+            'Kubernetes error when trying to get a list of current spark jobs: Reason'
         self.mock_logger.error.assert_called_once_with(expected_message)
         self.assertDictEqual(result, {
             'status': 999,
-            'message': 'Kubernetes error when trying to get a list of current spark applications: Reason'
+            'message': 'Kubernetes error when trying to get a list of current spark jobs: Reason'
         })
 
     def test_get_logs_sends_expected_arguments(self):

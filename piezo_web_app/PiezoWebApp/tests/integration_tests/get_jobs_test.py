@@ -27,7 +27,22 @@ class TestGetJobsIntegration(BaseIntegrationTest):
     def test_list_of_current_jobs_is_returned_as_array(self):
         # Arrange
         body = None
-        kubernetes_response = {"items": [{"metadata": {"name": "job1"}}, {"metadata": {"name": "job2"}}]}
+        kubernetes_response = {"items": [
+            {
+                "metadata":
+                    {"name": "job1"},
+                "status":
+                    {"applicationState":
+                         {"state": "RUNNING"}}
+            },
+            {
+                "metadata":
+                    {"name": "job2"},
+                "status":
+                    {"applicationState":
+                         {"state": "COMPLETED"}}
+            }
+        ]}
         self.mock_k8s_adapter.list_namespaced_custom_object.return_value = kubernetes_response
         # Act
         response_body, response_code = yield self.send_request(body)
@@ -41,6 +56,7 @@ class TestGetJobsIntegration(BaseIntegrationTest):
         self.assertDictEqual(response_body, {
             'status': 'success',
             'data': {
-                "message": "The following spark applications were found: ['job1', 'job2']"
+                "message": "Found 2 spark jobs",
+                "spark_jobs": {"job1": "RUNNING", "job2": "COMPLETED"}
             }
         })
