@@ -212,7 +212,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             'kind': 'SparkApplication',
             'metadata': {
                 'name': 'test_python_job-abcd1234',
-                'namespace': 'default'
+                'namespace': 'default',
                 'labels': {
                     'userLabel': 'my_label'
                 }
