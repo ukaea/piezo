@@ -18,7 +18,8 @@ class TestGetLogsHandler(BaseHandlerTest):
     def test_get_returns_array_of_jobs_when_successful(self):
         # Arrange
         self.mock_spark_job_service.get_jobs.return_value = {
-            "message": "The following spark applications were found: [job1, job2, job3]",
+            "message": "Found 3 spark jobs",
+            "spark_jobs": {"job_1": "COMPLETED", "job_2": "RUNNING", "job_3": "PENDING"},
             "status": 200
         }
         body = None
@@ -33,7 +34,8 @@ class TestGetLogsHandler(BaseHandlerTest):
         self.assertDictEqual(response_body, {
             'status': 'success',
             'data': {
-                'message': "The following spark applications were found: [job1, job2, job3]"
+                'message': "Found 3 spark jobs",
+                'spark_jobs': {'job_1': "COMPLETED", "job_2": "RUNNING", "job_3": "PENDING"}
             }
         })
 
@@ -41,7 +43,8 @@ class TestGetLogsHandler(BaseHandlerTest):
     def test_get_returns_empty_array_when_no_jobs_present(self):
         # Arrange
         self.mock_spark_job_service.get_jobs.return_value = {
-            "message": "The following spark applications were found: []",
+            "message": "Found 0 spark jobs",
+            "spark_jobs": {},
             "status": 200
         }
         body = None
@@ -56,6 +59,7 @@ class TestGetLogsHandler(BaseHandlerTest):
         self.assertDictEqual(response_body, {
             'status': 'success',
             'data': {
-                'message': "The following spark applications were found: []"
+                'message': "Found 0 spark jobs",
+                'spark_jobs': {}
             }
         })
