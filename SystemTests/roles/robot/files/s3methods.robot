@@ -27,4 +27,4 @@ Directory Should Not Exist In S3 Bucket
 
 Directory Should Not Be Empty In S3 Bucket
     [Arguments]   ${bucket-name}    ${dir-path}
-    Directory Should Not Be Empty ${MINIO_ROOT}/${bucket-name}/${dir-path}
+    Directory Should Not Be Empty     ${MINIO_ROOT}/${bucket-name}/${dir-path}
