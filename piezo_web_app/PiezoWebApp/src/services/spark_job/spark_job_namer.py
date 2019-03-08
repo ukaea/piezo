@@ -39,5 +39,9 @@ class SparkJobNamer(ISparkJobNamer):
 
     @staticmethod
     def _tag_job_name_with_uuid(base_name):
-        uuid_tag = uuid.uuid4()
+        # UUIDs are sequences of 32 hexadecimal digits separated by hyphens
+        # 32 hexadecimal digits have a total number of possible combinations that is over 3.4E38
+        # Here we trim the UUID to just 8 hexadecimal digits
+        # 16 hexadecimal digits have a total number of possible combinations that is over 4.2E9
+        uuid_tag = str(uuid.uuid4())[:8]
         return f'{base_name}-{uuid_tag}'
