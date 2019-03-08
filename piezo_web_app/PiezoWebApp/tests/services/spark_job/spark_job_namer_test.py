@@ -26,7 +26,7 @@ class TestSparkJobNamer(TestCase):
         job_name = self.test_namer.rename_job(base_name)
         # Assert
         self.mock_kubernetes_adapter.get_namespaced_custom_object.assert_called_once()
-        regex = '^' + base_name + '-[0-9a-f]{8}$'
+        regex = '^' + base_name + '-[0-9a-f]{5}$'
         self.assertRegex(job_name, regex)
 
     def test_rename_job_handles_one_coincidental_match(self):
@@ -43,7 +43,7 @@ class TestSparkJobNamer(TestCase):
         assert len(calls) == 2
         assert calls[0][0] == 'get_namespaced_custom_object'
         assert calls[1][0] == 'get_namespaced_custom_object'
-        regex = '^' + base_name + '-[0-9a-f]{8}$'
+        regex = '^' + base_name + '-[0-9a-f]{5}$'
         self.assertRegex(job_name, regex)
 
     def test_rename_job_raises_if_always_matching(self):

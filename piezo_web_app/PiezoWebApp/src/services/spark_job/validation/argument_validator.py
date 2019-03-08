@@ -24,8 +24,11 @@ def _validate_name(value):
     validation_result = _validate_non_empty_string("name", value)
     if not validation_result.is_valid:
         return validation_result
+
+    # https://github.com/ukaea/piezo/wiki/WebAppDecisionRecord#maximum-length-of-a-job-name
     if len(value) > 200:
         return ValidationResult(False, '"name" input has a maximum length of 200 characters', None)
+
     # TODO composed of a-z-. and must start/end with a-z
     return ValidationResult(True, None, value)
 

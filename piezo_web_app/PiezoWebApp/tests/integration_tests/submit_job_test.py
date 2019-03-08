@@ -51,13 +51,13 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             CRD_VERSION,
             'default',
             CRD_PLURAL,
-            'test_python_job-abcd1234'
+            'test_python_job-abcd1'
         )
         expected_body = {
             'apiVersion': 'sparkoperator.k8s.io/v1beta1',
             'kind': 'SparkApplication',
             'metadata': {
-                'name': 'test_python_job-abcd1234',
+                'name': 'test_python_job-abcd1',
                 'namespace': 'default'
             },
             'spec': {
@@ -119,7 +119,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             'status': 'success',
             'data': {
                 'message': 'Job driver created successfully',
-                'job_name': 'test_python_job-abcd1234'
+                'job_name': 'test_python_job-abcd1'
             }
         })
 
@@ -145,13 +145,13 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             CRD_VERSION,
             'default',
             CRD_PLURAL,
-            'test_scala_job-abcd1234'
+            'test_scala_job-abcd1'
         )
         expected_body = {
             'apiVersion': 'sparkoperator.k8s.io/v1beta1',
             'kind': 'SparkApplication',
             'metadata': {
-                'name': 'test_scala_job-abcd1234',
+                'name': 'test_scala_job-abcd1',
                 'namespace': 'default'
             },
             'spec': {
@@ -213,7 +213,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             'status': 'success',
             'data': {
                 'message': 'Job driver created successfully',
-                'job_name': 'test_scala_job-abcd1234'
+                'job_name': 'test_scala_job-abcd1'
             }
         })
 
@@ -244,13 +244,13 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             CRD_VERSION,
             'default',
             CRD_PLURAL,
-            'test_python_job-abcd1234'
+            'test_python_job-abcd1'
         )
         expected_body = {
             'apiVersion': 'sparkoperator.k8s.io/v1beta1',
             'kind': 'SparkApplication',
             'metadata': {
-                'name': 'test_python_job-abcd1234',
+                'name': 'test_python_job-abcd1',
                 'namespace': 'default',
                 'labels': {
                     'userLabel': 'my_label'
@@ -314,7 +314,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             'status': 'success',
             'data': {
                 'message': 'Job driver created successfully',
-                'job_name': 'test_python_job-abcd1234'
+                'job_name': 'test_python_job-abcd1'
             }
         })
 
