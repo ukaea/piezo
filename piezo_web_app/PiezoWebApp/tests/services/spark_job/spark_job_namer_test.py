@@ -20,7 +20,7 @@ class TestSparkJobNamer(TestCase):
 
     def test_rename_job_tags_names_with_uuid(self):
         # Arrange
-        self.mock_kubernetes_adapter.get_namespaced_custom_object.return_value = {'status': 'RUNNING'}
+        self.mock_kubernetes_adapter.get_namespaced_custom_object.side_effect = ApiException(status=999)
         base_name = 'test-job'
         # Act
         job_name = self.test_namer.rename_job(base_name)
@@ -32,8 +32,8 @@ class TestSparkJobNamer(TestCase):
     def test_rename_job_handles_one_coincidental_match(self):
         # Arrange
         self.mock_kubernetes_adapter.get_namespaced_custom_object.side_effect = [
-            ApiException(),
-            {'status': 'RUNNING'}
+            {'status': 'RUNNING'},
+            ApiException(status=999)
         ]
         base_name = 'test-job'
         # Act
@@ -48,7 +48,7 @@ class TestSparkJobNamer(TestCase):
 
     def test_rename_job_raises_if_always_matching(self):
         # Arrange
-        self.mock_kubernetes_adapter.get_namespaced_custom_object.side_effect = ApiException(status=409)
+        self.mock_kubernetes_adapter.get_namespaced_custom_object.return_value = {'status': 'RUNNING'}
         base_name = 'test-job'
         # Act
         with self.assertRaises(RuntimeError, msg='10 attempts to find a unique job name all failed'):

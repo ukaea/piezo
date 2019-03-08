@@ -34,9 +34,9 @@ class SparkJobNamer(ISparkJobNamer):
                 CRD_PLURAL,
                 job_name
             )
-            return False
-        except ApiException:
             return True
+        except ApiException:
+            return False
 
     @staticmethod
     def _tag_job_name_with_uuid(base_name):
