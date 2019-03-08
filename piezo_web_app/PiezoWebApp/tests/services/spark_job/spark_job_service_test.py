@@ -106,11 +106,11 @@ class TestSparkJobService(TestCase):
         }
         self.mock_validation_service.validate_request_keys.return_value = ValidationResult(True, "", None)
         self.mock_validation_service.validate_request_values.return_value = ValidationResult(True, "", body)
-        self.mock_spark_job_namer.rename_job.return_value = 'test-spark-job-123abc'
+        self.mock_spark_job_namer.rename_job.return_value = 'test-spark-job-abcd1234'
         manifest = {
             'metadata': {
                 'namespace': 'example-namespace',
-                'name': 'test-spark-job-123abc',
+                'name': 'test-spark-job-abcd1234',
                 'language': 'example-language'
             }
         }
@@ -118,7 +118,7 @@ class TestSparkJobService(TestCase):
         self.mock_kubernetes_adapter.create_namespaced_custom_object.return_value = {
             'metadata': {
                 'namespace': 'example-namespace',
-                'name': 'test-spark-job-123abc',
+                'name': 'test-spark-job-abcd1234',
                 'language': 'example-language'
             }
         }
@@ -135,7 +135,7 @@ class TestSparkJobService(TestCase):
         self.assertDictEqual(result, {
             'status': StatusCodes.Okay.value,
             'message': 'Job driver created successfully',
-            'job_name': 'test-spark-job-123abc'
+            'job_name': 'test-spark-job-abcd1234'
         })
 
     def test_submit_job_returns_invalid_body_keys(self):
@@ -179,11 +179,11 @@ class TestSparkJobService(TestCase):
         }
         self.mock_validation_service.validate_request_keys.return_value = ValidationResult(True, "", None)
         self.mock_validation_service.validate_request_values.return_value = ValidationResult(True, "", body)
-        self.mock_spark_job_namer.rename_job.return_value = 'test-spark-job-123abc'
+        self.mock_spark_job_namer.rename_job.return_value = 'test-spark-job-abcd1234'
         manifest = {
             'metadata': {
                 'namespace': 'example-namespace',
-                'name': 'test-spark-job-123abc',
+                'name': 'test-spark-job-abcd1234',
                 'language': 'example-language'
             }
         }
@@ -206,7 +206,7 @@ class TestSparkJobService(TestCase):
             mock.call({
                 'metadata': {
                     'namespace': 'example-namespace',
-                    'name': 'test-spark-job-123abc',
+                    'name': 'test-spark-job-abcd1234',
                     'language': 'example-language'
                 }
             })
