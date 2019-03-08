@@ -366,3 +366,23 @@ def test_validate_executor_memory_rejects_incorrectly_formatted_values(memory):
     assert validation_result.is_valid is False
     assert validation_result.message == '"executor_memory" input must be a string integer value ending in "m" ' \
                                         '(e.g. "512m" for 512 megabytes)'
+
+
+@pytest.mark.parametrize("label", ["someLabel", "12321"])
+def test_validate_label_validates_non_empty_strings(label):
+    # Arrange
+    validation_rule = ValidationRule({'classification': 'Optional'})
+    # Act
+    validation_result = argument_validator.validate("label", label, validation_rule)
+    # Assert
+    assert validation_result.is_valid is True
+
+
+@pytest.mark.parametrize("label", [" ", "", 123323, None])
+def test_validate_label_rejects_empty_strings_and_non_strings(label):
+    # Arrange
+    validation_rule = ValidationRule({'classification': 'Optional'})
+    # Act
+    validation_result = argument_validator.validate("label", label, validation_rule)
+    # Assert
+    assert validation_result.is_valid is False
