@@ -63,6 +63,13 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                 'hadoopConf': {
                     'fs.s3a.endpoint': '0.0.0.0'},
                 'arguments': ['1000'],
+                'volumes': [
+                    {
+                        'name': 'secret',
+                        'secret': {
+                            'secretName': 'secret'}
+                    }
+                ],
                 'driver': {
                     'cores': 0.1,
                     'memory': '512m',
@@ -142,6 +149,13 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                 'hadoopConf': {
                     'fs.s3a.endpoint': '0.0.0.0'},
                 'arguments': ['1000'],
+                'volumes': [
+                    {
+                        'name': 'secret',
+                        'secret': {
+                            'secretName': 'secret'}
+                    }
+                ],
                 'driver': {
                     'cores': 0.1,
                     'memory': '512m',
@@ -228,6 +242,13 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                 'restartPolicy': {'type': 'Never'},
                 "hadoopConf": {
                     "fs.s3a.endpoint": "0.0.0.0"},
+                'volumes': [
+                    {
+                        'name': 'secret',
+                        'secret': {
+                            'secretName': 'secret'}
+                    }
+                ],
                 'driver': {
                     'cores': 1.0,
                     'memory': '2048m',
