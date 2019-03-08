@@ -10,6 +10,7 @@ class ManifestPopulator(IManifestPopulator):
         self._kind = self._validation_rules.get_default_value_for_key("kind")
         self._metadata_name = self._validation_rules.get_default_value_for_key("name")
         self._metadata_namespace = self._validation_rules.get_default_value_for_key("namespace")
+        self._metadata_label = self._validation_rules.get_default_value_for_key("label")
         self._spec_type = self._validation_rules.get_default_value_for_key("language")
         self._spec_mode = self._validation_rules.get_default_value_for_key("mode")
         self._spec_python_version = self._validation_rules.get_default_value_for_key("python_version")
@@ -58,6 +59,13 @@ class ManifestPopulator(IManifestPopulator):
                         "type": self._spec_restart_policy_type},
                     "hadoopConf": {
                         "fs.s3a.endpoint": self._s3_endpoint},
+                    "volumes": [
+                        {
+                            "name": self._secret_name,
+                            "secret": {
+                                "secretName": self._secret_name}
+                        }
+                    ],
                     "driver": {
                         "cores": self._spec_driver_cores,
                         "memory": self._spec_driver_memory,
@@ -88,6 +96,7 @@ class ManifestPopulator(IManifestPopulator):
     @staticmethod
     def _variable_to_manifest_path(var):
         var_to_path_dict = {"name": ["metadata", "name"],
+                            "label": ["metadata", "labels", "userLabel"],
                             "arguments": ["spec", "arguments"],
                             "language": ["spec", "type"],
                             "python_version": ["spec", "pythonVersion"],

@@ -13,6 +13,7 @@ sparkctl
 spark-docker-hub-v2
 spark-pi-minio_old.yaml
 spark-jobs/custom
+spark-jobs/tests
 spark-jobs/PySpark-Boilerplate
 kubeadm.conf
 Dockerfile

@@ -36,7 +36,8 @@ class TestTemplatePopulator(unittest.TestCase):
                 'driver_memory': "512m",
                 'executors': 1,
                 'executor_cores': 1,
-                'executor_memory': "512m"
+                'executor_memory': "512m",
+                'label': None
             }[input_name]
         self.test_populator = ManifestPopulator(mock_configuration, mock_validation_ruleset)
         self.arguments = {"name": "test",
@@ -46,7 +47,8 @@ class TestTemplatePopulator(unittest.TestCase):
                           "executor_cores": "1",
                           "executors": "1",
                           "executor_memory": "512m",
-                          "arguments": ["1000", "100"]}
+                          "arguments": ["1000", "100"],
+                          "label": "myLabel"}
 
     def test_build_manifest_builds_python_job_manifest_for_python_applications(self):
         # Arrange
@@ -59,7 +61,9 @@ class TestTemplatePopulator(unittest.TestCase):
                                         "kind": "SparkApplication",
                                         "metadata":
                                             {"name": "test",
-                                             "namespace": "default"},
+                                             "namespace": "default",
+                                             "labels": {
+                                                 "userLabel": "myLabel"}},
                                         "spec": {
                                             "type": "Python",
                                             "pythonVersion": "2",
@@ -73,6 +77,13 @@ class TestTemplatePopulator(unittest.TestCase):
                                             "hadoopConf": {
                                                 "fs.s3a.endpoint": "0.0.0.0"},
                                             "arguments": ["1000", "100"],
+                                            "volumes": [
+                                                {
+                                                    "name": "secret",
+                                                    "secret": {
+                                                        "secretName": "secret"}
+                                                }
+                                            ],
                                             "driver": {
                                                 "cores": "0.1",
                                                 "memory": "512m",
@@ -111,7 +122,9 @@ class TestTemplatePopulator(unittest.TestCase):
                                         "kind": "SparkApplication",
                                         "metadata":
                                             {"name": "test",
-                                             "namespace": "default"},
+                                             "namespace": "default",
+                                             "labels": {
+                                                 "userLabel": "myLabel"}},
                                         "spec": {
                                             "type": "Scala",
                                             "mode": "cluster",
@@ -125,6 +138,13 @@ class TestTemplatePopulator(unittest.TestCase):
                                             "hadoopConf": {
                                                 "fs.s3a.endpoint": "0.0.0.0"},
                                             "arguments": ["1000", "100"],
+                                            "volumes": [
+                                                {
+                                                    "name": "secret",
+                                                    "secret": {
+                                                        "secretName": "secret"}
+                                                }
+                                            ],
                                             "driver": {
                                                 "cores": "0.1",
                                                 "memory": "512m",
@@ -171,6 +191,13 @@ class TestTemplatePopulator(unittest.TestCase):
                                                         "type": "Never"},
                                                     "hadoopConf": {
                                                         "fs.s3a.endpoint": "0.0.0.0"},
+                                                    "volumes": [
+                                                        {
+                                                            "name": "secret",
+                                                            "secret": {
+                                                                "secretName": "secret"}
+                                                        }
+                                                    ],
                                                     "driver": {
                                                         "cores": 0.1,
                                                         "memory": "512m",

@@ -103,14 +103,15 @@ def test_set_value_in_nested_dict_overwrites_value_that_already_exists():
     assert result == {"a": 1, "b": {"c": 2}, "d": {"e": {"f": 3, "g": 5}}}
 
 
-def test_set_value_in_nested_dict_throw_an_error_if_path_not_in_nested_dict():
+def test_set_value_in_nested_dict_adds_path_not_in_nested_dict():
     # Arrange
     path = ["x", "z", "g"]
     nested_dict = {"a": 1, "b": {"c": 2}, "d": {"e": {"f": 3}}}
     value = 5
     # Act
-    with pytest.raises(KeyError):
-        set_value_in_nested_dict(nested_dict, path, value)
+    result = set_value_in_nested_dict(nested_dict, path, value)
+    # Assert
+    assert result == {"a": 1, "b": {"c": 2}, "d": {"e": {"f": 3}}, "x": {"z": {"g": 5}}}
 
 
 def test_set_value_in_nested_dict_throw_an_error_if_no_path_given():

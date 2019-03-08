@@ -53,7 +53,6 @@ Get Status Of Spark Job
     ${response}=  Get Request With Json Body   /piezo/jobstatus    ${body}
     [return]    ${response}
 
-
 Post Request With Json Body
     [Arguments]   ${route}    ${body}
     ${headers}=   Json Header
@@ -63,14 +62,22 @@ Post Request With Json Body
 
 Submit SparkPi Job
     [Arguments]   ${job_name}
-    ${submitbody}=    Create Dictionary   name=${job_name}   language=Scala   main_class=org.apache.spark.examples.SparkPi    path_to_main_app_file=local:///opt/spark/examples/jars/spark-examples_2.11-2.4.0.jar
+    ${submitbody}=    Create Dictionary   name=${job_name}   language=Scala   main_class=org.apache.spark.examples.SparkPi    path_to_main_app_file=local:///opt/spark/examples/jars/spark-examples_2.11-2.4.0.jar    label=systemTest
     ${response}=    Post Request With Json Body   /piezo/submitjob    ${submitbody}
     [return]  ${response}
 
 Submit SparkGroupByTest Job With Arguments
     [Arguments]   ${job_name}
     ${arguments}=   Create List   10  670  1300   3
-    ${submitbody}=    Create Dictionary   name=${job_name}   language=Scala   main_class=org.apache.spark.examples.GroupByTest    path_to_main_app_file=local:///opt/spark/examples/jars/spark-examples_2.11-2.4.0.jar      arguments=${arguments}
+    ${submitbody}=    Create Dictionary   name=${job_name}   language=Scala   main_class=org.apache.spark.examples.GroupByTest    path_to_main_app_file=local:///opt/spark/examples/jars/spark-examples_2.11-2.4.0.jar      label=systemTest      arguments=${arguments}
+    ${response}=    Post Request With Json Body   /piezo/submitjob    ${submitbody}
+    [return]  ${response}
+
+Submit Wordcount On Minio Job
+    # big.txt and wordcount.py must both exist on minio in the bucket kubernetes before running this test
+    [Arguments]   ${job_name}
+    ${arguments}=   Create List   s3a://kubernetes/inputs/big.txt    s3a://kubernetes/outputs/${job_name}
+    ${submitbody}=    Create Dictionary   name=${job_name}   language=Python   python_version=2    path_to_main_app_file=s3a://kubernetes/inputs/wordcount.py     label=systemTest      arguments=${arguments}
     ${response}=    Post Request With Json Body   /piezo/submitjob    ${submitbody}
     [return]  ${response}
 

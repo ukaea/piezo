@@ -109,5 +109,9 @@
     "default": "512m",
     "minimum": 512,
     "maximum": 4096
+  },
+  {
+    "input_name": "label",
+    "classification": "Optional"
   }
 ]
