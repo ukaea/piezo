@@ -76,21 +76,18 @@ class SparkJobService(ISparkJobService):
                 CRD_GROUP,
                 CRD_VERSION,
                 'default',
-                CRD_PLURAL,
+                CRD_PLURAL
             )
-            spark_applications = {}
-            items = api_response['items']
-            for item in items:
-                name = item['metadata']['name']
-                status = item['status']['applicationState']['state']
-                spark_applications[name] = status
-
+            spark_jobs = {
+                item['metadata']['name']: item['status']['applicationState']['state'] for item in api_response['items']
+            }
             return {
-                'message': f"The following spark applications were found: {spark_applications}",
+                'message': f"Found {len(spark_jobs)} spark jobs",
+                'spark_jobs': spark_jobs,
                 'status': StatusCodes.Okay.value
             }
         except ApiException as exception:
-            message = f'Kubernetes error when trying to get a list of current spark applications: {exception.reason}'
+            message = f'Kubernetes error when trying to get a list of current spark jobs: {exception.reason}'
             self._logger.error(message)
             return {
                 'status': exception.status,
