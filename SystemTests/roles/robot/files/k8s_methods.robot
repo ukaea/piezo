@@ -73,6 +73,13 @@ Submit SparkGroupByTest Job With Arguments
     ${response}=    Post Request With Json Body   /piezo/submitjob    ${submitbody}
     [return]  ${response}
 
+Submit Wordcount On Minio Job
+    [Arguments]   ${job_name}
+    ${arguments}=   Create List   s3a://kubernetes/big.txt    s3a://kubernetes/output
+    ${submitbody}=    Create Dictionary   name=${job_name}   language=Python   python_version=2    path_to_main_app_file=s3a://kubernetes/wordcount.py    label=systemTest      arguments=${arguments}
+    ${response}=    Post Request With Json Body   /piezo/submitjob    ${submitbody}
+    [return]  ${response}
+
 Wait For Spark Job To Finish
     [Arguments]    ${job_name}
     :For    ${i}    IN RANGE   0    24

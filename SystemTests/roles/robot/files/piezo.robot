@@ -90,3 +90,14 @@ Can Get Status Of Submitted Spark Job
     Sleep       5 seconds
     ${response}=  Get Status Of Spark Job   ${job_name}
     Confirm Ok Response     ${response}
+
+Job Can Use Data And Code On S3 And Write Back Results
+    Directory Should Not Exist In S3 Bucket   kubernetes    output
+    ${job_name}=    Set Variable      wordcount-9lkw3w
+    ${response}=    Submit Wordcount On Minio Job   ${job_name}
+    Confirm Ok Response  ${response}
+    ${finished}=    Wait For Spark Job To Finish        ${job_name}
+    Should Be True    ${finished}
+    Directory Should Exist In S3 Bucket   kubernetes    output
+    Directory Should Not Be Empty In S3 bucket  kubernetes    output
+    File Should Exist In S3 Bucket    kubernetes      output/_SUCCESS
