@@ -78,10 +78,15 @@ class SparkJobService(ISparkJobService):
                 'default',
                 CRD_PLURAL,
             )
+            spark_applications = {}
             items = api_response['items']
-            names = [item['metadata']['name'] for item in items]
+            for item in items:
+                name = item['metadata']['name']
+                status = item['status']['applicationState']['state']
+                spark_applications[name] = status
+
             return {
-                'message': f"The following spark applications were found: {names}",
+                'message': f"The following spark applications were found: {spark_applications}",
                 'status': StatusCodes.Okay.value
             }
         except ApiException as exception:
