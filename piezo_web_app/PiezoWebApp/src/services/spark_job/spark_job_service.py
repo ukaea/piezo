@@ -108,6 +108,8 @@ class SparkJobService(ISparkJobService):
         body = self._manifest_populator.build_manifest(validated_body_values.validated_value)
 
         # Try to submit the job
+        name = body['metadata']['name']
+        self._logger.debug(f'Trying to submit job "{name}".')
         namespace = body['metadata']['namespace']
         try:
             api_response = self._connection.create_namespaced_custom_object(
