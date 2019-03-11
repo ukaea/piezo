@@ -10,15 +10,19 @@ class ValidationService(IValidationService):
         self._validation_ruleset = validation_ruleset
 
     def validate_request_keys(self, request_body):
+        is_valid = True
+        error_msg = "The following errors were found:\n"
         # Get keys required/supported
         required_keys = self._validation_ruleset.get_keys_of_required_inputs()
         if 'language' in request_body:
             language = request_body['language']
             rule = self._validation_ruleset.get_validation_rule_for_key('language')
             validation_result = validate('language', language, rule)
-            if validation_result.is_valid is False:
-                return ValidationResult(False, f'Unsupported language "{language}" provided', None)
-            required_keys += self._validation_ruleset.get_keys_for_language(request_body['language'])
+            if validation_result.is_valid:
+                required_keys += self._validation_ruleset.get_keys_for_language(request_body['language'])
+            else:
+                is_valid = False
+                error_msg += 'Unsupported language "{language}" provided'
         supported_keys = required_keys + self._validation_ruleset.get_keys_of_optional_inputs()
 
         # Find any discrepancies
@@ -26,8 +30,6 @@ class ValidationService(IValidationService):
         unsupported_keys = get_set_difference(request_body, supported_keys)
 
         # Group the results together
-        is_valid = True
-        error_msg = "The following errors were found:\n"
         for key in missing_keys:
             is_valid = False
             error_msg += f'Missing required input "{key}"\n'
