@@ -72,7 +72,7 @@ class SparkJobService(ISparkJobService):
 
     def get_jobs(self):
         try:
-            api_response = self._connection.list_namespaced_custom_object(
+            api_response = self._kubernetes_adapter.list_namespaced_custom_object(
                 CRD_GROUP,
                 CRD_VERSION,
                 'default',
