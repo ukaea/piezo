@@ -50,6 +50,12 @@ Submit Two Jobs With Same Name Returns Ok Responses
     Confirm Ok Response  ${response1}
     Confirm Ok Response  ${response2}
 
+Submit Job With 200 Character Name Runs Successfully
+    ${response}=    Submit SparkPi Job    abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy
+    Confirm Ok Response  ${response}
+    ${finished}=    Wait For Spark Job To Finish        ${job_name}     5 seconds
+    Should Be True      ${finished}
+
 Submit GroupByTest Spark Job With Arguments Returns Ok Response
     ${response}=    Submit SparkGroupByTest Job With Arguments   spark-group-by-test
     Confirm Ok Response  ${response}
