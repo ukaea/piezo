@@ -28,6 +28,10 @@ Get Response Data Message
   [Arguments]   ${response}
   [return]    ${response.json()["data"]["message"]}
 
+Get Response Job Name
+  [Arguments]   ${response}
+  [return]    ${response.json()["data"]["job_name"]}
+
 Json Header
   ${header}=  Create Dictionary   Content-Type=application/json
   [return]    ${header}
