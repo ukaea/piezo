@@ -18,8 +18,12 @@ class TestSubmitJobHandler(BaseHandlerTest):
     @gen_test
     def test_post_returns_400_when_name_is_missing(self):
         body = {'language': 'example-language', 'path_to_main_app_file': '/path/to/main/app.file'}
+        self.mock_spark_job_service.submit_job.return_value = {
+            'status': StatusCodes.Bad_request.value,
+            'message': 'The following errors were found:\nMissing required input \"name\"\n',
+        }
         yield self.assert_request_returns_400(body)
-        self.mock_spark_job_service.submit_job.assert_not_called()
+
 
     @gen_test
     def test_post_returns_400_when_language_is_missing(self):
