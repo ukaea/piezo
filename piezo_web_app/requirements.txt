@@ -10,4 +10,5 @@ pytest-tornado
 requests
 tornado
 tornado-json
+uuid
 wheel
