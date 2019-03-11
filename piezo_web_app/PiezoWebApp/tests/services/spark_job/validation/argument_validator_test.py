@@ -14,14 +14,49 @@ def test_validate_name_validates_non_empty_strings(name):
     assert validation_result.is_valid is True
 
 
-@pytest.mark.parametrize("name", ["", "   ", 123])
-def test_validate_name_rejects_empty_strings_and_non_string_values(name):
+@pytest.mark.parametrize("name", ["", "   "])
+def test_validate_name_rejects_empty_strings(name):
     # Arrange
     validation_rule = ValidationRule({'classification': 'Required'})
     # Act
     validation_result = argument_validator.validate("name", name, validation_rule)
     # Assert
     assert validation_result.is_valid is False
+    assert validation_result.message == '"name" input cannot be empty'
+
+
+@pytest.mark.parametrize("name", [123, 3.4])
+def test_validate_name_rejects_non_string_values(name):
+    # Arrange
+    validation_rule = ValidationRule({'classification': 'Required'})
+    # Act
+    validation_result = argument_validator.validate("name", name, validation_rule)
+    # Assert
+    assert validation_result.is_valid is False
+    assert validation_result.message == '"name" input must be a string'
+
+
+def test_validate_name_allows_200_character_name():
+    # Arrange
+    validation_rule = ValidationRule({'classification': 'Required'})
+    name = 'abcdefghijklmnopqrstuvwxy' * 8
+    assert len(name) == 200
+    # Act
+    validation_result = argument_validator.validate("name", name, validation_rule)
+    # Assert
+    assert validation_result.is_valid is True
+
+
+def test_validate_name_rejects_201_character_name():
+    # Arrange
+    validation_rule = ValidationRule({'classification': 'Required'})
+    name = ('abcdefghijklmnopqrstuvwxy' * 8) + 'z'
+    assert len(name) == 201
+    # Act
+    validation_result = argument_validator.validate("name", name, validation_rule)
+    # Assert
+    assert validation_result.is_valid is False
+    assert validation_result.message == '"name" input has a maximum length of 200 characters'
 
 
 @pytest.mark.parametrize("language", ["Python", "Scala"])
