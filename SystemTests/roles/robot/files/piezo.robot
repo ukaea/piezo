@@ -102,8 +102,8 @@ Job Can Use Data And Code On S3 And Write Back Results
     Directory Should Not Exist In S3 Bucket   kubernetes    outputs/${job_name}
     ${response}=    Submit Wordcount On Minio Job   ${job_name}
     Confirm Ok Response  ${response}
-    ${job_name}=    Get Response Job Name   ${response}
-    ${finished}=    Wait For Spark Job To Finish        ${job_name}     15 seconds
+    ${new_job_name}=    Get Response Job Name   ${response}
+    ${finished}=    Wait For Spark Job To Finish        ${new_job_name}     15 seconds
     Should Be True    ${finished}
     Directory Should Exist In S3 Bucket   kubernetes    outputs/${job_name}
     Directory Should Not Be Empty In S3 bucket  kubernetes    outputs/${job_name}
