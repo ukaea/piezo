@@ -29,7 +29,6 @@ def _validate_name(value):
     if len(value) > 200:
         return ValidationResult(False, '"name" input has a maximum length of 200 characters', None)
 
-    # TODO composed of a-z-. and must start/end with a-z
     return ValidationResult(True, None, value)
 
 
