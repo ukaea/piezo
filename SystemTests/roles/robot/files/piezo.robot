@@ -59,12 +59,9 @@ Submit Job With 57 Character Name Runs Successfully
 
 Submit Job With 58 Character Name Fails
     ${response}=    Submit SparkPi Job    abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefgh
-    Confirm Ok Response  ${response}
-    ${job_name}=    Get Response Job Name   ${response}
-    Sleep   5 seconds
-    ${response}=    Get Status Of Spark Job   ${job_name}
-    ${message}=  Get Response Data Message     ${response}
-    Should Be Equal As Strings   ${message}   FAILED
+    Confirm Bad Input Response  ${response}
+    ${error}=   Get Response Data     ${response}
+    Should Be Equal As Strings    ${error}    The following errors were found:\n\"name\" input has a maximum length of 57 characters\n
 
 Submit GroupByTest Spark Job With Arguments Returns Ok Response
     ${response}=    Submit SparkGroupByTest Job With Arguments   spark-group-by-test
