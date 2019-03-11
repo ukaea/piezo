@@ -1,4 +1,7 @@
+from unittest.mock import patch
+
 import json
+from kubernetes.client.rest import ApiException
 import pytest
 from tornado.httpclient import HTTPClientError
 from tornado.testing import gen_test
@@ -36,16 +39,25 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             'python_version': '2',
             'arguments': ["1000"]
         }
+        self.mock_k8s_adapter.get_namespaced_custom_object.side_effect = ApiException(status=999)
         kubernetes_response = {'metadata': {'name': 'test_python_job'}}
         self.mock_k8s_adapter.create_namespaced_custom_object.return_value = kubernetes_response
         # Act
-        response_body, response_code = yield self.send_request(body)
+        with patch('uuid.uuid4', return_value='abcd1234-ef56-gh78-ij90'):
+            response_body, response_code = yield self.send_request(body)
         # Assert
+        self.mock_k8s_adapter.get_namespaced_custom_object.assert_called_once_with(
+            CRD_GROUP,
+            CRD_VERSION,
+            'default',
+            CRD_PLURAL,
+            'test_python_job-abcd1'
+        )
         expected_body = {
             'apiVersion': 'sparkoperator.k8s.io/v1beta1',
             'kind': 'SparkApplication',
             'metadata': {
-                'name': 'test_python_job',
+                'name': 'test_python_job-abcd1',
                 'namespace': 'default'
             },
             'spec': {
@@ -107,7 +119,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             'status': 'success',
             'data': {
                 'message': 'Job driver created successfully',
-                'driver_name': 'test_python_job-driver'
+                'job_name': 'test_python_job-abcd1'
             }
         })
 
@@ -121,16 +133,25 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             'main_class': 'main.class',
             'arguments': ["1000"]
         }
+        self.mock_k8s_adapter.get_namespaced_custom_object.side_effect = ApiException(status=999)
         kubernetes_response = {'metadata': {'name': 'test_scala_job'}}
         self.mock_k8s_adapter.create_namespaced_custom_object.return_value = kubernetes_response
         # Act
-        response_body, response_code = yield self.send_request(body)
+        with patch('uuid.uuid4', return_value='abcd1234-ef56-gh78-ij90'):
+            response_body, response_code = yield self.send_request(body)
         # Assert
+        self.mock_k8s_adapter.get_namespaced_custom_object.assert_called_once_with(
+            CRD_GROUP,
+            CRD_VERSION,
+            'default',
+            CRD_PLURAL,
+            'test_scala_job-abcd1'
+        )
         expected_body = {
             'apiVersion': 'sparkoperator.k8s.io/v1beta1',
             'kind': 'SparkApplication',
             'metadata': {
-                'name': 'test_scala_job',
+                'name': 'test_scala_job-abcd1',
                 'namespace': 'default'
             },
             'spec': {
@@ -192,7 +213,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             'status': 'success',
             'data': {
                 'message': 'Job driver created successfully',
-                'driver_name': 'test_scala_job-driver'
+                'job_name': 'test_scala_job-abcd1'
             }
         })
 
@@ -211,16 +232,25 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             'executor_memory': '4096m',
             'label': 'my_label'
         }
+        self.mock_k8s_adapter.get_namespaced_custom_object.side_effect = ApiException(status=999)
         kubernetes_response = {'metadata': {'name': 'test_python_job'}}
         self.mock_k8s_adapter.create_namespaced_custom_object.return_value = kubernetes_response
         # Act
-        response_body, response_code = yield self.send_request(body)
+        with patch('uuid.uuid4', return_value='abcd1234-ef56-gh78-ij90'):
+            response_body, response_code = yield self.send_request(body)
         # Assert
+        self.mock_k8s_adapter.get_namespaced_custom_object.assert_called_once_with(
+            CRD_GROUP,
+            CRD_VERSION,
+            'default',
+            CRD_PLURAL,
+            'test_python_job-abcd1'
+        )
         expected_body = {
             'apiVersion': 'sparkoperator.k8s.io/v1beta1',
             'kind': 'SparkApplication',
             'metadata': {
-                'name': 'test_python_job',
+                'name': 'test_python_job-abcd1',
                 'namespace': 'default',
                 'labels': {
                     'userLabel': 'my_label'
@@ -284,7 +314,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             'status': 'success',
             'data': {
                 'message': 'Job driver created successfully',
-                'driver_name': 'test_python_job-driver'
+                'job_name': 'test_python_job-abcd1'
             }
         })
 
@@ -306,7 +336,8 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
         with pytest.raises(HTTPClientError) as error:
             yield self.send_request(body)
         # Assert
-        assert self.mock_k8s_adapter.create_namespaced_custom_object.assert_not_called
+        self.mock_k8s_adapter.get_namespaced_custom_object.assert_not_called()
+        self.mock_k8s_adapter.create_namespaced_custom_object.assert_not_called()
         assert error.value.response.code == 400
         msg = json.loads(error.value.response.body, encoding='utf-8')['data']
         assert msg == "The following errors were found:\n" \
@@ -332,7 +363,8 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
         with pytest.raises(HTTPClientError) as error:
             yield self.send_request(body)
         # Assert
-        assert self.mock_k8s_adapter.create_namespaced_custom_object.assert_not_called
+        self.mock_k8s_adapter.get_namespaced_custom_object.assert_not_called()
+        self.mock_k8s_adapter.create_namespaced_custom_object.assert_not_called()
         msg = json.loads(error.value.response.body, encoding='utf-8')['data']
         assert error.value.response.code == 400
         assert msg == "The following errors were found:\n" \
@@ -356,7 +388,8 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
         with pytest.raises(HTTPClientError) as error:
             yield self.send_request(body)
         # Assert
-        assert self.mock_k8s_adapter.create_namespaced_custom_object.assert_not_called
+        self.mock_k8s_adapter.get_namespaced_custom_object.assert_not_called()
+        self.mock_k8s_adapter.create_namespaced_custom_object.assert_not_called()
         assert error.value.response.code == 400
         msg = json.loads(error.value.response.body, encoding='utf-8')['data']
         assert msg == "The following errors were found:\n" \

@@ -77,14 +77,14 @@ Submit Wordcount On Minio Job
     # big.txt and wordcount.py must both exist on minio in the bucket kubernetes before running this test
     [Arguments]   ${job_name}
     ${arguments}=   Create List   s3a://kubernetes/inputs/big.txt    s3a://kubernetes/outputs/${job_name}
-    ${submitbody}=    Create Dictionary   name=${job_name}   language=Python   python_version=2    path_to_main_app_file=s3a://kubernetes/inputs/wordcount.py     label=systemTest      arguments=${arguments}
+    ${submitbody}=    Create Dictionary   name=${job_name}   language=Python   python_version=2    path_to_main_app_file=s3a://kubernetes/inputs/wordcount.py     label=systemTest      arguments=${arguments}    executors=4
     ${response}=    Post Request With Json Body   /piezo/submitjob    ${submitbody}
     [return]  ${response}
 
 Wait For Spark Job To Finish
-    [Arguments]    ${job_name}
+    [Arguments]    ${job_name}    ${step_size}
     :For    ${i}    IN RANGE   0    24
-    \   Sleep     5 seconds
+    \   Sleep     ${step_size}
     \   ${response}=   Get Status Of Spark Job   ${job_name}
     \   ${message}=  Get Response Data Message     ${response}
     \   ${finished}=    Set Variable If     '${message}'=='COMPLETED'   ${True}     ${False}

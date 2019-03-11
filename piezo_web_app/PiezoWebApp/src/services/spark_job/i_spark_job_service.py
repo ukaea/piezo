@@ -12,7 +12,7 @@ class ISparkJobService(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def get_logs(self, driver_name, namespace):
+    def get_logs(self, job_name, namespace):
         pass
 
     @abstractmethod
