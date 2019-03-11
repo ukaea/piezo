@@ -13,6 +13,10 @@ class ValidationService(IValidationService):
         # Get keys required/supported
         required_keys = self._validation_ruleset.get_keys_of_required_inputs()
         if 'language' in request_body:
+            language = request_body['language']
+            rule = self._validation_ruleset.get_validation_rule_for_key('language')
+            if language not in rule.options:
+                return ValidationResult(False, f"Unsupported language {language} provided", None)
             required_keys += self._validation_ruleset.get_keys_for_language(request_body['language'])
         supported_keys = required_keys + self._validation_ruleset.get_keys_of_optional_inputs()
 
