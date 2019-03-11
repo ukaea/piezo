@@ -12,6 +12,10 @@ Confirm Not Found Response
   [Arguments]   ${response}
   Should Be Equal As Strings    ${response.status_code}   404
 
+Confirm Bad Input Response
+  [Arguments]   ${response}
+  Should Be Equal As Strings    ${response.status_code}   400
+
 Confirm Ok Response
   [Arguments]   ${response}
   Should Be Equal As Strings    ${response.status_code}   200

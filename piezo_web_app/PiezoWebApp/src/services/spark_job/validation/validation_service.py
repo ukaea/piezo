@@ -22,7 +22,7 @@ class ValidationService(IValidationService):
                 required_keys += self._validation_ruleset.get_keys_for_language(request_body['language'])
             else:
                 is_valid = False
-                error_msg += 'Unsupported language "{language}" provided'
+                error_msg += f'Unsupported language "{language}" provided\n'
         supported_keys = required_keys + self._validation_ruleset.get_keys_of_optional_inputs()
 
         # Find any discrepancies

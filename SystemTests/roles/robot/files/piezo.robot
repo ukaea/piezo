@@ -36,6 +36,20 @@ Delete Job Of Non Job Returns Not Found Response
     ${response}=    Delete Spark Job    dummy
     Confirm Not Found Response  ${response}
 
+Submitting Incorrect Argument Keys Are Caught In Same Error
+    ${submitbody}=    Create Dictionary    language=test      label=systemTest
+    ${response}=    Post Request With Json Body   /piezo/submitjob    ${submitbody}
+    Confirm Bad Input Response
+    ${error}=   Get Response Data     ${response}
+    Should Be Equal As Strings    ${error}    The following errors were found:\nUnsupported language \"test\" provided\nMissing required input \"name\"\nMissing required input \"path_to_main_app_file\"\n
+
+Submitting Multiple Incorrect Argument Values Are Caught In Same error
+    ${submitbody}=    Create Dictionary    name=test-job    language=Scala    executors=15    executor_memory=200m      driver_cores=5      main_class=org.apache.spark.examples.SparkPi    path_to_main_app_file=local:///opt/spark/examples/jars/spark-examples_2.11-2.4.0.jar    label=systemTest
+    ${response}=    Post Request With Json Body   /piezo/submitjob    ${submitbody}
+    Confirm Bad Input Response
+    ${error}=   Get Response Data     ${response}
+    Should Be Equal As Strings    ${error}    The following errors were found:\n\"executors\" input must be in range [1, 10]\n\"executor_memory\" input must be in range [512m, 4096m]\n\"driver_cores\" input must be in range [0.1, 1]\n
+
 Submit Spark Pi Job Returns Ok Response
     ${response}=    Submit SparkPi Job    spark-pi-3f69c
     Confirm Ok Response  ${response}
