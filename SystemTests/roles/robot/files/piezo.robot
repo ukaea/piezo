@@ -41,7 +41,7 @@ Submitting Incorrect Argument Keys Are Caught In Same Error
     ${response}=    Post Request With Json Body   /piezo/submitjob    ${submitbody}
     Confirm Bad Input Response    ${response}
     ${error}=   Get Response Data     ${response}
-    Should Be Equal As Strings    ${error}    The following errors were found:\nUnsupported language \"test\" provided\nMissing required input \"name\"\nMissing required input \"path_to_main_app_file\"\n
+    Should Be Equal As Strings    ${error}    The following errors were found:\nUnsupported language \"test\" provided\nMissing required input \"path_to_main_app_file\"\nMissing required input \"name\"\n
 
 Submitting Multiple Incorrect Argument Values Are Caught In Same error
     ${submitbody}=    Create Dictionary    name=test-job    language=Scala    executors=15    executor_memory=200m      driver_cores=5      main_class=org.apache.spark.examples.SparkPi    path_to_main_app_file=local:///opt/spark/examples/jars/spark-examples_2.11-2.4.0.jar    label=systemTest
