@@ -17,7 +17,7 @@ class ValidationService(IValidationService):
             rule = self._validation_ruleset.get_validation_rule_for_key('language')
             validation_result = validate('language', language, rule)
             if validation_result.is_valid is False:
-                return ValidationResult(False, f"Unsupported language {language} provided", None)
+                return ValidationResult(False, f'Unsupported language "{language}" provided', None)
             required_keys += self._validation_ruleset.get_keys_for_language(request_body['language'])
         supported_keys = required_keys + self._validation_ruleset.get_keys_of_optional_inputs()
 
