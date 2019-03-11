@@ -91,6 +91,7 @@ class SparkJobService(ISparkJobService):
         # Validate the body keys
         validated_body_keys = self._argument_validation_service.validate_request_keys(body)
         if validated_body_keys.is_valid is False:
+            self._logger.error(validated_body_keys.message)
             return {
                 'status': StatusCodes.Bad_request.value,
                 'message': validated_body_keys.message
@@ -99,6 +100,7 @@ class SparkJobService(ISparkJobService):
         # Validate the body values
         validated_body_values = self._argument_validation_service.validate_request_values(body)
         if validated_body_values.is_valid is False:
+            self._logger.error(validated_body_values.message)
             return {
                 'status': StatusCodes.Bad_request.value,
                 'message': validated_body_values.message
