@@ -36,27 +36,27 @@ def test_validate_name_rejects_non_string_values(name):
     assert validation_result.message == '"name" input must be a string'
 
 
-def test_validate_name_allows_200_character_name():
+def test_validate_name_allows_57_character_name():
     # Arrange
     validation_rule = ValidationRule({'classification': 'Required'})
-    name = 'abcdefghijklmnopqrstuvwxy' * 8
-    assert len(name) == 200
+    name = 'abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefg'
+    assert len(name) == 57
     # Act
     validation_result = argument_validator.validate("name", name, validation_rule)
     # Assert
     assert validation_result.is_valid is True
 
 
-def test_validate_name_rejects_201_character_name():
+def test_validate_name_rejects_58_character_name():
     # Arrange
     validation_rule = ValidationRule({'classification': 'Required'})
-    name = ('abcdefghijklmnopqrstuvwxy' * 8) + 'z'
-    assert len(name) == 201
+    name = 'abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefg' + 'z'
+    assert len(name) == 58
     # Act
     validation_result = argument_validator.validate("name", name, validation_rule)
     # Assert
     assert validation_result.is_valid is False
-    assert validation_result.message == '"name" input has a maximum length of 200 characters'
+    assert validation_result.message == '"name" input has a maximum length of 57 characters'
 
 
 @pytest.mark.parametrize("language", ["Python", "Scala"])
