@@ -56,7 +56,7 @@ Can Get Logs Of Submitted Spark Job
     ${job_name}=     Set Variable   spark-pi-fe244
     ${response}=    Submit SparkPi Job    ${job_name}
     ${job_name}=    Get Response Job Name   ${response}
-    ${finished}=    Wait For Spark Job To Finish        ${job_name}
+    ${finished}=    Wait For Spark Job To Finish        ${job_name}     5 seconds
     Should Be True      ${finished}
     ${response}=  Get Logs For Spark Job    ${job_name}
     ${joblog}=    Get Response Data Message   ${response}
@@ -69,7 +69,7 @@ Arguments Have Been Read And Appear In Logs
     ${response}=    Submit SparkGroupByTest Job With Arguments   ${job_name}
     ${job_name}=    Get Response Job Name   ${response}
     Confirm Ok Response  ${response}
-    ${finished}=    Wait For Spark Job To Finish        ${job_name}
+    ${finished}=    Wait For Spark Job To Finish        ${job_name}     5 seconds
     Should Be True      ${finished}
     ${logresponse}=  Get Logs For Spark Job    ${job_name}
     ${joblog}=  Get Response Data Message   ${logresponse}
@@ -84,7 +84,7 @@ Can Delete Submitted Spark Job
     ${job_name}=    Set Variable        spark-pi-83783
     ${response}=    Submit SparkPi Job   ${job_name}
     ${job_name}=    Get Response Job Name   ${response}
-    ${finished}=    Wait For Spark Job To Finish        ${job_name}
+    ${finished}=    Wait For Spark Job To Finish        ${job_name}     5 seconds
     Should Be True    ${finished}
     ${response}=  Delete Spark Job    ${job_name}
     Confirm Ok Response   ${response}
@@ -103,7 +103,7 @@ Job Can Use Data And Code On S3 And Write Back Results
     ${response}=    Submit Wordcount On Minio Job   ${job_name}
     Confirm Ok Response  ${response}
     ${job_name}=    Get Response Job Name   ${response}
-    ${finished}=    Wait For Spark Job To Finish        ${job_name}
+    ${finished}=    Wait For Spark Job To Finish        ${job_name}     15 seconds
     Should Be True    ${finished}
     Directory Should Exist In S3 Bucket   kubernetes    outputs/${job_name}
     Directory Should Not Be Empty In S3 bucket  kubernetes    outputs/${job_name}
