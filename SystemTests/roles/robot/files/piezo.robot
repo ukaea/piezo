@@ -44,6 +44,12 @@ Submit Spark Pi Job Returns Ok Response
     ${message}=   Get Response Data Message   ${response}
     Should Be Equal As Strings    ${message}    Job driver created successfully
 
+Submit Two Jobs With Same Name Returns Ok Responses
+    ${response1}=   Submit SparkPi Job    twin-job
+    ${response2}=   Submit SparkPi Job    twin-job
+    Confirm Ok Response  ${response1}
+    Confirm Ok Response  ${response2}
+
 Submit GroupByTest Spark Job With Arguments Returns Ok Response
     ${response}=    Submit SparkGroupByTest Job With Arguments   spark-group-by-test
     Confirm Ok Response  ${response}
