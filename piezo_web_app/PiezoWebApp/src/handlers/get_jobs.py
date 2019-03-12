@@ -10,6 +10,13 @@ class GetJobsHandler(BaseHandler):
             "type": "object",
             "properties": {
                 "message": {"type": "string"},
+                "spark_jobs": {
+                    "type": "object",
+                    "properties": {
+                        "job_name": {"type": "string"},
+                        "status": {"type": "string"}
+                    }
+                }
             },
         }
     )

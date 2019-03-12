@@ -94,8 +94,8 @@ class SparkJobService(ISparkJobService):
                 'message': message
             }
         except KeyError as exception:
-            message = f'Unexpected response from Kubernetes API when trying to get status of spark job "{job_name}"' \
-                      f' in namespace "{namespace}": {api_response}'
+            message = f'Unexpected response from Kubernetes API when trying to get list of spark jobs' \
+                      f' : {api_response}'
             self._logger.error(message)
             raise exception
 
