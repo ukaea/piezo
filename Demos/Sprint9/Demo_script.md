@@ -35,12 +35,26 @@ json:
 ```
 
 3. Take job name from the return body
-4. Send `Get` to `http://host-172-16-113-146.nubes.stfc.ac.uk:31924/piezo/jobstatus/{job_name}`
+4. Send `Get` to `http://host-172-16-113-146.nubes.stfc.ac.uk:31924/piezo/jobstatus/`
+json body
+```
+{
+  "name": "{job_name}",
+  "namespace": "default"
+}
+```
 5. Repeat until completed
 6. In terminal run `kubectl get pods` to show pod has run and is completed
 
 ## Get logs
-1. Using previous job name send `Get` to `http://host-172-16-113-146.nubes.stfc.ac.uk:31924/piezo/getlogs/{job_name}`
+1. Using previous job name send `Get` to `http://host-172-16-113-146.nubes.stfc.ac.uk:31924/piezo/getlogs/`
+json body
+```
+{
+  "name": "{job_name}",
+  "namespace": "default"
+}
+```
 2. Repeat submitting job and repeat get request whilst running to show getting logs as job Runs
 
 ## Job arguments
@@ -60,9 +74,24 @@ json:
 }
 ```
 
-3. GET request to `http://host-172-16-113-146.nubes.stfc.ac.uk:31924/piezo/jobstatus/{job_name}` until status is `COMPLETED`
+3. GET request to `http://host-172-16-113-146.nubes.stfc.ac.uk:31924/piezo/jobstatus/`
+json body
+```
+{
+  "name": "{job_name}",
+  "namespace": "default"
+}
+```
+until status is `COMPLETED`
 
-4. GET request to `http://host-172-16-113-146.nubes.stfc.ac.uk:31924/piezo/getlogs/{job_name}`
+4. GET request to `http://host-172-16-113-146.nubes.stfc.ac.uk:31924/piezo/getlogs/`
+json body
+```
+{
+  "name": "{job_name}",
+  "namespace": "default"
+}
+```
 
 5. Show lines:
 * `Adding task set 0.0 with 10 tasks` (or replace 10 with first argument submitted)
@@ -83,9 +112,24 @@ json:
 }
 ```
 
-3. GET request to `http://host-172-16-113-146.nubes.stfc.ac.uk:31924/piezo/jobstatus/{job_name}` until status is `COMPLETED`
+3. GET request to `http://host-172-16-113-146.nubes.stfc.ac.uk:31924/piezo/jobstatus/`
+json body
+```
+{
+  "name": "{job_name}",
+  "namespace": "default"
+}
+```
+ until status is `COMPLETED`
 
-4. GET request to `http://host-172-16-113-146.nubes.stfc.ac.uk:31924/piezo/getlogs/{job_name}`
+4. GET request to `http://host-172-16-113-146.nubes.stfc.ac.uk:31924/piezo/getlogs/`
+json body
+```
+{
+  "name": "{job_name}",
+  "namespace": "default"
+}
+```
 
 5. Log into minio and show the `nonSystemTestOut` folder with results from job
 
@@ -99,9 +143,24 @@ json:
 
 ## Delete job
 
-1. Submit `DELETE` request to `http://host-172-16-113-146.nubes.stfc.ac.uk:31924/piezo/deletejob/{job_name}`
+1. Submit `DELETE` request to `http://host-172-16-113-146.nubes.stfc.ac.uk:31924/piezo/deletejob/`
+json body
+```
+{
+  "name": "{job_name}",
+  "namespace": "default"
+}
+```
 
-2. Submit `GET` request to `http://host-172-16-113-146.nubes.stfc.ac.uk:31924/piezo/jobstatus/{job_name}` show 404 error
+2. Submit `GET` request to `http://host-172-16-113-146.nubes.stfc.ac.uk:31924/piezo/jobstatus/`
+json body
+```
+{
+  "name": "{job_name}",
+  "namespace": "default"
+}
+```
+ show 404 error
 
 3. Submit `GET` request to `http://host-172-16-113-146.nubes.stfc.ac.uk:31924/piezo/getjobs` show job deleted
 
