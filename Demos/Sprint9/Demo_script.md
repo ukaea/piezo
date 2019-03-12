@@ -30,7 +30,7 @@ json:
  "main_class": "org.apache.spark.examples.SparkPi",
  "path_to_main_app_file": "local:///opt/spark/examples/jars/spark-examples_2.11-2.4.0.jar",
  "label": "demo",
- "arguments": ["10000"]
+ "arguments": ["1000"]
 }
 ```
 
