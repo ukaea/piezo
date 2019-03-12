@@ -64,6 +64,7 @@ class BaseHandlerTest(AsyncHTTPTestCase, metaclass=ABCMeta):
             body=json_body,
             allow_nonstandard_methods=True
         )
+        assert "Server" not in response.headers
         return response
 
     @staticmethod
