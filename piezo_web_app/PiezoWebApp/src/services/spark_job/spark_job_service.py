@@ -79,7 +79,7 @@ class SparkJobService(ISparkJobService):
                 CRD_PLURAL
             )
             spark_jobs = {
-                item['metadata']['name']: item['status']['applicationState']['state'] for item in api_response['items']
+                item['metadata']['name']: SparkJobService._retrieve_status(item) for item in api_response['items']
             }
             return {
                 'message': f"Found {len(spark_jobs)} spark jobs",
@@ -165,3 +165,10 @@ class SparkJobService(ISparkJobService):
                 'status': exception.status,
                 'message': message
             }
+
+    @staticmethod
+    def _retrieve_status(item):
+        try:
+            return item['status']['applicationState']['state']
+        except KeyError:
+            return 'UNKNOWN'
