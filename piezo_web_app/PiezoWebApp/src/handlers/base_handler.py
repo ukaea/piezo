@@ -11,6 +11,7 @@ class BaseHandler(APIHandler):
         self._logger = logger
         self._spark_job_service = spark_job_service
         self._validation_ruleset = validation_ruleset
+        self.clear_header("Server")
 
     @property
     def validation_ruleset(self):
