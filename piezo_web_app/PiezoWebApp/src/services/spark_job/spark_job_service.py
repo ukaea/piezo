@@ -79,7 +79,7 @@ class SparkJobService(ISparkJobService):
                 CRD_PLURAL
             )
             spark_jobs = {
-                item['metadata']['name']: item['status']['applicationState']['state'] for item in api_response['items']
+                item['metadata']['name']: SparkJobService._retrieve_status(item) for item in api_response['items']
             }
             return {
                 'message': f"Found {len(spark_jobs)} spark jobs",
@@ -93,6 +93,11 @@ class SparkJobService(ISparkJobService):
                 'status': exception.status,
                 'message': message
             }
+        except KeyError as exception:
+            message = f'Unexpected response from Kubernetes API when trying to get list of spark jobs' \
+                      f' : {api_response}'
+            self._logger.error(message)
+            raise exception
 
     def get_logs(self, job_name, namespace):
         try:
@@ -160,3 +165,10 @@ class SparkJobService(ISparkJobService):
                 'status': exception.status,
                 'message': message
             }
+
+    @staticmethod
+    def _retrieve_status(item):
+        try:
+            return item['status']['applicationState']['state']
+        except KeyError:
+            return 'UNKNOWN'
