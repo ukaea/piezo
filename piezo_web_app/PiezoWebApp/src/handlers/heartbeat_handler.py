@@ -15,4 +15,3 @@ class HeartbeatHandler(APIHandler):
         self.clear_header("Server")
         status = {'running': 'true'}
         return status
-
