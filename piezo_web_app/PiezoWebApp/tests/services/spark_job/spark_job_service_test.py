@@ -275,3 +275,19 @@ class TestSparkJobService(TestCase):
             'message': 'Kubernetes error when trying to get status of spark job "test-job" in namespace'
                        ' "test-namespace": Reason'
         })
+
+    def test_retrieve_job_status_returns_status_if_present(self):
+        # Arrange
+        item = {"status": {"applicationState": {"state": "RUNNING"}}}
+        # Act
+        status = self.test_service._retrieve_status(item)
+        # Assert
+        assert status == "RUNNING"
+
+    def test_retrieve_job_status_returns_UNKNOWN_if_status_is_missing(self):
+        # Arrange
+        item = {"some_keys": "some_values"}
+        # Act
+        status = self.test_service._retrieve_status(item)
+        # Assert
+        assert status == "UNKNOWN"
