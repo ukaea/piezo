@@ -98,6 +98,34 @@ class TestSparkJobService(TestCase):
             'message': 'Kubernetes error when trying to get a list of current spark jobs: Reason'
         })
 
+    def test_get_jobs_returns_status_of_jobs_when_present(self):
+        # Arrange
+        self.mock_kubernetes_adapter.list_namespaced_custom_object.return_value = {"items": [
+            {"metadata": {"name": "job1"}, "status": {"applicationState": {"state": "RUNNING"}}}
+        ]}
+        # Act
+        result = self.test_service.get_jobs()
+        # Assert
+        self.assertDictEqual(result, {'message': 'Found 1 spark jobs',
+                                      'spark_jobs': {"job1": "RUNNING"},
+                                      'status': 200})
+        self.mock_kubernetes_adapter.list_namespaced_custom_object.assert_called_once_with(
+            CRD_GROUP, CRD_VERSION, 'default', CRD_PLURAL)
+
+    def test_get_jobs_returns_status_of_job_as_unknown_when_missing(self):
+        # Arrange
+        self.mock_kubernetes_adapter.list_namespaced_custom_object.return_value = {"items": [
+            {"metadata": {"name": "job1"}}
+        ]}
+        # Act
+        result = self.test_service.get_jobs()
+        # Assert
+        self.assertDictEqual(result, {'message': 'Found 1 spark jobs',
+                                      'spark_jobs': {"job1": "UNKNOWN"},
+                                      'status': 200})
+        self.mock_kubernetes_adapter.list_namespaced_custom_object.assert_called_once_with(
+            CRD_GROUP, CRD_VERSION, 'default', CRD_PLURAL)
+
     def test_get_logs_sends_expected_arguments(self):
         # Arrange
         self.mock_kubernetes_adapter.read_namespaced_pod_log.return_value = "Response"
@@ -275,19 +303,3 @@ class TestSparkJobService(TestCase):
             'message': 'Kubernetes error when trying to get status of spark job "test-job" in namespace'
                        ' "test-namespace": Reason'
         })
-
-    def test_retrieve_job_status_returns_status_if_present(self):
-        # Arrange
-        item = {"status": {"applicationState": {"state": "RUNNING"}}}
-        # Act
-        status = self.test_service._retrieve_status(item)
-        # Assert
-        assert status == "RUNNING"
-
-    def test_retrieve_job_status_returns_UNKNOWN_if_status_is_missing(self):
-        # Arrange
-        item = {"some_keys": "some_values"}
-        # Act
-        status = self.test_service._retrieve_status(item)
-        # Assert
-        assert status == "UNKNOWN"
