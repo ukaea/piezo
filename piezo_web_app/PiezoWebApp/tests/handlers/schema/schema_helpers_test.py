@@ -6,7 +6,7 @@ from PiezoWebApp.src.handlers.schema.schema_helpers import create_object_schema_
 from PiezoWebApp.src.services.spark_job.validation.validation_ruleset import ValidationRuleset
 
 
-def test_create_object_schema_from_validation_ruleset_returns_schema_with_none_required():
+def test_create_object_schema_from_validation_ruleset_returns_correct_schema():
     # Arrange
     ruleset = mock.create_autospec(ValidationRuleset)
     ruleset.get_key_type_pairs_allowed_as_input.return_value = {
@@ -14,7 +14,6 @@ def test_create_object_schema_from_validation_ruleset_returns_schema_with_none_r
         'b': 'string',
         'c': 'string'
     }
-    ruleset.get_keys_of_required_inputs.return_value = []
     # Act
     schema = create_object_schema_from_validation_ruleset(ruleset)
     # Assert
@@ -28,29 +27,6 @@ def test_create_object_schema_from_validation_ruleset_returns_schema_with_none_r
     }
 
 
-def test_create_object_schema_from_validation_ruleset_returns_schema_with_all_required():
-    # Arrange
-    ruleset = mock.create_autospec(ValidationRuleset)
-    ruleset.get_key_type_pairs_allowed_as_input.return_value = {
-        'a': 'string',
-        'b': 'string',
-        'c': 'string'
-    }
-    ruleset.get_keys_of_required_inputs.return_value = ['a', 'b', 'c']
-    # Act
-    schema = create_object_schema_from_validation_ruleset(ruleset)
-    # Assert
-    assert schema == {
-        'type': 'object',
-        'properties': {
-            'a': {'type': 'string'},
-            'b': {'type': 'string'},
-            'c': {'type': 'string'}
-        },
-        'required': ['a', 'b', 'c']
-    }
-
-
 def test_create_object_schema_from_validation_ruleset_returns_expected_schema_with_mixed_rules_and_mixed_types():
     # Arrange
     ruleset = mock.create_autospec(ValidationRuleset)
@@ -60,7 +36,6 @@ def test_create_object_schema_from_validation_ruleset_returns_expected_schema_wi
         'optional2': 'array',
         'conditional': 'string'
     }
-    ruleset.get_keys_of_required_inputs.return_value = ['required']
     # Act
     schema = create_object_schema_from_validation_ruleset(ruleset)
     # Assert
@@ -72,7 +47,6 @@ def test_create_object_schema_from_validation_ruleset_returns_expected_schema_wi
             'optional2': {'type': 'array'},
             'conditional': {'type': 'string'}
         },
-        'required': ['required']
     }
 
 
@@ -89,24 +63,6 @@ def test_create_object_schema_with_string_properties_returns_schema_with_all_pro
             'b': {'type': 'string'},
             'c': {'type': 'string'}
         },
-    }
-
-
-def test_create_object_schema_with_string_properties_returns_schema_with_all_properties_with_correct_required():
-    # Arrange
-    properties = ['a', 'b', 'c']
-    required = ['b', 'c']
-    # Act
-    schema = create_object_schema_with_string_properties(properties, required)
-    # Assert
-    assert schema == {
-        'type': 'object',
-        'properties': {
-            'a': {'type': 'string'},
-            'b': {'type': 'string'},
-            'c': {'type': 'string'}
-        },
-        'required': ['b', 'c']
     }
 
 
