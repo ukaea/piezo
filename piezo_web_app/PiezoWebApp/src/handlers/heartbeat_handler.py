@@ -12,5 +12,6 @@ class HeartbeatHandler(APIHandler):
         }
     )
     def get(self, *args, **kwargs):
+        self.clear_header("Server")
         status = {'running': 'true'}
         return status
