@@ -35,6 +35,8 @@ json:
 ```
 
 3. Take job name from the return body
+  - This has a UUID tag
+
 4. Send `Get` to `http://host-172-16-113-146.nubes.stfc.ac.uk:31924/piezo/jobstatus/`
 json body
 ```
