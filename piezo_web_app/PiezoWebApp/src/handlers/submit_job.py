@@ -19,7 +19,7 @@ class SubmitJobHandler(BaseHandler):
         }
     )
     def post(self, *args, **kwargs):
-        name = self.body['name']
+        name = self.body['name'] if 'name' in self.body else None
         self._logger.debug(f'Trying to submit job "{name}".')
         result = self._spark_job_service.submit_job(self.body)
         status = result['status']

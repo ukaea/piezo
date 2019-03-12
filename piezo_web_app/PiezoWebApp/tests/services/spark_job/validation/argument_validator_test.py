@@ -14,14 +14,49 @@ def test_validate_name_validates_non_empty_strings(name):
     assert validation_result.is_valid is True
 
 
-@pytest.mark.parametrize("name", ["", "   ", 123])
-def test_validate_name_rejects_empty_strings_and_non_string_values(name):
+@pytest.mark.parametrize("name", ["", "   "])
+def test_validate_name_rejects_empty_strings(name):
     # Arrange
     validation_rule = ValidationRule({'classification': 'Required'})
     # Act
     validation_result = argument_validator.validate("name", name, validation_rule)
     # Assert
     assert validation_result.is_valid is False
+    assert validation_result.message == '"name" input cannot be empty'
+
+
+@pytest.mark.parametrize("name", [123, 3.4])
+def test_validate_name_rejects_non_string_values(name):
+    # Arrange
+    validation_rule = ValidationRule({'classification': 'Required'})
+    # Act
+    validation_result = argument_validator.validate("name", name, validation_rule)
+    # Assert
+    assert validation_result.is_valid is False
+    assert validation_result.message == '"name" input must be a string'
+
+
+def test_validate_name_allows_57_character_name():
+    # Arrange
+    validation_rule = ValidationRule({'classification': 'Required'})
+    name = 'abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefg'
+    assert len(name) == 57
+    # Act
+    validation_result = argument_validator.validate("name", name, validation_rule)
+    # Assert
+    assert validation_result.is_valid is True
+
+
+def test_validate_name_rejects_58_character_name():
+    # Arrange
+    validation_rule = ValidationRule({'classification': 'Required'})
+    name = 'abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefg' + 'z'
+    assert len(name) == 58
+    # Act
+    validation_result = argument_validator.validate("name", name, validation_rule)
+    # Assert
+    assert validation_result.is_valid is False
+    assert validation_result.message == '"name" input has a maximum length of 57 characters'
 
 
 @pytest.mark.parametrize("language", ["Python", "Scala"])
@@ -202,7 +237,7 @@ def test_validate_driver_memory_accepts_values_for_megabytes_as_string(memory):
         'default': '512m',
         'minimum': 512,
         'maximum': 2048
-      })
+    })
     # Act
     validation_result = argument_validator.validate("driver_memory", memory, validation_rule)
     # Assert

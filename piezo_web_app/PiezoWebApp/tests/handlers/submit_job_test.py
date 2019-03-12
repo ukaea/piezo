@@ -18,20 +18,41 @@ class TestSubmitJobHandler(BaseHandlerTest):
     @gen_test
     def test_post_returns_400_when_name_is_missing(self):
         body = {'language': 'example-language', 'path_to_main_app_file': '/path/to/main/app.file'}
+        self.mock_spark_job_service.submit_job.return_value = {
+            'status': StatusCodes.Bad_request.value,
+            'message': 'The following errors were found:\nMissing required input \"name\"\n',
+        }
         yield self.assert_request_returns_400(body)
-        self.mock_spark_job_service.submit_job.assert_not_called()
+        self.mock_logger.debug.assert_has_calls([
+            call('Trying to submit job "None".'),
+            call('Submitting job "None" returned status code "400".')
+        ])
 
     @gen_test
     def test_post_returns_400_when_language_is_missing(self):
         body = {'name': 'example-spark-job', '': '/path/to/main/app.file'}
+        self.mock_spark_job_service.submit_job.return_value = {
+            'status': StatusCodes.Bad_request.value,
+            'message': 'The following errors were found:\nMissing required input \"language\"\n',
+        }
         yield self.assert_request_returns_400(body)
-        self.mock_spark_job_service.submit_job.assert_not_called()
+        self.mock_logger.debug.assert_has_calls([
+            call('Trying to submit job "example-spark-job".'),
+            call('Submitting job "example-spark-job" returned status code "400".')
+        ])
 
     @gen_test
     def test_post_returns_400_when_path_to_main_app_file_is_missing(self):
         body = {'name': 'example-spark-job', 'language': 'example-language'}
+        self.mock_spark_job_service.submit_job.return_value = {
+            'status': StatusCodes.Bad_request.value,
+            'message': 'The following errors were found:\nMissing required input \"main_app_file\"\n',
+        }
         yield self.assert_request_returns_400(body)
-        self.mock_spark_job_service.submit_job.assert_not_called()
+        self.mock_logger.debug.assert_has_calls([
+            call('Trying to submit job "example-spark-job".'),
+            call('Submitting job "example-spark-job" returned status code "400".')
+        ])
 
     @gen_test
     def test_post_returns_confirmation_of_submit_when_successful(self):

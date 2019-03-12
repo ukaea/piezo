@@ -3,6 +3,8 @@ from PiezoWebApp.src.models.spark_job_validation_result import ValidationResult
 
 
 def validate(key, value, validation_rule):
+    if key == "name":
+        return _validate_name(value)
     if key in ["name", "path_to_main_app_file", "main_class", "label"]:
         return _validate_non_empty_string(key, value)
     if key in ["language", "python_version"]:
@@ -16,6 +18,18 @@ def validate(key, value, validation_rule):
     if key in ["arguments"]:
         return ValidationResult(True, None, value)
     raise ValueError(f"Unexpected argument {key}")
+
+
+def _validate_name(value):
+    validation_result = _validate_non_empty_string("name", value)
+    if not validation_result.is_valid:
+        return validation_result
+
+    # https://github.com/ukaea/piezo/wiki/WebAppDecisionRecord#maximum-length-of-a-job-name
+    if len(value) > 57:
+        return ValidationResult(False, '"name" input has a maximum length of 57 characters', None)
+
+    return ValidationResult(True, None, value)
 
 
 def _validate_non_empty_string(key, value):

@@ -67,6 +67,8 @@ class TestValidationService(unittest.TestCase):
             'language': 'example-language',
             'example_key': 'example-value'
         }
+        self.mock_validation_ruleset.get_validation_rule_for_key.return_value = \
+            ValidationRule({"classification": "Required", "options": ['example-language']})
         # Act
         result = self.test_service.validate_request_keys(request_body)
         # Assert
@@ -84,6 +86,9 @@ class TestValidationService(unittest.TestCase):
             'name': 'example-spark-job',
             'language': 'example-language'
         }
+        self.mock_validation_ruleset.get_validation_rule_for_key.return_value = \
+            ValidationRule({"classification": "Required", "options": ['example-language']})
+
         # Act
         result = self.test_service.validate_request_keys(request_body)
         # Assert
