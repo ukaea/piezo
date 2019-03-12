@@ -93,6 +93,11 @@ class SparkJobService(ISparkJobService):
                 'status': exception.status,
                 'message': message
             }
+        except KeyError as exception:
+            message = f'Unexpected response from Kubernetes API when trying to get status of spark job "{job_name}"' \
+                      f' in namespace "{namespace}": {api_response}'
+            self._logger.error(message)
+            raise exception
 
     def get_logs(self, job_name, namespace):
         try:
