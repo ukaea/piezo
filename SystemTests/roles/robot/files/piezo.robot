@@ -149,3 +149,21 @@ Job Can Use Data And Code On S3 And Write Back Results
     Directory Should Exist In S3 Bucket   kubernetes    outputs/${job_name}
     Directory Should Not Be Empty In S3 bucket  kubernetes    outputs/${job_name}
     File Should Exist In S3 Bucket    kubernetes      outputs/${job_name}/_SUCCESS
+
+Get List Of SparkApplications Includes Submitted Jobs
+    ${response1}=   Submit SparkPi Job    job1
+    ${response2}=   Submit SparkPi Job    job2
+    ${response3}=   Submit SparkPi Job    job3
+    Confirm Ok Response  ${response1}
+    Confirm Ok Response  ${response2}
+    Confirm Ok Response  ${response3}
+    ${job_name_1}=    Get Response Job Name   ${response1}
+    ${job_name_2}=    Get Response Job Name   ${response2}
+    ${job_name_3}=    Get Response Job Name   ${response3}
+    Sleep     5 seconds
+    ${request_response}=    Get List Of Spark Jobs
+    Confirm Ok Response     ${request_response}
+    ${jobs}=    Get Response Spark Jobs     ${request_response}
+    Dictionary Should Contain Key   ${jobs}   ${job_name_1}
+    Dictionary Should Contain Key   ${jobs}   ${job_name_2}
+    Dictionary Should Contain Key   ${jobs}   ${job_name_3}

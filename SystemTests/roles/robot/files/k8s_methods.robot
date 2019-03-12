@@ -34,6 +34,10 @@ Get Logs For Spark Job
     ${response}=  Get Request With Json Body   /piezo/getlogs    ${body}
     [return]    ${response}
 
+Get List Of Spark Jobs
+    ${response}=    Get Request From Route    /piezo/getjobs
+    [return]    ${response}
+
 Get Request From Route
     [Arguments]   ${route}
     Create Session    k8s   ${K8S_ENDPOINT}

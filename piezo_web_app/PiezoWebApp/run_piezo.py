@@ -5,6 +5,7 @@ import kubernetes
 import tornado
 
 from PiezoWebApp.src.handlers.delete_job import DeleteJobHandler
+from PiezoWebApp.src.handlers.get_jobs import GetJobsHandler
 from PiezoWebApp.src.handlers.get_logs import GetLogsHandler
 from PiezoWebApp.src.handlers.heartbeat_handler import HeartbeatHandler
 from PiezoWebApp.src.handlers.submit_job import SubmitJobHandler
@@ -73,6 +74,7 @@ def build_app(container, use_route_stem=False):
         [
             (heartbeat_route, HeartbeatHandler),
             (format_route_specification(route_stem + 'deletejob'), DeleteJobHandler, container),
+            (format_route_specification(route_stem + 'getjobs'), GetJobsHandler, container),
             (format_route_specification(route_stem + 'getlogs'), GetLogsHandler, container),
             (format_route_specification(route_stem + 'jobstatus'), JobStatusHandler, container),
             (format_route_specification(route_stem + 'submitjob'), SubmitJobHandler, container)
