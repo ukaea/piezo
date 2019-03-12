@@ -163,7 +163,7 @@ Get List Of SparkApplications Includes Submitted Jobs
     Sleep     5 seconds
     ${request_response}=    Get List Of Spark Jobs
     Confirm Ok Response     ${request_response}
-    ${jobs}=    Get Response data     ${request_response}
+    ${jobs}=    Get Response Spark Jobs     ${request_response}
     Dictionary Should Contain Key   ${jobs}   ${job_name_1}
     Dictionary Should Contain Key   ${jobs}   ${job_name_2}
     Dictionary Should Contain Key   ${jobs}   ${job_name_3}
