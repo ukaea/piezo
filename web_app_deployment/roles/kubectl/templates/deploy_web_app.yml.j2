@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: piezo-web-app
+  labels:
+    run: piezo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: piezo
+  template: 
+    metadata:
+      labels:
+        run: piezo
+    spec:
+      containers:
+      - name: piezo
+        image: {{ harbor_url }}/piezo-resources/web_app:{{ git_tag }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8888 # Port where the application is exposed on 
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: piezo-app-service
+  namespace: default
+  labels:
+    piezo-status: test
+spec:
+  selector:
+    run: piezo
+  ports:
+  - name: web
+    port: 8888 # Port where the application is exposed on in the container (to be picked up by ingress)
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+  name: piezo-ingress
+spec:
+  rules:
+    - host: {{ k8s_master_url }}
+      http:
+        paths:
+          - backend:
+              serviceName: piezo-app-service
+              servicePort: web
+            path: /piezo/

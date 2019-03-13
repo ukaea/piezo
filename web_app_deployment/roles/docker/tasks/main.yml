@@ -1,0 +1,6 @@
+---
+- name: Build Docker image
+  docker_image:
+    tag: "{{ harbor_url }}/piezo-resources/web_app:{{ git_tag }}"
+    push: yes
+

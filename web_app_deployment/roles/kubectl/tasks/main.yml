@@ -1,0 +1,9 @@
+---
+- name: Make deployment script
+  template:
+    src: deploy_web_app.yml.j2
+    dest: "deploy_web_app_{{git_tag}}.yml"
+
+- name: Apply deployment
+    kubectl:
+      apply: "deploy_web_app_{{git_tag}}.yml"

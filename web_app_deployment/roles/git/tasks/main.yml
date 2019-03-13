@@ -1,0 +1,7 @@
+---
+- name: Get current commit tag
+  shell: git describe --always --tags --long
+  set_fact:
+    git_tag: shell.output
+    
+- debug: msg="{{ git_tag }}"
