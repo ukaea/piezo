@@ -3,7 +3,6 @@
   shell: git describe --always --tags --long
   register: git_tag_cmd
 
-- set_fact:
+- name: Set current commit tag to variable
+  set_fact:
     git_tag: "{{ git_tag_cmd.stdout }}"
-
-- debug: msg="{{ git_tag }}"

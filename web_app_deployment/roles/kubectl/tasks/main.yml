@@ -4,6 +4,14 @@
     src: deploy_web_app.yml.j2
     dest: "deploy_web_app_{{git_tag}}.yml"
 
+- name: Get kubctl cluster info
+  shell: kubectl cluster-info
+  register: kubectl_cluster_info
+
+- debug: msg="{{ kubectl_cluster_info.stdout }}"
+
+- name: Delete old deployment
+  shell: kubectl delete deployment piezo-web-app
+
 - name: Apply deployment
-    kubectl:
-      apply: "deploy_web_app_{{git_tag}}.yml"
+  shell: kubectl apply -f "deploy_web_app_{{git_tag}}.yml"
