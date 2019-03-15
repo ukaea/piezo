@@ -83,10 +83,8 @@ class SparkJobService(ISparkJobService):
             }
             if label != "ALL":
                 for item in api_response['items']:
-                    try:
-                        if not item['metadata']['labels']['userLabel'] == label:
-                            del spark_jobs[item['metadata']['name']]
-                    except KeyError:
+                    labels = item['metadata']['labels']
+                    if labels.get('userLabel') != label:
                         del spark_jobs[item['metadata']['name']]
             return {
                 'message': f"Found {len(spark_jobs)} spark jobs",
