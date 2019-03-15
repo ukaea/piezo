@@ -17,3 +17,4 @@ spark-jobs/tests
 spark-jobs/PySpark-Boilerplate
 kubeadm.conf
 Dockerfile
+prometheus
