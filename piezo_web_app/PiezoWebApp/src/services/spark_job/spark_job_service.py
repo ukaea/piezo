@@ -83,8 +83,8 @@ class SparkJobService(ISparkJobService):
             }
             if label != "ALL":
                 for item in api_response['items']:
-                    labels = item['metadata']['labels']
-                    if labels.get('userLabel') != label:
+                    user_label = SparkJobService._get_user_label(item)
+                    if user_label == label:
                         del spark_jobs[item['metadata']['name']]
             return {
                 'message': f"Found {len(spark_jobs)} spark jobs",
@@ -177,3 +177,11 @@ class SparkJobService(ISparkJobService):
             return item['status']['applicationState']['state']
         except KeyError:
             return 'UNKNOWN'
+
+    @staticmethod
+    def _get_user_label(item):
+        try:
+            labels = item['metadata']['labels']
+            return labels.get('userLabel')
+        except KeyError:
+            return None
