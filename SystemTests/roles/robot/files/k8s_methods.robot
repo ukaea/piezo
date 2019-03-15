@@ -70,6 +70,12 @@ Submit SparkPi Job
     ${response}=    Post Request With Json Body   /piezo/submitjob    ${submitbody}
     [return]  ${response}
 
+Submit SparkPi Job With Label
+    [Arguments]   ${job_name}   ${label}
+    ${submitbody}=    Create Dictionary   name=${job_name}   language=Scala   main_class=org.apache.spark.examples.SparkPi    path_to_main_app_file=local:///opt/spark/examples/jars/spark-examples_2.11-2.4.0.jar    label=${label}
+    ${response}=    Post Request With Json Body   /piezo/submitjob    ${submitbody}
+    [return]  ${response}
+
 Submit SparkGroupByTest Job With Arguments
     [Arguments]   ${job_name}
     ${arguments}=   Create List   10  670  1300   3
