@@ -51,7 +51,6 @@ spec:
               servicePort: web
             path: /piezo/
 ---
-
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -60,7 +59,7 @@ metadata:
   name: prometheus-ingress
 spec:
   rules:
-    - host: host-172-16-113-146.nubes.stfc.ac.uk  # Node where ingress controller is run (kuberenetes master)
+    - host: {{ k8s_master_url }}  # Node where ingress controller is run (kuberenetes master)
       http:
         paths:
           - backend:
@@ -75,7 +74,7 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: spark-monitor-service
+  name: spark-pods-service
   namespace: default
   labels:
     spark-role: monitor
@@ -89,7 +88,7 @@ spec:
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: spark-application-monitor
+  name: spark-pods-service-monitor
   labels:
     release: piezo-monitor # What is matched by the prometheus crd def (kubectl get prometheus -o yaml --all-namespaces)
 spec:
@@ -98,10 +97,24 @@ spec:
   selector:
     spark-role: monitor
 ---
+kind: Service
+apiVersion: v1
+metadata:
+  name: spark-operator-service
+  namespace: spark-operator
+  labels:
+    spark-role: monitor
+spec:
+  selector:
+    app.kubernetes.io/name: sparkoperator
+  ports:
+  - name: web
+    port: 10254
+---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: spark-operator-monitor
+  name: spark-operator-service-monitor
   labels:
     release: piezo-monitor # What is matched by the prometheus crd def (kubectl get prometheus -o yaml --all-namespaces)
 spec:
@@ -112,17 +125,3 @@ spec:
     - spark-operator
   selector:
     spark-role: monitor
----
-kind: Service
-apiVersion: v1
-metadata:
-  name: spark-monitor-service
-  namespace: spark-operator
-  labels:
-    spark-role: monitor
-spec:
-  selector:
-    app.kubernetes.io/name: sparkoperator
-  ports:
-  - name: web
-    port: 10254
