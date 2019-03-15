@@ -12,6 +12,7 @@
 
 - name: Delete old deployment
   shell: kubectl delete deployment piezo-web-app
+  ignore_errors: true
 
 - name: Apply deployment
   shell: kubectl apply -f "deploy_web_app_{{git_tag}}.yml"

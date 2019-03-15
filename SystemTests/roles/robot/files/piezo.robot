@@ -138,6 +138,15 @@ Can Get Status Of Submitted Spark Job
     ${response}=  Get Status Of Spark Job   ${job_name}
     Confirm Ok Response     ${response}
 
+Status Of Job Immediately After Submission is Unknown
+    ${job_name}=     Set Variable       spark-pi
+    ${response}=    Submit SparkPi Job    ${job_name}
+    ${job_name}=    Get Response Job Name   ${response}
+    ${response}=  Get Status Of Spark Job   ${job_name}
+    Confirm Ok Response     ${response}
+    ${status}=    Get Response Data Message   ${response}
+    Should Be Equal As Strings    ${status}   UNKNOWN
+
 Job Can Use Data And Code On S3 And Write Back Results
     ${job_name}=    Set Variable      wordcount
     Directory Should Not Exist In S3 Bucket   kubernetes    outputs/${job_name}
