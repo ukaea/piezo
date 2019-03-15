@@ -99,7 +99,7 @@ class ManifestPopulator(IManifestPopulator):
                         "exposeExecutorMetrics": "true",
                         "prometheus": {
                             "jmxExporterJar": "/prometheus/jmx_prometheus_javaagent-0.3.1.jar",
-                            "port": "8090"}
+                            "port": 8090}
                     }}}
     @staticmethod
     def _variable_to_manifest_path(var):
