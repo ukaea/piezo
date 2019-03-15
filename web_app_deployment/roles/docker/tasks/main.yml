@@ -1,0 +1,13 @@
+---
+- name: Build Docker image
+  docker_image:
+    name: "web_app:{{ git_tag }}"
+    path: "/home/vagrant/synced/piezo/"
+
+- name: Retag Docker image
+  shell: docker tag "web_app:{{ git_tag }}" "{{ harbor_url }}/piezo-resources/web_app:{{ git_tag }}"
+
+- name: Push Docker image
+  docker_image:
+    name: "{{ harbor_url }}/piezo-resources/web_app:{{ git_tag }}"
+    push: yes
