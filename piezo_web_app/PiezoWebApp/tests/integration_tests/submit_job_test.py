@@ -104,6 +104,13 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                         'AWS_SECRET_ACCESS_KEY': {
                             'name': 'secret',
                             'key': 'secretKey'}}
+                },
+                "monitoring": {
+                    "exposeDriverMetrics": "true",
+                    "exposeExecutorMetrics": "true",
+                    "prometheus": {
+                        "jmxExporterJar": "/prometheus/jmx_prometheus_javaagent-0.3.1.jar",
+                        "port": 8090}
                 }
             }
         }
@@ -198,6 +205,13 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                         'AWS_SECRET_ACCESS_KEY': {
                             'name': 'secret',
                             'key': 'secretKey'}}
+                },
+                "monitoring": {
+                    "exposeDriverMetrics": "true",
+                    "exposeExecutorMetrics": "true",
+                    "prometheus": {
+                        "jmxExporterJar": "/prometheus/jmx_prometheus_javaagent-0.3.1.jar",
+                        "port": 8090}
                 }
             }
         }
@@ -299,6 +313,13 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                         'AWS_SECRET_ACCESS_KEY': {
                             'name': 'secret',
                             'key': 'secretKey'}}
+                },
+                "monitoring": {
+                    "exposeDriverMetrics": "true",
+                    "exposeExecutorMetrics": "true",
+                    "prometheus": {
+                        "jmxExporterJar": "/prometheus/jmx_prometheus_javaagent-0.3.1.jar",
+                        "port": 8090}
                 }
             }
         }
