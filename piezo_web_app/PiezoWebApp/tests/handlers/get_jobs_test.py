@@ -63,3 +63,28 @@ class TestGetJobsHandler(BaseHandlerTest):
                 'spark_jobs': {}
             }
         })
+
+    @gen_test
+    def test_get_accepts_label_argument(self):
+        # Arrange
+        self.mock_spark_job_service.get_jobs.return_value = {
+            "message": "Found 2 spark jobs",
+            "spark_jobs": {"job_1": "COMPLETED", "job_3": "PENDING"},
+            "status": 200
+        }
+        body = {"label": "test-label"}
+        # Act
+        response_body, response_code = yield self.send_request(body)
+        # Assert
+        self.mock_spark_job_service.get_jobs.assert_called_once()
+        self.mock_logger.debug.assert_has_calls([
+            call('Getting list of spark applications with label "test-label" returned: "200".')
+        ])
+        assert response_code == 200
+        self.assertDictEqual(response_body, {
+            'status': 'success',
+            'data': {
+                'message': "Found 2 spark jobs",
+                'spark_jobs': {"job_1": "COMPLETED", "job_3": "PENDING"}
+            }
+        })
