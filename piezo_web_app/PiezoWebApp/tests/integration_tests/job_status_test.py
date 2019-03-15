@@ -51,6 +51,34 @@ class TestJobStatusIntegration(BaseIntegrationTest):
         })
 
     @gen_test
+    def test_unknown_status_is_returned_when_not_specified_by_kubernetes(self):
+        # Arrange
+        body = {'job_name': 'test-spark-job', 'namespace': 'default'}
+        kubernetes_response = {
+            'metadata': {
+                'name': 'test-spark-job',
+                'namespace': 'default'
+            }
+        }
+        self.mock_k8s_adapter.get_namespaced_custom_object.return_value = kubernetes_response
+        # Act
+        response_body, response_code = yield self.send_request(body)
+        # Assert
+        assert self.mock_k8s_adapter.get_namespaced_custom_object.call_count == 1
+        self.mock_k8s_adapter.get_namespaced_custom_object.assert_called_once_with(CRD_GROUP,
+                                                                                   CRD_VERSION,
+                                                                                   'default',
+                                                                                   CRD_PLURAL,
+                                                                                   'test-spark-job')
+        assert response_code == 200
+        self.assertDictEqual(response_body, {
+            'status': 'success',
+            'data': {
+                'message': 'UNKNOWN'
+            }
+        })
+
+    @gen_test
     def test_trying_to_get_status_of_non_existent_job_returns_404_with_reason(self):
         # Arrange
         body = {'job_name': 'test-spark-job', 'namespace': 'default'}

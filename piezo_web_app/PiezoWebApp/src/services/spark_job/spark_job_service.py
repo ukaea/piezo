@@ -51,7 +51,7 @@ class SparkJobService(ISparkJobService):
                 CRD_PLURAL,
                 job_name
             )
-            job_status = api_response['status']['applicationState']['state']
+            job_status = SparkJobService._retrieve_status(api_response)
             return {
                 'message': job_status,
                 'status': StatusCodes.Okay.value

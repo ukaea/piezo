@@ -306,6 +306,21 @@ class TestSparkJobService(TestCase):
             'test-job'
         )
 
+    def test_get_job_status_returns_status_of_job_as_unknown_when_missing(self):
+        # Arrange
+        self.mock_kubernetes_adapter.get_namespaced_custom_object.return_value = {'name': 'test-job'}
+        # Act
+        result = self.test_service.get_job_status('test-job', 'test-namespace')
+        # Assert
+        self.assertDictEqual(result, {'message': 'UNKNOWN', 'status': 200})
+        self.mock_kubernetes_adapter.get_namespaced_custom_object.assert_called_once_with(
+            CRD_GROUP,
+            CRD_VERSION,
+            'test-namespace',
+            CRD_PLURAL,
+            'test-job'
+        )
+
     def test_get_job_status_logs_and_returns_api_exception_reason(self):
         # Arrange
         self.mock_kubernetes_adapter.get_namespaced_custom_object.side_effect = ApiException(reason="Reason",
