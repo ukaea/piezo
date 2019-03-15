@@ -1,0 +1,13 @@
+---
+- hosts: 127.0.0.1
+  connection: local
+  become_method: sudo
+
+  vars:
+    - harbor_url: host-172-16-113-64.nubes.stfc.ac.uk
+    - k8s_master_url: host-172-16-113-146.nubes.stfc.ac.uk
+
+  roles:
+    - { role: git, become: true }
+    - { role: docker, become: true }
+    - kubectl
