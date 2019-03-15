@@ -1,0 +1,23 @@
+---
+- name: Find Dockerfile
+  stat:
+    path: ../Dockerfile
+  register: dockerfile_path
+
+- name: Confirm Dockerfile exists
+  fail:
+    msg: "Could not find Dockerfile"
+  when: not dockerfile_path.stat.exists
+
+- name: Build Docker image
+  docker_image:
+    name: "web_app:{{ git_tag }}"
+    path: ".."
+
+- name: Retag Docker image
+  shell: docker tag "web_app:{{ git_tag }}" "{{ harbor_url }}/piezo-resources/web_app:{{ git_tag }}"
+
+- name: Push Docker image
+  docker_image:
+    name: "{{ harbor_url }}/piezo-resources/web_app:{{ git_tag }}"
+    push: yes
