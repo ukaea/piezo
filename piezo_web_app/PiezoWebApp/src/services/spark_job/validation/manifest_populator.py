@@ -78,7 +78,8 @@ class ManifestPopulator(IManifestPopulator):
                                 "key": "accessKey"},
                             "AWS_SECRET_ACCESS_KEY": {
                                 "name": self._secret_name,
-                                "key": "secretKey"}}},
+                                "key": "secretKey"}}
+                    },
                     "executor": {
                         "cores": self._spec_executor_cores,
                         "instances": self._spec_executor_instances,
@@ -91,8 +92,15 @@ class ManifestPopulator(IManifestPopulator):
                                 "key": "accessKey"},
                             "AWS_SECRET_ACCESS_KEY": {
                                 "name": self._secret_name,
-                                "key": "secretKey"}}}}}
-
+                                "key": "secretKey"}}
+                    },
+                    "monitoring": {
+                        "exposeDriverMetrics": "true",
+                        "exposeExecutorMetrics": "true",
+                        "prometheus": {
+                            "jmxExporterJar": "/prometheus/jmx_prometheus_javaagent-0.3.1.jar",
+                            "port": "8090"}
+                    }}}
     @staticmethod
     def _variable_to_manifest_path(var):
         var_to_path_dict = {"name": ["metadata", "name"],
