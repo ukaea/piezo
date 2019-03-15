@@ -71,3 +71,58 @@ spec:
               serviceName: piezo-monitor-grafana
               servicePort: service
             path: /
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: spark-monitor-service
+  namespace: default
+  labels:
+    spark-role: monitor
+spec:
+  selector:
+    version: 2.4.0
+  ports:
+  - name: web
+    port: 8090
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: spark-application-monitor
+  labels:
+    release: piezo-monitor # What is matched by the prometheus crd def (kubectl get prometheus -o yaml --all-namespaces)
+spec:
+  endpoints:
+  - port: web
+  selector:
+    spark-role: monitor
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: spark-operator-monitor
+  labels:
+    release: piezo-monitor # What is matched by the prometheus crd def (kubectl get prometheus -o yaml --all-namespaces)
+spec:
+  endpoints:
+  - port: web
+  namespaceSelector:
+    matchNames:
+    - spark-operator
+  selector:
+    spark-role: monitor
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: spark-monitor-service
+  namespace: spark-operator
+  labels:
+    spark-role: monitor
+spec:
+  selector:
+    app.kubernetes.io/name: sparkoperator
+  ports:
+  - name: web
+    port: 10254
