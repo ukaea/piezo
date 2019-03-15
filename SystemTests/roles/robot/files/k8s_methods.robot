@@ -35,7 +35,8 @@ Get Logs For Spark Job
     [return]    ${response}
 
 Get List Of Spark Jobs
-    ${response}=    Get Request From Route    /piezo/getjobs
+    [Arguments]     ${body}
+    ${response}=    Get Request With Json Body    /piezo/getjobs    ${body}
     [return]    ${response}
 
 Get Request From Route
