@@ -106,8 +106,8 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                             'key': 'secretKey'}}
                 },
                 "monitoring": {
-                    "exposeDriverMetrics": "true",
-                    "exposeExecutorMetrics": "true",
+                    "exposeDriverMetrics": True,
+                    "exposeExecutorMetrics": True,
                     "prometheus": {
                         "jmxExporterJar": "/prometheus/jmx_prometheus_javaagent-0.3.1.jar",
                         "port": 8090}
@@ -207,8 +207,8 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                             'key': 'secretKey'}}
                 },
                 "monitoring": {
-                    "exposeDriverMetrics": "true",
-                    "exposeExecutorMetrics": "true",
+                    "exposeDriverMetrics": True,
+                    "exposeExecutorMetrics": True,
                     "prometheus": {
                         "jmxExporterJar": "/prometheus/jmx_prometheus_javaagent-0.3.1.jar",
                         "port": 8090}
@@ -315,8 +315,8 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                             'key': 'secretKey'}}
                 },
                 "monitoring": {
-                    "exposeDriverMetrics": "true",
-                    "exposeExecutorMetrics": "true",
+                    "exposeDriverMetrics": True,
+                    "exposeExecutorMetrics": True,
                     "prometheus": {
                         "jmxExporterJar": "/prometheus/jmx_prometheus_javaagent-0.3.1.jar",
                         "port": 8090}
