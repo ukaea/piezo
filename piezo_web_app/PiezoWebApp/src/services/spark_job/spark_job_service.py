@@ -70,7 +70,7 @@ class SparkJobService(ISparkJobService):
             self._logger.error(message)
             raise exception
 
-    def get_jobs(self):
+    def get_jobs(self, label):
         try:
             api_response = self._kubernetes_adapter.list_namespaced_custom_object(
                 CRD_GROUP,
@@ -81,6 +81,12 @@ class SparkJobService(ISparkJobService):
             spark_jobs = {
                 item['metadata']['name']: SparkJobService._retrieve_status(item) for item in api_response['items']
             }
+            if label != "ALL":
+                for item in api_response['items']:
+                    try:
+                        item['metadata']['labels']['userLabel'][label] ### Not working
+                    except KeyError:
+                        del spark_jobs[item['metadata']['name']]
             return {
                 'message': f"Found {len(spark_jobs)} spark jobs",
                 'spark_jobs': spark_jobs,
