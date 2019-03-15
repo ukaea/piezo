@@ -26,12 +26,15 @@ class TestGetJobsIntegration(BaseIntegrationTest):
     @gen_test
     def test_list_of_current_jobs_is_returned_as_array(self):
         # Arrange
-        body = None
+        body = {}
         kubernetes_response = {"items": [
             {
                 "metadata":
                     {
-                        "name": "job1"
+                        "name": "job1",
+                        "labels": {
+                            "version": "2.4.0"
+                        }
                     },
                 "status":
                     {
@@ -44,7 +47,11 @@ class TestGetJobsIntegration(BaseIntegrationTest):
             {
                 "metadata":
                     {
-                        "name": "job2"
+                        "name": "job2",
+                        "labels": {
+                            "userLabel": "test-label",
+                            "version": "2.4.0"
+                        }
                     },
                 "status":
                     {
@@ -70,5 +77,62 @@ class TestGetJobsIntegration(BaseIntegrationTest):
             'data': {
                 "message": "Found 2 spark jobs",
                 "spark_jobs": {"job1": "RUNNING", "job2": "COMPLETED"}
+            }
+        })
+
+    @gen_test
+    def test_list_of_jobs_with_specified_label(self):
+        # Arrange
+        body = {"label": "test-label"}
+        kubernetes_response = {"items": [
+            {
+                "metadata":
+                    {
+                        "name": "job1",
+                        "labels": {
+                            "version": "2.4.0"
+                        }
+                    },
+                "status":
+                    {
+                        "applicationState":
+                            {
+                                "state": "RUNNING"
+                            }
+                    }
+            },
+            {
+                "metadata":
+                    {
+                        "name": "job2",
+                        "labels": {
+                            "userLabel": "test-label",
+                            "version": "2.4.0"
+                        }
+                    },
+                "status":
+                    {
+                        "applicationState":
+                            {
+                                "state": "COMPLETED"
+                            }
+                    }
+            }
+        ]}
+        self.mock_k8s_adapter.list_namespaced_custom_object.return_value = kubernetes_response
+        # Act
+        response_body, response_code = yield self.send_request(body)
+        # Assert
+        assert self.mock_k8s_adapter.list_namespaced_custom_object.call_count == 1
+        self.mock_k8s_adapter.list_namespaced_custom_object.assert_called_once_with(CRD_GROUP,
+                                                                                    CRD_VERSION,
+                                                                                    'default',
+                                                                                    CRD_PLURAL)
+        assert response_code == 200
+        self.assertDictEqual(response_body, {
+            'status': 'success',
+            'data': {
+                "message": "Found 1 spark jobs",
+                "spark_jobs": {"job2": "COMPLETED"}
             }
         })
