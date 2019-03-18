@@ -173,6 +173,27 @@ class SparkJobService(ISparkJobService):
                 'message': message
             }
 
+    def write_logs_to_file(self, job_name, namespace):
+        api_response = self.get_logs(job_name, namespace)
+        if not api_response['status'] == StatusCodes.Okay.value:
+            return api_response
+        try:
+            bucket_name = 'kubernetes'
+            file_name = f'outputs/{job_name}/log.txt'
+            self._storage_adapter.set_contents_from_string(bucket_name, file_name, api_response['message'])
+            return {
+                'message': f'Logs written to "{file_name}" in bucket "{bucket_name}"',
+                'status': StatusCodes.Okay.value
+            }
+        except ApiException as exception:
+            message = f'Got logs for job "{job_name}" but unable to write to "{file_name}" ' \
+                f'in bucket "{bucket_name}": {exception.reason}'
+            self._logger.error(message)
+            return {
+                'status': exception.status,
+                'message': message
+            }
+
     @staticmethod
     def _retrieve_status(item):
         try:
