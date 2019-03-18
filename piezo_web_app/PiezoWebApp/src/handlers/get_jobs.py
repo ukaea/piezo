@@ -27,9 +27,13 @@ class GetJobsHandler(BaseHandler):
         }
     )
     def get(self, *args, **kwargs):
-        label = self.get_body_attribute('label', default="ALL", required=False)
+        label = self.get_body_attribute('label', default=None, required=False)
         result = self._spark_job_service.get_jobs(label)
-        self._logger.debug(f'Getting list of spark applications with label "{label}" returned: "{result["status"]}".')
+        if label is None:
+            self._logger.debug(f'Getting list of all spark applications returned: "{result["status"]}".')
+        else:
+            self._logger.debug(f'Getting list of spark applications with label "{label}" returned:'
+                               f' "{result["status"]}".')
         self.check_request_was_completed_successfully(result)
         del result['status']
         return result
