@@ -8,7 +8,7 @@ class ISparkJobService(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def get_jobs(self):
+    def get_jobs(self, label):
         pass
 
     @abstractmethod
