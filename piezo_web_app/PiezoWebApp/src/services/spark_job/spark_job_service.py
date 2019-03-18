@@ -81,7 +81,7 @@ class SparkJobService(ISparkJobService):
             spark_jobs = {
                 item['metadata']['name']: SparkJobService._retrieve_status(item) for item in api_response['items']
             }
-            if label != "ALL":
+            if label.upper() != "ALL":
                 for item in api_response['items']:
                     user_label = SparkJobService._get_user_label(item)
                     if user_label != label:
