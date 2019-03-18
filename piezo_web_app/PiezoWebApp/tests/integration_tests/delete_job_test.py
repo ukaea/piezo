@@ -66,4 +66,4 @@ class DeleteJobIntegrationTest(BaseIntegrationTest):
             yield self.send_request(body)
         assert exception.value.response.code == 404
         msg = json.loads(exception.value.response.body, encoding='utf-8')['data']
-        assert msg == 'Kubernetes error when trying to delete job: Not Found'
+        assert msg == 'Kubernetes error when trying to delete job "test-spark-job": Not Found'
