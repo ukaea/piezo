@@ -23,8 +23,4 @@ class SparkJobServiceGetLogsTest(TestSparkJobService):
         expected_message = \
             'Kubernetes error when trying to get logs for spark job "test-job" in namespace "test-namespace": Reason'
         self.mock_logger.error.assert_called_once_with(expected_message)
-        self.assertDictEqual(result, {
-            'status': 999,
-            'message': 'Kubernetes error when trying to get logs for spark job "test-job" '
-                       'in namespace "test-namespace": Reason'
-        })
+        self.assertDictEqual(result, {'status': 999, 'message': expected_message})
