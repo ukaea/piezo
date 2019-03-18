@@ -175,7 +175,7 @@ class SparkJobService(ISparkJobService):
 
     def write_logs_to_file(self, job_name, namespace):
         api_response = self.get_logs(job_name, namespace)
-        if not api_response['status'] == StatusCodes.Okay.value:
+        if api_response['status'] != StatusCodes.Okay.value:
             return api_response
         try:
             bucket_name = 'kubernetes'

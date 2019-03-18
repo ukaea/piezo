@@ -27,6 +27,7 @@ class BotoAdapter(IStorageAdapter):
         bucket = self._s3_client.lookup(bucket_name)
         if bucket is None:
             raise RuntimeError(f'Bucket "{bucket_name}" does not exist')
+        return bucket
 
     def _get_key(self, bucket_name, file_path):
         bucket = self._get_bucket(bucket_name)

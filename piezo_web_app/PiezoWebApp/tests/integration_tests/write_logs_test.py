@@ -29,4 +29,3 @@ class TestWriteLogsToFileIntegration(BaseIntegrationTest):
             'status': 'success',
             'data': {'message': 'Logs written to "outputs/test-job/log.txt" in bucket "kubernetes"'}
         })
-
