@@ -81,7 +81,7 @@ class TestSparkJobService(TestCase):
         # Assert
         self.assertDictEqual(result, {'message': 'Found 0 spark jobs', 'spark_jobs': {}, 'status': 200})
         self.mock_kubernetes_adapter.list_namespaced_custom_object.assert_called_once_with(
-            CRD_GROUP, CRD_VERSION, 'default', CRD_PLURAL, label_selector=None)
+            CRD_GROUP, CRD_VERSION, 'default', CRD_PLURAL)
 
     def test_get_jobs_logs_and_returns_api_exception_reason(self):
         # Arrange
@@ -110,7 +110,7 @@ class TestSparkJobService(TestCase):
                                       'spark_jobs': {"job1": "RUNNING"},
                                       'status': 200})
         self.mock_kubernetes_adapter.list_namespaced_custom_object.assert_called_once_with(
-            CRD_GROUP, CRD_VERSION, 'default', CRD_PLURAL, label_selector=None)
+            CRD_GROUP, CRD_VERSION, 'default', CRD_PLURAL)
 
     def test_get_jobs_only_with_user_label_when_specified(self):
         # Arrange
@@ -125,7 +125,7 @@ class TestSparkJobService(TestCase):
                                       'spark_jobs': {"job1": "RUNNING"},
                                       'status': 200})
         self.mock_kubernetes_adapter.list_namespaced_custom_object.assert_called_once_with(
-            CRD_GROUP, CRD_VERSION, 'default', CRD_PLURAL, label_selector="test-label")
+            CRD_GROUP, CRD_VERSION, 'default', CRD_PLURAL, label_selector="userLabel=test-label")
 
     def test_get_jobs_returns_status_of_job_as_unknown_when_missing(self):
         # Arrange
@@ -139,7 +139,7 @@ class TestSparkJobService(TestCase):
                                       'spark_jobs': {"job1": "UNKNOWN"},
                                       'status': 200})
         self.mock_kubernetes_adapter.list_namespaced_custom_object.assert_called_once_with(
-            CRD_GROUP, CRD_VERSION, 'default', CRD_PLURAL, label_selector=None)
+            CRD_GROUP, CRD_VERSION, 'default', CRD_PLURAL)
 
     def test_get_logs_sends_expected_arguments(self):
         # Arrange

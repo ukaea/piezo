@@ -71,14 +71,16 @@ class SparkJobService(ISparkJobService):
             raise exception
 
     def get_jobs(self, label):
-        label_selector = label
+        kwargs = {}
+        if label is not None:
+            kwargs['label_selector'] = ('userLabel=' + label)  # Key much match the key in the manifest populator
         try:
             api_response = self._kubernetes_adapter.list_namespaced_custom_object(
                 CRD_GROUP,
                 CRD_VERSION,
                 'default',
                 CRD_PLURAL,
-                label_selector=label_selector
+                **kwargs
             )
             spark_jobs = {
                 item['metadata']['name']: SparkJobService._retrieve_status(item) for item in api_response['items']

@@ -70,8 +70,7 @@ class TestGetJobsIntegration(BaseIntegrationTest):
         self.mock_k8s_adapter.list_namespaced_custom_object.assert_called_once_with(CRD_GROUP,
                                                                                     CRD_VERSION,
                                                                                     'default',
-                                                                                    CRD_PLURAL,
-                                                                                    label_selector=None)
+                                                                                    CRD_PLURAL)
         assert response_code == 200
         self.assertDictEqual(response_body, {
             'status': 'success',
@@ -109,11 +108,8 @@ class TestGetJobsIntegration(BaseIntegrationTest):
         response_body, response_code = yield self.send_request(body)
         # Assert
         assert self.mock_k8s_adapter.list_namespaced_custom_object.call_count == 1
-        self.mock_k8s_adapter.list_namespaced_custom_object.assert_called_once_with(CRD_GROUP,
-                                                                                    CRD_VERSION,
-                                                                                    'default',
-                                                                                    CRD_PLURAL,
-                                                                                    label_selector='test-label')
+        self.mock_k8s_adapter.list_namespaced_custom_object.assert_called_once_with(
+            CRD_GROUP, CRD_VERSION, 'default', CRD_PLURAL, label_selector='userLabel=test-label')
         assert response_code == 200
         self.assertDictEqual(response_body, {
             'status': 'success',
