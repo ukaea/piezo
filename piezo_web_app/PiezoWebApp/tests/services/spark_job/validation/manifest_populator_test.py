@@ -18,6 +18,7 @@ class TestTemplatePopulator(unittest.TestCase):
         mock_validation_ruleset.get_default_value_for_key.side_effect = \
             lambda input_name: {
                 'apiVersion': "sparkoperator.k8s.io/v1beta1",
+                'java_agent': '/prometheus/jmx_prometheus_javaagent-0.3.1.jar',
                 'kind': 'SparkApplication',
                 'namespace': 'default',
                 'mode': 'cluster',
@@ -242,4 +243,4 @@ class TestTemplatePopulator(unittest.TestCase):
                                                         "prometheus": {
                                                             "jmxExporterJar":
                                                                 "/prometheus/jmx_prometheus_javaagent-0.3.1.jar",
-                                                            "port": 8090}}}})
+                                                                "port": 8090}}}})
