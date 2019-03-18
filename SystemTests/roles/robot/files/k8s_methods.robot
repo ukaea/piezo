@@ -19,7 +19,7 @@ Delete Request With Json Body
 
 Delete Spark Job
     [Arguments]   ${job_name}
-    ${body}=    Create Dictionary   job_name=${job_name}   namespace=default
+    ${body}=    Create Dictionary   job_name=${job_name}
     ${response}=  Delete Request With Json Body   /piezo/deletejob    ${body}
     [return]    ${response}
 
@@ -30,7 +30,7 @@ Get Driver Name
 
 Get Logs For Spark Job
     [Arguments]   ${job_name}
-    ${body}=    Create Dictionary   job_name=${job_name}   namespace=default
+    ${body}=    Create Dictionary   job_name=${job_name}
     ${response}=  Get Request With Json Body   /piezo/getlogs    ${body}
     [return]    ${response}
 
@@ -53,7 +53,7 @@ Get Request With Json Body
 
 Get Status Of Spark Job
     [Arguments]   ${job_name}
-    ${body}=    Create Dictionary   job_name=${job_name}   namespace=default
+    ${body}=    Create Dictionary   job_name=${job_name}
     ${response}=  Get Request With Json Body   /piezo/jobstatus    ${body}
     [return]    ${response}
 
