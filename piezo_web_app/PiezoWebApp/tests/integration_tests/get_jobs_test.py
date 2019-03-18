@@ -13,6 +13,8 @@ CRD_PLURAL = 'sparkapplications'
 # str | The custom resource's version
 CRD_VERSION = 'v1beta1'
 
+NAMESPACE = 'default'
+
 
 class TestGetJobsIntegration(BaseIntegrationTest):
     @property
@@ -62,7 +64,7 @@ class TestGetJobsIntegration(BaseIntegrationTest):
         assert self.mock_k8s_adapter.list_namespaced_custom_object.call_count == 1
         self.mock_k8s_adapter.list_namespaced_custom_object.assert_called_once_with(CRD_GROUP,
                                                                                     CRD_VERSION,
-                                                                                    'default',
+                                                                                    NAMESPACE,
                                                                                     CRD_PLURAL)
         assert response_code == 200
         self.assertDictEqual(response_body, {
