@@ -72,18 +72,18 @@ Submit Two Jobs With Same Name Returns Ok Responses
     Confirm Ok Response  ${response1}
     Confirm Ok Response  ${response2}
 
-Submit Job With 57 Character Name Runs Successfully
-    ${response}=    Submit SparkPi Job    abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefg
+Submit Job With 29 Character Name Runs Successfully
+    ${response}=    Submit SparkPi Job    abcdefghijklmnopqrstuvwxyzabc
     Confirm Ok Response  ${response}
     ${job_name}=    Get Response Job Name   ${response}
     ${finished}=    Wait For Spark Job To Finish        ${job_name}     5 seconds
     Should Be True      ${finished}
 
-Submit Job With 58 Character Name Fails
-    ${response}=    Submit SparkPi Job    abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefgh
+Submit Job With 30 Character Name Fails
+    ${response}=    Submit SparkPi Job    abcdefghijklmnopqrstuvwxyzabcd
     Confirm Bad Input Response  ${response}
     ${error}=   Get Response Data     ${response}
-    Should Be Equal As Strings    ${error}    The following errors were found:\n\"name\" input has a maximum length of 57 characters\n
+    Should Be Equal As Strings    ${error}    The following errors were found:\n\"name\" input has a maximum length of 29 characters\n
 
 Submit GroupByTest Spark Job With Arguments Returns Ok Response
     ${response}=    Submit SparkGroupByTest Job With Arguments   spark-group-by-test
