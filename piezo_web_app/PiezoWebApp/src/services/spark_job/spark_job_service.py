@@ -5,6 +5,7 @@ from PiezoWebApp.src.services.spark_job.i_spark_job_service import ISparkJobServ
 from PiezoWebApp.src.services.spark_job.spark_job_constants import CRD_GROUP
 from PiezoWebApp.src.services.spark_job.spark_job_constants import CRD_PLURAL
 from PiezoWebApp.src.services.spark_job.spark_job_constants import CRD_VERSION
+from PiezoWebApp.src.services.spark_job.spark_job_constants import NAMESPACE
 
 
 class SparkJobService(ISparkJobService):
@@ -15,39 +16,38 @@ class SparkJobService(ISparkJobService):
         self._spark_job_namer = spark_job_namer
         self._validation_service = validation_service
 
-    def delete_job(self, job_name, namespace):
+    def delete_job(self, job_name):
         try:
             body = self._kubernetes_adapter.delete_options()
             api_response = self._kubernetes_adapter.delete_namespaced_custom_object(
                 CRD_GROUP,
                 CRD_VERSION,
-                namespace,
+                NAMESPACE,
                 CRD_PLURAL,
                 job_name,
                 body
             )
 
-            msg = f"{job_name} deleted from namespace {namespace}" if api_response['status'] == "Success"\
+            msg = f"{job_name} deleted" if api_response['status'] == "Success"\
                 else f"Trying to delete job {job_name} resulted in status: {api_response['status']}"
             return {
                 'message': msg,
                 'status': StatusCodes.Okay.value
             }
         except ApiException as exception:
-            message = f'Kubernetes error when trying to delete job "{job_name}" in namespace '\
-                f'"{namespace}": {exception.reason}'
+            message = f'Kubernetes error when trying to delete job "{job_name}": {exception.reason}'
             self._logger.error(message)
             return {
                 'status': exception.status,
                 'message': message
             }
 
-    def get_job_status(self, job_name, namespace):
+    def get_job_status(self, job_name):
         try:
             api_response = self._kubernetes_adapter.get_namespaced_custom_object(
                 CRD_GROUP,
                 CRD_VERSION,
-                namespace,
+                NAMESPACE,
                 CRD_PLURAL,
                 job_name
             )
@@ -57,16 +57,15 @@ class SparkJobService(ISparkJobService):
                 'status': StatusCodes.Okay.value
             }
         except ApiException as exception:
-            message = f'Kubernetes error when trying to get status of spark job "{job_name}" in ' \
-                      f'namespace "{namespace}": {exception.reason}'
+            message = f'Kubernetes error when trying to get status of spark job "{job_name}": {exception.reason}'
             self._logger.error(message)
             return {
                 'status': exception.status,
                 'message': message
             }
         except KeyError as exception:
-            message = f'Unexpected response from Kubernetes API when trying to get status of spark job "{job_name}"' \
-                      f' in namespace "{namespace}": {api_response}'
+            message = f'Unexpected response from Kubernetes API when trying to get status of spark job "{job_name}":' \
+                      f' {api_response}'
             self._logger.error(message)
             raise exception
 
@@ -75,7 +74,7 @@ class SparkJobService(ISparkJobService):
             api_response = self._kubernetes_adapter.list_namespaced_custom_object(
                 CRD_GROUP,
                 CRD_VERSION,
-                'default',
+                NAMESPACE,
                 CRD_PLURAL
             )
             spark_jobs = {
@@ -99,17 +98,16 @@ class SparkJobService(ISparkJobService):
             self._logger.error(message)
             raise exception
 
-    def get_logs(self, job_name, namespace):
+    def get_logs(self, job_name):
         try:
             driver_name = job_name + "-driver"
-            api_response = self._kubernetes_adapter.read_namespaced_pod_log(driver_name, namespace)
+            api_response = self._kubernetes_adapter.read_namespaced_pod_log(driver_name, NAMESPACE)
             return {
                 'message': api_response,
                 'status': StatusCodes.Okay.value
             }
         except ApiException as exception:
-            message = f'Kubernetes error when trying to get logs for spark job "{job_name}" in namespace '\
-                f'"{namespace}": {exception.reason}'
+            message = f'Kubernetes error when trying to get logs for spark job "{job_name}": {exception.reason}'
             self._logger.error(message)
             return {
                 'message': message,
@@ -141,13 +139,11 @@ class SparkJobService(ISparkJobService):
         # Populate the manifest
         body = self._manifest_populator.build_manifest(validated_body_values.validated_value)
 
-        # Try to submit the job
-        namespace = body['metadata']['namespace']
         try:
             self._kubernetes_adapter.create_namespaced_custom_object(
                 CRD_GROUP,
                 CRD_VERSION,
-                namespace,
+                NAMESPACE,
                 CRD_PLURAL,
                 body
             )
