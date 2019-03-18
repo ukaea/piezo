@@ -4,26 +4,6 @@ from PiezoWebApp.src.models.validation_rule import ValidationRule
 from PiezoWebApp.src.services.spark_job.validation import argument_validator
 
 
-@pytest.mark.parametrize("label", ["test", "label@@@@A", "12ewq", "some_longer_label"])
-def test_validate_label_validates_non_empty_strings(label):
-    # Arrange
-    validation_rule = ValidationRule({'classification': 'Optional'})
-    # Act
-    validation_result = argument_validator.validate("label", label, validation_rule)
-    # Assert
-    assert validation_result.is_valid is True
-
-
-@pytest.mark.parametrize("label", [" ", "", "     "])
-def test_validate_label_rejects_empty_strings_or_all(label):
-    # Arrange
-    validation_rule = ValidationRule({'classification': 'Optional'})
-    # Act
-    validation_result = argument_validator.validate("label", label, validation_rule)
-    # Assert
-    assert validation_result.is_valid is False
-
-
 @pytest.mark.parametrize("name", ["test", "name", "12ewq", "13234some_long_name!!!@"])
 def test_validate_name_validates_non_empty_strings(name):
     # Arrange
