@@ -16,6 +16,8 @@ CRD_PLURAL = 'sparkapplications'
 # str | The custom resource's version
 CRD_VERSION = 'v1beta1'
 
+NAMESPACE = 'default'
+
 
 class DeleteJobIntegrationTest(BaseIntegrationTest):
     @property
@@ -29,7 +31,7 @@ class DeleteJobIntegrationTest(BaseIntegrationTest):
     @gen_test
     def test_success_message_is_returned_when_job_deleted_successfully(self):
         # Arrange
-        body = {"job_name": "test-spark-job", "namespace": "default"}
+        body = {"job_name": "test-spark-job"}
         kubernetes_response = {'status': 'Success'}
         self.mock_k8s_adapter.delete_namespaced_custom_object.return_value = kubernetes_response
         self.mock_k8s_adapter.delete_options.return_value = {"api_version": "version", "other_values": "values"}
@@ -39,7 +41,7 @@ class DeleteJobIntegrationTest(BaseIntegrationTest):
         assert self.mock_k8s_adapter.delete_namespaced_custom_object.call_count == 1
         self.mock_k8s_adapter.delete_namespaced_custom_object.assert_called_once_with(CRD_GROUP,
                                                                                       CRD_VERSION,
-                                                                                      'default',
+                                                                                      NAMESPACE,
                                                                                       CRD_PLURAL,
                                                                                       'test-spark-job',
                                                                                       {
@@ -50,19 +52,18 @@ class DeleteJobIntegrationTest(BaseIntegrationTest):
         self.assertDictEqual(response_body, {
             'status': 'success',
             'data': {
-                'message': 'test-spark-job deleted from namespace default'
+                'message': 'test-spark-job deleted'
             }
         })
 
     @gen_test
     def test_trying_to_delete_non_existent_job_returns_404_with_reason(self):
         # Arrange
-        body = {'job_name': 'test-spark-job', 'namespace': 'default'}
+        body = {'job_name': 'test-spark-job'}
         self.mock_k8s_adapter.delete_namespaced_custom_object.side_effect = ApiException(status=404, reason="Not Found")
         # Act
         with pytest.raises(HTTPClientError) as exception:
             yield self.send_request(body)
         assert exception.value.response.code == 404
         msg = json.loads(exception.value.response.body, encoding='utf-8')['data']
-        assert msg == 'Kubernetes error when trying to delete job "test-spark-job" in' \
-                      ' namespace "default": Not Found'
+        assert msg == 'Kubernetes error when trying to delete job: Not Found'
