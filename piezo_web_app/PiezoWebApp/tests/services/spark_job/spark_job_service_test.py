@@ -116,10 +116,6 @@ class TestSparkJobService(TestCase):
         # Arrange
         self.mock_kubernetes_adapter.list_namespaced_custom_object.return_value = {"items": [
             {"metadata": {"name": "job1", "labels": {"userLabel": "test-label"}},
-             "status": {"applicationState": {"state": "RUNNING"}}},
-            {"metadata": {"name": "job2", "labels": {"userLabel": "other-label"}},
-             "status": {"applicationState": {"state": "RUNNING"}}},
-            {"metadata": {"name": "job3", "labels": {"different-label": "test-label"}},
              "status": {"applicationState": {"state": "RUNNING"}}}
         ]}
         # Act
