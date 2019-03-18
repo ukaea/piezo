@@ -5,7 +5,7 @@ from PiezoWebApp.src.services.spark_job.validation import argument_validator
 
 
 @pytest.mark.parametrize("label", ["test", "label@@@@A", "12ewq", "some_longer_label"])
-def test_validate_label_validates_non_empty_strings_which_are_not_all(label):
+def test_validate_label_validates_non_empty_strings(label):
     # Arrange
     validation_rule = ValidationRule({'classification': 'Optional'})
     # Act
@@ -14,7 +14,7 @@ def test_validate_label_validates_non_empty_strings_which_are_not_all(label):
     assert validation_result.is_valid is True
 
 
-@pytest.mark.parametrize("label", [" ", "", "     ", "all", "ALL", "All"])
+@pytest.mark.parametrize("label", [" ", "", "     "])
 def test_validate_label_rejects_empty_strings_or_all(label):
     # Arrange
     validation_rule = ValidationRule({'classification': 'Optional'})
