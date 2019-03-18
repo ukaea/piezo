@@ -71,21 +71,18 @@ class SparkJobService(ISparkJobService):
             raise exception
 
     def get_jobs(self, label):
+        label_selector = label
         try:
             api_response = self._kubernetes_adapter.list_namespaced_custom_object(
                 CRD_GROUP,
                 CRD_VERSION,
                 'default',
-                CRD_PLURAL
+                CRD_PLURAL,
+                label_selector=label_selector
             )
             spark_jobs = {
                 item['metadata']['name']: SparkJobService._retrieve_status(item) for item in api_response['items']
             }
-            if label.upper() != "ALL":
-                for item in api_response['items']:
-                    user_label = SparkJobService._get_user_label(item)
-                    if user_label != label:
-                        del spark_jobs[item['metadata']['name']]
             return {
                 'message': f"Found {len(spark_jobs)} spark jobs",
                 'spark_jobs': spark_jobs,
@@ -177,11 +174,3 @@ class SparkJobService(ISparkJobService):
             return item['status']['applicationState']['state']
         except KeyError:
             return 'UNKNOWN'
-
-    @staticmethod
-    def _get_user_label(item):
-        try:
-            labels = item['metadata']['labels']
-            return labels.get('userLabel')
-        except KeyError:
-            return None

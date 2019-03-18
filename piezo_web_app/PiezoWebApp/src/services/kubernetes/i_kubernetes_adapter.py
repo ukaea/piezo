@@ -34,5 +34,5 @@ class IKubernetesAdapter(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def list_namespaced_custom_object(self, group, version, namespace, plural):
+    def list_namespaced_custom_object(self, group, version, namespace, plural, **kwargs):
         pass
