@@ -171,7 +171,7 @@ Get List Of SparkApplications Includes Submitted Jobs
     ${job_name_3}=    Get Response Job Name   ${response3}
     Sleep     5 seconds
     ${body}=    Create Dictionary     label=ALL
-    ${request_response}=    Get List Of Spark Jobs    {}
+    ${request_response}=    Get List Of Spark Jobs    ${body}
     Confirm Ok Response     ${request_response}
     ${jobs}=    Get Response Spark Jobs     ${request_response}
     Dictionary Should Contain Key   ${jobs}   ${job_name_1}
@@ -190,8 +190,9 @@ Get List Of SparkApplications Filters By Label
     ${job_name_3}=    Get Response Job Name   ${response3}
     Sleep     5 seconds
     ${body}=    Create Dictionary   label=test-label
-    ${request_response}=    Get List Of Spark Jobs
+    ${request_response}=    Get List Of Spark Jobs    ${body}
     Confirm Ok Response     ${request_response}
     ${jobs}=    Get Response Spark Jobs     ${request_response}
     Dictionary Should Contain Key   ${jobs}   ${job_name_1}
     Dictionary Should Contain Key   ${jobs}   ${job_name_3}
+    Dictionary Should Not Contain Key   ${jobs}   ${job_name_2}
