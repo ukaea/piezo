@@ -24,7 +24,7 @@ class TestGetJobsIntegration(BaseIntegrationTest):
         return 'GET'
 
     @gen_test
-    def test_list_of_current_jobs_is_returned_as_array(self):
+    def test_can_get_list_of_all_current_jobs_and_returned_as_array(self):
         # Arrange
         body = {}
         kubernetes_response = {"items": [
@@ -81,7 +81,7 @@ class TestGetJobsIntegration(BaseIntegrationTest):
         })
 
     @gen_test
-    def test_list_of_jobs_with_specified_label(self):
+    def test_can_get_list_of_jobs_with_specified_label(self):
         # Arrange
         body = {"label": "test-label"}
         kubernetes_response = {"items": [
