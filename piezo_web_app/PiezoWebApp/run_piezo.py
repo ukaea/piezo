@@ -16,6 +16,7 @@ from PiezoWebApp.src.services.spark_job.spark_job_service import SparkJobService
 from PiezoWebApp.src.services.spark_job.validation.manifest_populator import ManifestPopulator
 from PiezoWebApp.src.services.spark_job.validation.validation_ruleset import ValidationRuleset
 from PiezoWebApp.src.services.spark_job.validation.validation_service import ValidationService
+from PiezoWebApp.src.services.storage.adapters.boto_adapter import BotoAdapter
 from PiezoWebApp.src.utils.configurations import Configuration
 from PiezoWebApp.src.utils.route_helper import format_route_specification
 from PiezoWebApp.src.utils.validation_ruleset_parser import ValidationRulesetParser
@@ -52,13 +53,20 @@ def build_logger(configuration):
     return log
 
 
-def build_container(configuration, k8s_adapter, log, validation_rules_path):
+def build_container(configuration, k8s_adapter, log, storage_adapter, validation_rules_path):
     validation_rules = ValidationRulesetParser().parse(validation_rules_path)
     validation_ruleset = ValidationRuleset(validation_rules)
     validation_service = ValidationService(validation_ruleset)
     manifest_populator = ManifestPopulator(configuration, validation_ruleset)
     spark_job_namer = SparkJobNamer(k8s_adapter, validation_ruleset)
-    spark_job_service = SparkJobService(k8s_adapter, log, manifest_populator, spark_job_namer, validation_service)
+    spark_job_service = SparkJobService(
+        k8s_adapter,
+        log,
+        manifest_populator,
+        spark_job_namer,
+        storage_adapter,
+        validation_service
+    )
     container = dict(
         logger=log,
         spark_job_service=spark_job_service,
@@ -89,7 +97,8 @@ if __name__ == "__main__":
     VALIDATION_RULES_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), 'validation_rules.json'))
     KUBERNETES_ADAPTER = build_kubernetes_adapter(CONFIGURATION)
     LOGGER = build_logger(CONFIGURATION)
-    CONTAINER = build_container(CONFIGURATION, KUBERNETES_ADAPTER, LOGGER, VALIDATION_RULES_PATH)
+    STORAGE_ADAPTER = BotoAdapter(CONFIGURATION, LOGGER)
+    CONTAINER = build_container(CONFIGURATION, KUBERNETES_ADAPTER, LOGGER, STORAGE_ADAPTER, VALIDATION_RULES_PATH)
     APPLICATION = build_app(CONTAINER, use_route_stem=True)
     APPLICATION.listen(CONFIGURATION.app_port)
     tornado.ioloop.IOLoop.current().start()

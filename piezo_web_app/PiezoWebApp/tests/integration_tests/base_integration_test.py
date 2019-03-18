@@ -10,6 +10,7 @@ from tornado.web import Application
 
 from PiezoWebApp.run_piezo import build_container
 from PiezoWebApp.src.services.kubernetes.i_kubernetes_adapter import IKubernetesAdapter
+from PiezoWebApp.src.services.storage.adapters.i_storage_adapter import IStorageAdapter
 from PiezoWebApp.src.utils.configurations import Configuration
 from PiezoWebApp.src.utils.route_helper import format_route_specification
 
@@ -42,6 +43,7 @@ class BaseIntegrationTest(tornado.testing.AsyncHTTPTestCase, metaclass=ABCMeta):
         self.mock_configuration.s3_secrets_name = "secret"
         self.mock_k8s_adapter = mock.create_autospec(IKubernetesAdapter)
         self.mock_logger = mock.create_autospec(logging.Logger)
+        self.mock_storage_adapter = mock.create_autospec(IStorageAdapter)
         self.ruleset_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'example_validation_rules.json'))
 
     def get_app(self):
@@ -49,6 +51,7 @@ class BaseIntegrationTest(tornado.testing.AsyncHTTPTestCase, metaclass=ABCMeta):
             self.mock_configuration,
             self.mock_k8s_adapter,
             self.mock_logger,
+            self.mock_storage_adapter,
             self.ruleset_path
         )
         application = Application(

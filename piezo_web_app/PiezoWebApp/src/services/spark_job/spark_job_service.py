@@ -8,11 +8,18 @@ from PiezoWebApp.src.services.spark_job.spark_job_constants import CRD_VERSION
 
 
 class SparkJobService(ISparkJobService):
-    def __init__(self, kubernetes_adapter, logger, manifest_populator, spark_job_namer, validation_service):
+    def __init__(self,
+                 kubernetes_adapter,
+                 logger,
+                 manifest_populator,
+                 spark_job_namer,
+                 storage_adapter,
+                 validation_service):
         self._kubernetes_adapter = kubernetes_adapter
         self._logger = logger
         self._manifest_populator = manifest_populator
         self._spark_job_namer = spark_job_namer
+        self._storage_adapter = storage_adapter
         self._validation_service = validation_service
 
     def delete_job(self, job_name, namespace):
