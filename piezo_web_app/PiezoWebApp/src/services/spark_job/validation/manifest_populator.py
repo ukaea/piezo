@@ -28,6 +28,7 @@ class ManifestPopulator(IManifestPopulator):
         self._spec_executor_cores = self._validation_rules.get_default_value_for_key("executor_cores")
         self._spec_executor_memory = self._validation_rules.get_default_value_for_key("executor_memory")
         self._spec_executor_label_version = self._validation_rules.get_default_value_for_key("spark_version")
+        self._monitoring_java_agent = self._validation_rules.get_default_value_for_key("java_agent")
         self._s3_endpoint = configuration.s3_endpoint
         self._secret_name = configuration.s3_secrets_name
 
@@ -98,7 +99,7 @@ class ManifestPopulator(IManifestPopulator):
                         "exposeDriverMetrics": True,
                         "exposeExecutorMetrics": True,
                         "prometheus": {
-                            "jmxExporterJar": "/prometheus/jmx_prometheus_javaagent-0.3.1.jar",
+                            "jmxExporterJar": self._monitoring_java_agent,   # Must match jar in the docker image
                             "port": 8090}}}
                 }
 
