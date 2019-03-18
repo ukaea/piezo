@@ -6,17 +6,14 @@ import pytest
 
 from PiezoWebApp.src.services.kubernetes.i_kubernetes_adapter import IKubernetesAdapter
 from PiezoWebApp.src.services.spark_job.spark_job_namer import SparkJobNamer
-from PiezoWebApp.src.services.spark_job.validation.validation_ruleset import ValidationRuleset
 
 
 class TestSparkJobNamer(TestCase):
     # pylint: disable=attribute-defined-outside-init
     @pytest.fixture(autouse=True)
     def setup(self):
-        mock_validation_ruleset = mock.create_autospec(ValidationRuleset)
-        mock_validation_ruleset.get_default_value_for_key.return_value = "default"
         self.mock_kubernetes_adapter = mock.create_autospec(IKubernetesAdapter)
-        self.test_namer = SparkJobNamer(self.mock_kubernetes_adapter, mock_validation_ruleset)
+        self.test_namer = SparkJobNamer(self.mock_kubernetes_adapter)
 
     def test_rename_job_tags_names_with_uuid(self):
         # Arrange
