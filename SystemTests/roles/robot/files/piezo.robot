@@ -170,7 +170,7 @@ Get List Of SparkApplications Includes Submitted Jobs
     ${job_name_2}=    Get Response Job Name   ${response2}
     ${job_name_3}=    Get Response Job Name   ${response3}
     Sleep     5 seconds
-    ${body}=    Create Dictionary     label=ALL
+    ${body}=    Create Dictionary
     ${request_response}=    Get List Of Spark Jobs    ${body}
     Confirm Ok Response     ${request_response}
     ${jobs}=    Get Response Spark Jobs     ${request_response}
