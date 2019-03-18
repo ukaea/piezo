@@ -26,9 +26,9 @@ class TestGetJobsHandler(BaseHandlerTest):
         # Act
         response_body, response_code = yield self.send_request(body)
         # Assert
-        self.mock_spark_job_service.get_jobs.assert_called_once()
+        self.mock_spark_job_service.get_jobs.assert_called_once_with(None)
         self.mock_logger.debug.assert_has_calls([
-            call('Getting list of spark applications with label "ALL" returned: "200".')
+            call('Getting list of all spark applications returned: "200".')
         ])
         assert response_code == 200
         self.assertDictEqual(response_body, {
@@ -51,9 +51,9 @@ class TestGetJobsHandler(BaseHandlerTest):
         # Act
         response_body, response_code = yield self.send_request(body)
         # Assert
-        self.mock_spark_job_service.get_jobs.assert_called_once()
+        self.mock_spark_job_service.get_jobs.assert_called_once_with(None)
         self.mock_logger.debug.assert_has_calls([
-            call('Getting list of spark applications with label "ALL" returned: "200".')
+            call('Getting list of all spark applications returned: "200".')
         ])
         assert response_code == 200
         self.assertDictEqual(response_body, {
@@ -76,7 +76,7 @@ class TestGetJobsHandler(BaseHandlerTest):
         # Act
         response_body, response_code = yield self.send_request(body)
         # Assert
-        self.mock_spark_job_service.get_jobs.assert_called_once()
+        self.mock_spark_job_service.get_jobs.assert_called_once_with("test-label")
         self.mock_logger.debug.assert_has_calls([
             call('Getting list of spark applications with label "test-label" returned: "200".')
         ])
