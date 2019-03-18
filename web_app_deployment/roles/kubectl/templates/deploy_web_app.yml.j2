@@ -83,7 +83,7 @@ spec:
     version: 2.4.0
   ports:
   - name: web
-    port: 8090
+    port: 8090  # Default metrics port for prometheus (DO NOT CHANGE)
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
@@ -109,7 +109,7 @@ spec:
     app.kubernetes.io/name: sparkoperator
   ports:
   - name: web
-    port: 10254
+    port: 10254  # Default metrics port for spark operator (DO NOT CHANGE)
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
