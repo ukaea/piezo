@@ -70,7 +70,8 @@ class TestGetJobsIntegration(BaseIntegrationTest):
         self.mock_k8s_adapter.list_namespaced_custom_object.assert_called_once_with(CRD_GROUP,
                                                                                     CRD_VERSION,
                                                                                     'default',
-                                                                                    CRD_PLURAL)
+                                                                                    CRD_PLURAL,
+                                                                                    label_selector=None)
         assert response_code == 200
         self.assertDictEqual(response_body, {
             'status': 'success',
@@ -85,22 +86,6 @@ class TestGetJobsIntegration(BaseIntegrationTest):
         # Arrange
         body = {"label": "test-label"}
         kubernetes_response = {"items": [
-            {
-                "metadata":
-                    {
-                        "name": "job1",
-                        "labels": {
-                            "version": "2.4.0"
-                        }
-                    },
-                "status":
-                    {
-                        "applicationState":
-                            {
-                                "state": "RUNNING"
-                            }
-                    }
-            },
             {
                 "metadata":
                     {
@@ -127,7 +112,8 @@ class TestGetJobsIntegration(BaseIntegrationTest):
         self.mock_k8s_adapter.list_namespaced_custom_object.assert_called_once_with(CRD_GROUP,
                                                                                     CRD_VERSION,
                                                                                     'default',
-                                                                                    CRD_PLURAL)
+                                                                                    CRD_PLURAL,
+                                                                                    label_selector='test-label')
         assert response_code == 200
         self.assertDictEqual(response_body, {
             'status': 'success',
