@@ -5,9 +5,7 @@ from PiezoWebApp.src.models.spark_job_validation_result import ValidationResult
 def validate(key, value, validation_rule):
     if key == "name":
         return _validate_name(value)
-    if key == "label":
-        return _validate_label(value)
-    if key in ["name", "path_to_main_app_file", "main_class"]:
+    if key in ["name", "path_to_main_app_file", "main_class", "label"]:
         return _validate_non_empty_string(key, value)
     if key in ["language", "python_version"]:
         return _validate_string_from_list(key, value, validation_rule)
@@ -20,16 +18,6 @@ def validate(key, value, validation_rule):
     if key in ["arguments"]:
         return ValidationResult(True, None, value)
     raise ValueError(f"Unexpected argument {key}")
-
-
-def _validate_label(value):
-    if not isinstance(value, str):
-        return ValidationResult(False, '"label" input must be a string', None)
-    if is_str_empty(value):
-        return ValidationResult(False, '"label" input cannot be empty', None)
-    if value.upper() == "ALL":
-        return ValidationResult(False, '"label" input cannot be "ALL"', None)
-    return ValidationResult(True, None, value)
 
 
 def _validate_name(value):
