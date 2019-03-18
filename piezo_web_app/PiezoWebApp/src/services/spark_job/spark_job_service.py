@@ -73,7 +73,8 @@ class SparkJobService(ISparkJobService):
     def get_jobs(self, label):
         kwargs = {}
         if label is not None:
-            kwargs['label_selector'] = ('userLabel=' + label)  # Key must match the key in the manifest populator
+            # Key must match the key in the manifest populator
+            kwargs['label_selector'] = f'userLabel={label}'
         try:
             api_response = self._kubernetes_adapter.list_namespaced_custom_object(
                 CRD_GROUP,
