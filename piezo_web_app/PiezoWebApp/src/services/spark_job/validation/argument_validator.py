@@ -24,11 +24,11 @@ def validate(key, value, validation_rule):
 
 def _validate_label(value):
     if not isinstance(value, str):
-        return ValidationResult(False, f'"{key}" input must be a string', None)
+        return ValidationResult(False, '"label" input must be a string', None)
     if is_str_empty(value):
-        return ValidationResult(False, f'"{key}" input cannot be empty', None)
+        return ValidationResult(False, '"label" input cannot be empty', None)
     if value.upper() == "ALL":
-        return ValidationResult(False, f'"{key}" input cannot be "ALL"', None)
+        return ValidationResult(False, '"label" input cannot be "ALL"', None)
     return ValidationResult(True, None, value)
 
 
