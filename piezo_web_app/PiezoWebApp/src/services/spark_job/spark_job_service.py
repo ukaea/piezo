@@ -79,7 +79,7 @@ class SparkJobService(ISparkJobService):
                 CRD_GROUP,
                 CRD_VERSION,
                 NAMESPACE,
-                CRD_PLURAL
+                CRD_PLURAL,
                 **kwargs
             )
             spark_jobs = {
