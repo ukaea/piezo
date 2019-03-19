@@ -22,6 +22,8 @@ CRD_PLURAL = 'sparkapplications'
 # str | The custom resource's version
 CRD_VERSION = 'v1beta1'
 
+NAMESPACE = 'default'
+
 
 class TestSparkJobService(TestCase):
     # pylint: disable=attribute-defined-outside-init
@@ -46,13 +48,13 @@ class TestSparkJobService(TestCase):
         self.mock_kubernetes_adapter.delete_options.return_value = {"api_version": "version", "other_values": "values"}
         self.mock_kubernetes_adapter.delete_namespaced_custom_object.return_value = k8s_response
         # Act
-        result = self.test_service.delete_job('test-spark-job', 'test-namespace')
+        result = self.test_service.delete_job('test-spark-job')
         # Assert
-        self.assertDictEqual(result, {'message': 'test-spark-job deleted from namespace test-namespace', 'status': 200})
+        self.assertDictEqual(result, {'message': 'test-spark-job deleted', 'status': 200})
         self.mock_kubernetes_adapter.delete_namespaced_custom_object.assert_called_once_with(
             CRD_GROUP,
             CRD_VERSION,
-            'test-namespace',
+            NAMESPACE,
             CRD_PLURAL,
             'test-spark-job',
             {"api_version": "version", "other_values": "values"}
@@ -65,10 +67,10 @@ class TestSparkJobService(TestCase):
             status=999
         )
         # Act
-        result = self.test_service.delete_job('test-spark-job', 'test-namespace')
+        result = self.test_service.delete_job('test-spark-job')
         # Assert
         expected_message = \
-            'Kubernetes error when trying to delete job "test-spark-job" in namespace "test-namespace": Reason'
+            'Kubernetes error when trying to delete job "test-spark-job": Reason'
         self.mock_logger.error.assert_called_once_with(expected_message)
         assert result['status'] == 999
         assert result['message'] == expected_message
@@ -145,25 +147,24 @@ class TestSparkJobService(TestCase):
         # Arrange
         self.mock_kubernetes_adapter.read_namespaced_pod_log.return_value = "Response"
         # Act
-        result = self.test_service.get_logs('test-job', 'test-namespace')
+        result = self.test_service.get_logs('test-job')
         # Assert
         self.assertDictEqual(result, {'message': 'Response', 'status': 200})
         self.mock_kubernetes_adapter.read_namespaced_pod_log.assert_called_once_with(
-            'test-job-driver', 'test-namespace')
+            'test-job-driver', 'default')
 
     def test_get_logs_logs_and_returns_api_exception_reason(self):
         # Arrange
         self.mock_kubernetes_adapter.read_namespaced_pod_log.side_effect = ApiException(reason="Reason", status=999)
         # Act
-        result = self.test_service.get_logs('test-job', 'test-namespace')
+        result = self.test_service.get_logs('test-job')
         # Assert
         expected_message = \
-            'Kubernetes error when trying to get logs for spark job "test-job" in namespace "test-namespace": Reason'
+            'Kubernetes error when trying to get logs for spark job "test-job": Reason'
         self.mock_logger.error.assert_called_once_with(expected_message)
         self.assertDictEqual(result, {
             'status': 999,
-            'message': 'Kubernetes error when trying to get logs for spark job "test-job" '
-                       'in namespace "test-namespace": Reason'
+            'message': 'Kubernetes error when trying to get logs for spark job "test-job": Reason'
         })
 
     def test_submit_job_sends_expected_arguments(self):
@@ -177,7 +178,7 @@ class TestSparkJobService(TestCase):
         self.mock_spark_job_namer.rename_job.return_value = 'test-spark-job-abcd1234'
         manifest = {
             'metadata': {
-                'namespace': 'example-namespace',
+                'namespace': NAMESPACE,
                 'name': 'test-spark-job-abcd1234',
                 'language': 'example-language'
             }
@@ -185,7 +186,7 @@ class TestSparkJobService(TestCase):
         self.mock_manifest_populator.build_manifest.return_value = manifest
         self.mock_kubernetes_adapter.create_namespaced_custom_object.return_value = {
             'metadata': {
-                'namespace': 'example-namespace',
+                'namespace': NAMESPACE,
                 'name': 'test-spark-job-abcd1234',
                 'language': 'example-language'
             }
@@ -196,7 +197,7 @@ class TestSparkJobService(TestCase):
         self.mock_kubernetes_adapter.create_namespaced_custom_object.assert_called_once_with(
             CRD_GROUP,
             CRD_VERSION,
-            'example-namespace',
+            NAMESPACE,
             CRD_PLURAL,
             manifest
         )
@@ -250,7 +251,7 @@ class TestSparkJobService(TestCase):
         self.mock_spark_job_namer.rename_job.return_value = 'test-spark-job-abcd1234'
         manifest = {
             'metadata': {
-                'namespace': 'example-namespace',
+                'namespace': NAMESPACE,
                 'name': 'test-spark-job-abcd1234',
                 'language': 'example-language'
             }
@@ -264,7 +265,7 @@ class TestSparkJobService(TestCase):
         self.mock_kubernetes_adapter.create_namespaced_custom_object.assert_called_once_with(
             CRD_GROUP,
             CRD_VERSION,
-            'example-namespace',
+            NAMESPACE,
             CRD_PLURAL,
             manifest
         )
@@ -273,7 +274,7 @@ class TestSparkJobService(TestCase):
             mock.call(expected_message),
             mock.call({
                 'metadata': {
-                    'namespace': 'example-namespace',
+                    'namespace': NAMESPACE,
                     'name': 'test-spark-job-abcd1234',
                     'language': 'example-language'
                 }
@@ -291,13 +292,13 @@ class TestSparkJobService(TestCase):
                 'applicationState': {
                     'state': 'Running'}}}
         # Act
-        result = self.test_service.get_job_status('test-job', 'test-namespace')
+        result = self.test_service.get_job_status('test-job')
         # Assert
         self.assertDictEqual(result, {'message': 'Running', 'status': 200})
         self.mock_kubernetes_adapter.get_namespaced_custom_object.assert_called_once_with(
             CRD_GROUP,
             CRD_VERSION,
-            'test-namespace',
+            NAMESPACE,
             CRD_PLURAL,
             'test-job'
         )
@@ -306,13 +307,13 @@ class TestSparkJobService(TestCase):
         # Arrange
         self.mock_kubernetes_adapter.get_namespaced_custom_object.return_value = {'name': 'test-job'}
         # Act
-        result = self.test_service.get_job_status('test-job', 'test-namespace')
+        result = self.test_service.get_job_status('test-job')
         # Assert
         self.assertDictEqual(result, {'message': 'UNKNOWN', 'status': 200})
         self.mock_kubernetes_adapter.get_namespaced_custom_object.assert_called_once_with(
             CRD_GROUP,
             CRD_VERSION,
-            'test-namespace',
+            NAMESPACE,
             CRD_PLURAL,
             'test-job'
         )
@@ -322,14 +323,12 @@ class TestSparkJobService(TestCase):
         self.mock_kubernetes_adapter.get_namespaced_custom_object.side_effect = ApiException(reason="Reason",
                                                                                              status=999)
         # Act
-        result = self.test_service.get_job_status('test-job', 'test-namespace')
+        result = self.test_service.get_job_status('test-job')
         # Assert
         expected_message = \
-            'Kubernetes error when trying to get status of spark job "test-job" in ' \
-            'namespace "test-namespace": Reason'
+            'Kubernetes error when trying to get status of spark job "test-job": Reason'
         self.mock_logger.error.assert_called_once_with(expected_message)
         self.assertDictEqual(result, {
             'status': 999,
-            'message': 'Kubernetes error when trying to get status of spark job "test-job" in namespace'
-                       ' "test-namespace": Reason'
+            'message': 'Kubernetes error when trying to get status of spark job "test-job": Reason'
         })

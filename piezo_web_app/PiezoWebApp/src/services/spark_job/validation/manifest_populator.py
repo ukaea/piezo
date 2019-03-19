@@ -1,3 +1,4 @@
+from PiezoWebApp.src.services.spark_job.spark_job_constants import NAMESPACE
 from PiezoWebApp.src.services.spark_job.validation.i_manifest_populator import IManifestPopulator
 from PiezoWebApp.src.utils.dict_argument_helper import set_value_in_nested_dict
 
@@ -9,7 +10,6 @@ class ManifestPopulator(IManifestPopulator):
         self._api_version = self._validation_rules.get_default_value_for_key("apiVersion")
         self._kind = self._validation_rules.get_default_value_for_key("kind")
         self._metadata_name = self._validation_rules.get_default_value_for_key("name")
-        self._metadata_namespace = self._validation_rules.get_default_value_for_key("namespace")
         self._metadata_label = self._validation_rules.get_default_value_for_key("label")
         self._spec_type = self._validation_rules.get_default_value_for_key("language")
         self._spec_mode = self._validation_rules.get_default_value_for_key("mode")
@@ -49,7 +49,7 @@ class ManifestPopulator(IManifestPopulator):
                 "kind": self._kind,
                 "metadata":
                     {"name": self._metadata_name,
-                     "namespace": self._metadata_namespace},
+                     "namespace": NAMESPACE},
                 "spec": {
                     "mode": self._spec_mode,
                     "image": self._spec_image,

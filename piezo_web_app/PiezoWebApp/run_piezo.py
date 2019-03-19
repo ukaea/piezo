@@ -57,7 +57,7 @@ def build_container(configuration, k8s_adapter, log, validation_rules_path):
     validation_ruleset = ValidationRuleset(validation_rules)
     validation_service = ValidationService(validation_ruleset)
     manifest_populator = ManifestPopulator(configuration, validation_ruleset)
-    spark_job_namer = SparkJobNamer(k8s_adapter, validation_ruleset)
+    spark_job_namer = SparkJobNamer(k8s_adapter)
     spark_job_service = SparkJobService(k8s_adapter, log, manifest_populator, spark_job_namer, validation_service)
     container = dict(
         logger=log,

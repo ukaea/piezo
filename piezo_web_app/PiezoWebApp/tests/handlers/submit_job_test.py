@@ -1,5 +1,9 @@
+import json
+import pytest
+
 from mock import call
 from tornado.testing import gen_test
+from tornado.httpclient import HTTPClientError
 
 from PiezoWebApp.tests.handlers.base_handler_test import BaseHandlerTest
 from PiezoWebApp.src.handlers.submit_job import SubmitJobHandler
@@ -183,3 +187,12 @@ class TestSubmitJobHandler(BaseHandlerTest):
         # Assert
         self.mock_spark_job_service.submit_job.assert_called_once_with(body)
         assert response_code == 200
+
+    @gen_test
+    def test_post_returns_input_malformed_message_if_no_body_provided(self):
+        # Act
+        with pytest.raises(HTTPClientError) as error:
+            yield self.send_request_without_body()
+        assert error.value.response.code == 400
+        msg = json.loads(error.value.response.body, encoding='utf-8')['data']
+        assert msg == 'Input is malformed; could not decode JSON object.'

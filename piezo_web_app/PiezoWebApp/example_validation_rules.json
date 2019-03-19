@@ -15,11 +15,6 @@
     "default": "SparkApplication"
   },
   {
-    "input_name": "namespace",
-    "classification": "Fixed",
-    "default": "default"
-  },
-  {
     "input_name": "mode",
     "classification": "Fixed",
     "default": "cluster"
