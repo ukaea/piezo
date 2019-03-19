@@ -11,7 +11,6 @@ from PiezoWebApp.src.services.spark_job.spark_job_constants import NAMESPACE
 
 class SparkJobNamer(ISparkJobNamer):
     def __init__(self, kubernetes_adapter):
-        self._namespace = NAMESPACE
         self._kubernetes_adapter = kubernetes_adapter
         self._max_attempts = 10
 
@@ -31,7 +30,7 @@ class SparkJobNamer(ISparkJobNamer):
             self._kubernetes_adapter.get_namespaced_custom_object(
                 CRD_GROUP,
                 CRD_VERSION,
-                self._namespace,
+                NAMESPACE,
                 CRD_PLURAL,
                 job_name
             )
