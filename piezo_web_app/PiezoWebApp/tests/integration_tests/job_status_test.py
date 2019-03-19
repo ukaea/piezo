@@ -17,6 +17,8 @@ CRD_PLURAL = 'sparkapplications'
 # str | The custom resource's version
 CRD_VERSION = 'v1beta1'
 
+NAMESPACE = 'default'
+
 
 class TestJobStatusIntegration(BaseIntegrationTest):
     @property
@@ -30,7 +32,7 @@ class TestJobStatusIntegration(BaseIntegrationTest):
     @gen_test
     def test_status_is_returned_from_correct_spark_job(self):
         # Arrange
-        body = {'job_name': 'test-spark-job', 'namespace': 'default'}
+        body = {'job_name': 'test-spark-job'}
         kubernetes_response = {'status': {'applicationState': {'state': 'Running'}}}
         self.mock_k8s_adapter.get_namespaced_custom_object.return_value = kubernetes_response
         # Act
@@ -39,7 +41,7 @@ class TestJobStatusIntegration(BaseIntegrationTest):
         assert self.mock_k8s_adapter.get_namespaced_custom_object.call_count == 1
         self.mock_k8s_adapter.get_namespaced_custom_object.assert_called_once_with(CRD_GROUP,
                                                                                    CRD_VERSION,
-                                                                                   'default',
+                                                                                   NAMESPACE,
                                                                                    CRD_PLURAL,
                                                                                    'test-spark-job')
         assert response_code == 200
@@ -53,7 +55,7 @@ class TestJobStatusIntegration(BaseIntegrationTest):
     @gen_test
     def test_unknown_status_is_returned_when_not_specified_by_kubernetes(self):
         # Arrange
-        body = {'job_name': 'test-spark-job', 'namespace': 'default'}
+        body = {'job_name': 'test-spark-job'}
         kubernetes_response = {
             'metadata': {
                 'name': 'test-spark-job',
@@ -67,7 +69,7 @@ class TestJobStatusIntegration(BaseIntegrationTest):
         assert self.mock_k8s_adapter.get_namespaced_custom_object.call_count == 1
         self.mock_k8s_adapter.get_namespaced_custom_object.assert_called_once_with(CRD_GROUP,
                                                                                    CRD_VERSION,
-                                                                                   'default',
+                                                                                   NAMESPACE,
                                                                                    CRD_PLURAL,
                                                                                    'test-spark-job')
         assert response_code == 200
@@ -81,12 +83,11 @@ class TestJobStatusIntegration(BaseIntegrationTest):
     @gen_test
     def test_trying_to_get_status_of_non_existent_job_returns_404_with_reason(self):
         # Arrange
-        body = {'job_name': 'test-spark-job', 'namespace': 'default'}
+        body = {'job_name': 'test-spark-job'}
         self.mock_k8s_adapter.get_namespaced_custom_object.side_effect = ApiException(status=404, reason="Not Found")
         # Act
         with pytest.raises(HTTPClientError) as exception:
             yield self.send_request(body)
         assert exception.value.response.code == 404
         msg = json.loads(exception.value.response.body, encoding='utf-8')['data']
-        assert msg == 'Kubernetes error when trying to get status of spark job "test-spark-job" in' \
-                      ' namespace "default": Not Found'
+        assert msg == 'Kubernetes error when trying to get status of spark job "test-spark-job": Not Found'
