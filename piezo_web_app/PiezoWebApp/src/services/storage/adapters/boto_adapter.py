@@ -6,13 +6,17 @@ from PiezoWebApp.src.services.storage.adapters.i_storage_adapter import IStorage
 class BotoAdapter(IStorageAdapter):
     def __init__(self, configuration, logger):
         self._logger = logger
+        with open('/etc/secrets/access_key') as f:
+            access_key = f.read()
+        with open('/etc/secrets/secret_key') as f:
+            secret_key = f.read()
         try:
             self._s3_client = boto.connect_s3(
-                aws_access_key_id=configuration.s3_access_key,
-                aws_secret_access_key=configuration.s3_secret_key,
+                aws_access_key_id=access_key,
+                aws_secret_access_key=secret_key,
                 host=configuration.s3_host,
                 port=configuration.s3_port,
-                is_secure=configuration.s3_use_secure,
+                is_secure=True,
                 calling_format=boto.s3.connection.OrdinaryCallingFormat()
             )
         except Exception as exception:

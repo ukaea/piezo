@@ -1,5 +1,6 @@
 import os
 import configparser
+from urllib.parse import urlparse
 
 from PiezoWebApp.src.utils.str_helper import str2non_negative_int
 
@@ -50,6 +51,16 @@ class Configuration:
     @property
     def s3_endpoint(self):
         return self._s3_endpoint
+
+    @property
+    def s3_host(self):
+        parse_result = urlparse(self.s3_endpoint)
+        return parse_result.hostname
+
+    @property
+    def s3_port(self):
+        parse_result = urlparse(self.s3_endpoint)
+        return parse_result.port
 
     @property
     def s3_secrets_name(self):
