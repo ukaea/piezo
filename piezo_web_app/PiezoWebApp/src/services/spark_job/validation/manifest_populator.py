@@ -6,7 +6,6 @@ from PiezoWebApp.src.utils.dict_argument_helper import set_value_in_nested_dict
 class ManifestPopulator(IManifestPopulator):
     def __init__(self, configuration, validation_rules):
         self._validation_rules = validation_rules
-        self._metadata_namespace = NAMESPACE
         self._arguments = self._validation_rules.get_default_value_for_key("arguments")
         self._api_version = self._validation_rules.get_default_value_for_key("apiVersion")
         self._kind = self._validation_rules.get_default_value_for_key("kind")
@@ -50,7 +49,7 @@ class ManifestPopulator(IManifestPopulator):
                 "kind": self._kind,
                 "metadata":
                     {"name": self._metadata_name,
-                     "namespace": self._metadata_namespace},
+                     "namespace": NAMESPACE},
                 "spec": {
                     "mode": self._spec_mode,
                     "image": self._spec_image,
