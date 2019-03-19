@@ -3,7 +3,6 @@ from mock import call
 import pytest
 from tornado.httpclient import HTTPClientError
 from tornado.testing import gen_test
-from jsonschema.exceptions import ValidationError
 
 from PiezoWebApp.tests.handlers.base_handler_test import BaseHandlerTest
 from PiezoWebApp.src.handlers.delete_job import DeleteJobHandler
