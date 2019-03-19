@@ -27,7 +27,7 @@
   {
     "input_name": "image",
     "classification": "Fixed",
-    "default": "gcr.io/spark-operator/spark:v2.4.0"
+    "default": "host-172-16-113-64.nubes.stfc.ac.uk/piezo-resources/piezo-spark-image:latest"
   },
   {
     "input_name": "image_pull_policy",
