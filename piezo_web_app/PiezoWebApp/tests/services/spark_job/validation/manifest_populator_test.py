@@ -18,6 +18,7 @@ class TestTemplatePopulator(unittest.TestCase):
         mock_validation_ruleset.get_default_value_for_key.side_effect = \
             lambda input_name: {
                 'apiVersion': "sparkoperator.k8s.io/v1beta1",
+                'java_agent': '/prometheus/jmx_prometheus_javaagent-0.3.1.jar',
                 'kind': 'SparkApplication',
                 'namespace': 'default',
                 'mode': 'cluster',
@@ -109,7 +110,13 @@ class TestTemplatePopulator(unittest.TestCase):
                                                         "key": "accessKey"},
                                                     "AWS_SECRET_ACCESS_KEY": {
                                                         "name": "secret",
-                                                        "key": "secretKey"}}}}})
+                                                        "key": "secretKey"}}},
+                                            "monitoring": {
+                                                "exposeDriverMetrics": True,
+                                                "exposeExecutorMetrics": True,
+                                                "prometheus": {
+                                                    "jmxExporterJar": "/prometheus/jmx_prometheus_javaagent-0.3.1.jar",
+                                                    "port": 8090}}}})
 
     def test_build_manifest_builds_scala_job_manifest_for_scala_applications(self):
         # Arrange
@@ -170,7 +177,13 @@ class TestTemplatePopulator(unittest.TestCase):
                                                         "key": "accessKey"},
                                                     "AWS_SECRET_ACCESS_KEY": {
                                                         "name": "secret",
-                                                        "key": "secretKey"}}}}})
+                                                        "key": "secretKey"}}},
+                                            "monitoring": {
+                                                "exposeDriverMetrics": True,
+                                                "exposeExecutorMetrics": True,
+                                                "prometheus": {
+                                                    "jmxExporterJar": "/prometheus/jmx_prometheus_javaagent-0.3.1.jar",
+                                                    "port": 8090}}}})
 
     def test_default_manifest_returns_a_filled_in_spark_application_template_with_default_values(self):
         # Arrange
@@ -223,4 +236,11 @@ class TestTemplatePopulator(unittest.TestCase):
                                                                 "key": "accessKey"},
                                                             "AWS_SECRET_ACCESS_KEY": {
                                                                 "name": "secret",
-                                                                "key": "secretKey"}}}}})
+                                                                "key": "secretKey"}}},
+                                                    "monitoring": {
+                                                        "exposeDriverMetrics": True,
+                                                        "exposeExecutorMetrics": True,
+                                                        "prometheus": {
+                                                            "jmxExporterJar":
+                                                                "/prometheus/jmx_prometheus_javaagent-0.3.1.jar",
+                                                                "port": 8090}}}})
