@@ -21,17 +21,17 @@ spec:
         ports:
         - containerPort: 8888 # Port where the application is exposed on
         volumeMounts:
-          - name: {{ secrets_name }}
+        - name: {{ secrets_name }}
           mountPath: "/etc/secrets/"
       volumes:
-        - name: {{ secrets_name }}
+      - name: {{ secrets_name }}
         secret:
           secretName: {{ secrets_name }}
           items:
-            - key: accessKey
-              path: access_key
-            - key: secretKey
-              path: secret_key
+          - key: accessKey
+            path: access_key
+          - key: secretKey
+            path: secret_key
 ---
 kind: Service
 apiVersion: v1
