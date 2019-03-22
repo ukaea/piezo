@@ -4,7 +4,7 @@ from abc import ABCMeta, abstractmethod
 class ISparkJobService(metaclass=ABCMeta):
 
     @abstractmethod
-    def delete_job(self, job_name, namespace):
+    def delete_job(self, job_name):
         pass
 
     @abstractmethod
@@ -12,11 +12,11 @@ class ISparkJobService(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def get_job_status(self, job_name, namespace):
+    def get_job_status(self, job_name):
         pass
 
     @abstractmethod
-    def get_logs(self, job_name, namespace):
+    def get_logs(self, job_name):
         pass
 
     @abstractmethod

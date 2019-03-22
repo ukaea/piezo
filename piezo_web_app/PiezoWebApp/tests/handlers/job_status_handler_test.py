@@ -20,18 +20,13 @@ class TestJobStatusHandler(BaseHandlerTest):
 
     @gen_test
     def test_get_returns_400_when_job_name_is_missing(self):
-        body = {'namespace': 'test-namespace'}
-        yield self.assert_request_returns_400(body)
-
-    @gen_test
-    def test_get_returns_400_when_namespace_is_missing(self):
-        body = {'job_name': 'test-driver'}
+        body = {}
         yield self.assert_request_returns_400(body)
 
     @gen_test
     def test_get_returns_status_when_successful(self):
         # Arrange
-        body = {'job_name': 'test-job', 'namespace': 'test-namespace'}
+        body = {'job_name': 'test-job'}
         self.mock_spark_job_service.get_job_status.return_value = {
             "message": "status",
             "status": 200
@@ -39,10 +34,10 @@ class TestJobStatusHandler(BaseHandlerTest):
         # Act
         response_body, response_code = yield self.send_request(body)
         # Assert
-        self.mock_spark_job_service.get_job_status.assert_called_once_with('test-job', 'test-namespace')
+        self.mock_spark_job_service.get_job_status.assert_called_once_with('test-job')
         self.mock_logger.debug.assert_has_calls([
-            call('Trying to get status of spark job "test-job" in namespace "test-namespace".'),
-            call('Getting status of spark job "test-job" in namespace "test-namespace" returned '
+            call('Trying to get status of spark job "test-job".'),
+            call('Getting status of spark job "test-job" returned '
                  'result "200".')
         ])
         assert response_code == 200
@@ -56,7 +51,7 @@ class TestJobStatusHandler(BaseHandlerTest):
     @gen_test
     def test_get_returns_message_and_status_code_when_k8s_error(self):
         # Arrange
-        body = {'job_name': 'test-job', 'namespace': 'test-namespace'}
+        body = {'job_name': 'test-job'}
         self.mock_spark_job_service.get_job_status.return_value = {
             "message": "Kubernetes error",
             "status": 404
@@ -67,3 +62,12 @@ class TestJobStatusHandler(BaseHandlerTest):
         assert error.value.response.code == 404
         msg = json.loads(error.value.response.body, encoding='utf-8')['data']
         assert msg == "Kubernetes error"
+
+    @gen_test
+    def test_get_returns_input_malformed_message_if_no_body_provided(self):
+        # Act
+        with pytest.raises(HTTPClientError) as error:
+            yield self.send_request_without_body()
+        assert error.value.response.code == 400
+        msg = json.loads(error.value.response.body, encoding='utf-8')['data']
+        assert msg == 'Input is malformed; could not decode JSON object.'

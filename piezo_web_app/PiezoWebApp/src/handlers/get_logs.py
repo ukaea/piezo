@@ -8,19 +8,17 @@ from PiezoWebApp.src.handlers.schema.schema_helpers import create_object_schema_
 class GetLogsHandler(BaseHandler):
     @schema.validate(
         input_schema=create_object_schema_with_string_properties(
-            ['job_name', 'namespace'], required=['job_name', 'namespace']),
+            ['job_name'], required=['job_name']),
         input_example={
-            'job_name': 'example-job',
-            'namespace': 'default'
+            'job_name': 'example-job'
         }
     )
     def get(self, *args, **kwargs):
         job_name = self.get_body_attribute('job_name', required=True)
-        namespace = self.get_body_attribute('namespace', required=True)
-        self._logger.debug(f'Trying to get logs from spark job "{job_name}" in namespace "{namespace}".')
-        result = self._spark_job_service.get_logs(job_name, namespace)
+        self._logger.debug(f'Trying to get logs from spark job "{job_name}".')
+        result = self._spark_job_service.get_logs(job_name)
         self._logger.debug(
-            f'Getting logs from spark job "{job_name}" in namespace "{namespace}" returned result "{result["status"]}".'
+            f'Getting logs from spark job "{job_name}" returned result "{result["status"]}".'
         )
         self.check_request_was_completed_successfully(result)
         del result['status']

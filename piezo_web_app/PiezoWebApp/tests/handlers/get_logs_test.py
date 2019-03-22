@@ -1,5 +1,9 @@
+import json
+import pytest
+
 from mock import call
 from tornado.testing import gen_test
+from tornado.httpclient import HTTPClientError
 
 from PiezoWebApp.tests.handlers.base_handler_test import BaseHandlerTest
 from PiezoWebApp.src.handlers.get_logs import GetLogsHandler
@@ -16,18 +20,13 @@ class TestGetLogsHandler(BaseHandlerTest):
 
     @gen_test
     def test_get_returns_400_when_driver_name_is_missing(self):
-        body = {'namespace': 'test-namespace'}
-        yield self.assert_request_returns_400(body)
-
-    @gen_test
-    def test_get_returns_400_when_namespace_is_missing(self):
-        body = {'job_name': 'test-job'}
+        body = {}
         yield self.assert_request_returns_400(body)
 
     @gen_test
     def test_get_returns_logs_when_successful(self):
         # Arrange
-        body = {'job_name': 'test-job', 'namespace': 'test-namespace'}
+        body = {'job_name': 'test-job'}
         self.mock_spark_job_service.get_logs.return_value = {
             "message": "logs",
             "status": 200
@@ -35,10 +34,10 @@ class TestGetLogsHandler(BaseHandlerTest):
         # Act
         response_body, response_code = yield self.send_request(body)
         # Assert
-        self.mock_spark_job_service.get_logs.assert_called_once_with('test-job', 'test-namespace')
+        self.mock_spark_job_service.get_logs.assert_called_once_with('test-job')
         self.mock_logger.debug.assert_has_calls([
-            call('Trying to get logs from spark job "test-job" in namespace "test-namespace".'),
-            call('Getting logs from spark job "test-job" in namespace "test-namespace" returned result "200".')
+            call('Trying to get logs from spark job "test-job".'),
+            call('Getting logs from spark job "test-job" returned result "200".')
         ])
         assert response_code == 200
         self.assertDictEqual(response_body, {
@@ -47,3 +46,12 @@ class TestGetLogsHandler(BaseHandlerTest):
                 'message': 'logs'
             }
         })
+
+    @gen_test
+    def test_get_returns_input_malformed_message_if_no_body_provided(self):
+        # Act
+        with pytest.raises(HTTPClientError) as error:
+            yield self.send_request_without_body()
+        assert error.value.response.code == 400
+        msg = json.loads(error.value.response.body, encoding='utf-8')['data']
+        assert msg == 'Input is malformed; could not decode JSON object.'

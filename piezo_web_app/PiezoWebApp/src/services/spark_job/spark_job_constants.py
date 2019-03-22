@@ -6,3 +6,6 @@ CRD_PLURAL = 'sparkapplications'
 
 # str | The custom resource's version
 CRD_VERSION = 'v1beta1'
+
+# str | The namespace where all spark applications are run
+NAMESPACE = 'default'

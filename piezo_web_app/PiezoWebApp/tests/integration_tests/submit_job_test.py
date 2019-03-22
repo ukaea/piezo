@@ -19,6 +19,8 @@ CRD_PLURAL = 'sparkapplications'
 # str | The custom resource's version
 CRD_VERSION = 'v1beta1'
 
+NAMESPACE = 'default'
+
 
 class TestSubmitJobIntegration(BaseIntegrationTest):
     @property
@@ -49,7 +51,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
         self.mock_k8s_adapter.get_namespaced_custom_object.assert_called_once_with(
             CRD_GROUP,
             CRD_VERSION,
-            'default',
+            NAMESPACE,
             CRD_PLURAL,
             'test_python_job-abcd1'
         )
@@ -118,7 +120,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
         call_args = self.mock_k8s_adapter.create_namespaced_custom_object.call_args[0]
         assert call_args[0] == CRD_GROUP
         assert call_args[1] == CRD_VERSION
-        assert call_args[2] == 'default'
+        assert call_args[2] == NAMESPACE
         assert call_args[3] == CRD_PLURAL
         self.assertDictEqual(call_args[4], expected_body)
         assert response_code == 200
@@ -150,7 +152,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
         self.mock_k8s_adapter.get_namespaced_custom_object.assert_called_once_with(
             CRD_GROUP,
             CRD_VERSION,
-            'default',
+            NAMESPACE,
             CRD_PLURAL,
             'test_scala_job-abcd1'
         )
@@ -219,7 +221,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
         call_args = self.mock_k8s_adapter.create_namespaced_custom_object.call_args[0]
         assert call_args[0] == CRD_GROUP
         assert call_args[1] == CRD_VERSION
-        assert call_args[2] == 'default'
+        assert call_args[2] == NAMESPACE
         assert call_args[3] == CRD_PLURAL
         self.assertDictEqual(call_args[4], expected_body)
         assert response_code == 200
@@ -256,7 +258,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
         self.mock_k8s_adapter.get_namespaced_custom_object.assert_called_once_with(
             CRD_GROUP,
             CRD_VERSION,
-            'default',
+            NAMESPACE,
             CRD_PLURAL,
             'test_python_job-abcd1'
         )
@@ -327,7 +329,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
         call_args = self.mock_k8s_adapter.create_namespaced_custom_object.call_args[0]
         assert call_args[0] == CRD_GROUP
         assert call_args[1] == CRD_VERSION
-        assert call_args[2] == 'default'
+        assert call_args[2] == NAMESPACE
         assert call_args[3] == CRD_PLURAL
         self.assertDictEqual(call_args[4], expected_body)
         assert response_code == 200

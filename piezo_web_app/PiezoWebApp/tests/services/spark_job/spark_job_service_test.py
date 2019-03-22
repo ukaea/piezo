@@ -11,6 +11,8 @@ from PiezoWebApp.src.services.spark_job.validation.i_manifest_populator import I
 from PiezoWebApp.src.services.spark_job.validation.i_validation_service import IValidationService
 from PiezoWebApp.src.services.storage.adapters.i_storage_adapter import IStorageAdapter
 
+NAMESPACE = 'default'
+
 
 class TestSparkJobService(TestCase):
     # pylint: disable=attribute-defined-outside-init
