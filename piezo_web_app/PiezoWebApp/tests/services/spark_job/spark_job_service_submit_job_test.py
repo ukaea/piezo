@@ -4,6 +4,7 @@ import mock
 from PiezoWebApp.src.services.spark_job.spark_job_constants import CRD_GROUP
 from PiezoWebApp.src.services.spark_job.spark_job_constants import CRD_PLURAL
 from PiezoWebApp.src.services.spark_job.spark_job_constants import CRD_VERSION
+from PiezoWebApp.src.services.spark_job.spark_job_constants import NAMESPACE
 from PiezoWebApp.src.models.spark_job_validation_result import ValidationResult
 from PiezoWebApp.src.models.return_status import StatusCodes
 
@@ -22,7 +23,7 @@ class SparkJobServiceSubmitJobTest(TestSparkJobService):
         self.mock_spark_job_namer.rename_job.return_value = 'test-spark-job-abcd1234'
         manifest = {
             'metadata': {
-                'namespace': 'example-namespace',
+                'namespace': NAMESPACE,
                 'name': 'test-spark-job-abcd1234',
                 'language': 'example-language'
             }
@@ -30,7 +31,7 @@ class SparkJobServiceSubmitJobTest(TestSparkJobService):
         self.mock_manifest_populator.build_manifest.return_value = manifest
         self.mock_kubernetes_adapter.create_namespaced_custom_object.return_value = {
             'metadata': {
-                'namespace': 'example-namespace',
+                'namespace': NAMESPACE,
                 'name': 'test-spark-job-abcd1234',
                 'language': 'example-language'
             }
@@ -41,7 +42,7 @@ class SparkJobServiceSubmitJobTest(TestSparkJobService):
         self.mock_kubernetes_adapter.create_namespaced_custom_object.assert_called_once_with(
             CRD_GROUP,
             CRD_VERSION,
-            'example-namespace',
+            NAMESPACE,
             CRD_PLURAL,
             manifest
         )
@@ -95,7 +96,7 @@ class SparkJobServiceSubmitJobTest(TestSparkJobService):
         self.mock_spark_job_namer.rename_job.return_value = 'test-spark-job-abcd1234'
         manifest = {
             'metadata': {
-                'namespace': 'example-namespace',
+                'namespace': NAMESPACE,
                 'name': 'test-spark-job-abcd1234',
                 'language': 'example-language'
             }
@@ -109,7 +110,7 @@ class SparkJobServiceSubmitJobTest(TestSparkJobService):
         self.mock_kubernetes_adapter.create_namespaced_custom_object.assert_called_once_with(
             CRD_GROUP,
             CRD_VERSION,
-            'example-namespace',
+            NAMESPACE,
             CRD_PLURAL,
             manifest
         )
@@ -118,7 +119,7 @@ class SparkJobServiceSubmitJobTest(TestSparkJobService):
             mock.call(expected_message),
             mock.call({
                 'metadata': {
-                    'namespace': 'example-namespace',
+                    'namespace': NAMESPACE,
                     'name': 'test-spark-job-abcd1234',
                     'language': 'example-language'
                 }

@@ -16,18 +16,13 @@ class TestWriteLogsHandler(BaseHandlerTest):
 
     @gen_test
     def test_post_returns_400_when_driver_name_is_missing(self):
-        body = {'namespace': 'test-namespace'}
-        yield self.assert_request_returns_400(body)
-
-    @gen_test
-    def test_post_returns_400_when_namespace_is_missing(self):
-        body = {'job_name': 'test-job'}
+        body = {}
         yield self.assert_request_returns_400(body)
 
     @gen_test
     def test_post_returns_logs_when_successful(self):
         # Arrange
-        body = {'job_name': 'test-job', 'namespace': 'test-namespace'}
+        body = {'job_name': 'test-job'}
         self.mock_spark_job_service.write_logs_to_file.return_value = {
             'message': 'Job logs written to "/path/to/log.txt"',
             'status': 200
@@ -35,7 +30,7 @@ class TestWriteLogsHandler(BaseHandlerTest):
         # Act
         response_body, response_code = yield self.send_request(body)
         # Assert
-        self.mock_spark_job_service.write_logs_to_file.assert_called_once_with('test-job', 'test-namespace')
+        self.mock_spark_job_service.write_logs_to_file.assert_called_once_with('test-job')
         self.mock_logger.debug.assert_has_calls([
             call('Trying to write logs to file for job "test-job".'),
             call('Writing logs to file for job "test-job" returned status code "200".')

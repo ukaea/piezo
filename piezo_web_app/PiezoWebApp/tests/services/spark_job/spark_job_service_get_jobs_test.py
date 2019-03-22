@@ -3,6 +3,7 @@ from kubernetes.client.rest import ApiException
 from PiezoWebApp.src.services.spark_job.spark_job_constants import CRD_GROUP
 from PiezoWebApp.src.services.spark_job.spark_job_constants import CRD_PLURAL
 from PiezoWebApp.src.services.spark_job.spark_job_constants import CRD_VERSION
+from PiezoWebApp.src.services.spark_job.spark_job_constants import NAMESPACE
 
 from PiezoWebApp.tests.services.spark_job.spark_job_service_test import TestSparkJobService
 
@@ -16,7 +17,7 @@ class SparkJobServiceGetJobsTest(TestSparkJobService):
         # Assert
         self.assertDictEqual(result, {'message': 'Found 0 spark jobs', 'spark_jobs': {}, 'status': 200})
         self.mock_kubernetes_adapter.list_namespaced_custom_object.assert_called_once_with(
-            CRD_GROUP, CRD_VERSION, 'default', CRD_PLURAL)
+            CRD_GROUP, CRD_VERSION, NAMESPACE, CRD_PLURAL)
 
     def test_get_jobs_logs_and_returns_api_exception_reason(self):
         # Arrange
@@ -45,7 +46,7 @@ class SparkJobServiceGetJobsTest(TestSparkJobService):
                                       'spark_jobs': {"job1": "RUNNING"},
                                       'status': 200})
         self.mock_kubernetes_adapter.list_namespaced_custom_object.assert_called_once_with(
-            CRD_GROUP, CRD_VERSION, 'default', CRD_PLURAL)
+            CRD_GROUP, CRD_VERSION, NAMESPACE, CRD_PLURAL)
 
     def test_get_jobs_only_with_user_label_when_specified(self):
         # Arrange
@@ -60,7 +61,7 @@ class SparkJobServiceGetJobsTest(TestSparkJobService):
                                       'spark_jobs': {"job1": "RUNNING"},
                                       'status': 200})
         self.mock_kubernetes_adapter.list_namespaced_custom_object.assert_called_once_with(
-            CRD_GROUP, CRD_VERSION, 'default', CRD_PLURAL, label_selector="userLabel=test-label")
+            CRD_GROUP, CRD_VERSION, NAMESPACE, CRD_PLURAL, label_selector="userLabel=test-label")
 
     def test_get_jobs_returns_status_of_job_as_unknown_when_missing(self):
         # Arrange
@@ -74,4 +75,4 @@ class SparkJobServiceGetJobsTest(TestSparkJobService):
                                       'spark_jobs': {"job1": "UNKNOWN"},
                                       'status': 200})
         self.mock_kubernetes_adapter.list_namespaced_custom_object.assert_called_once_with(
-            CRD_GROUP, CRD_VERSION, 'default', CRD_PLURAL)
+            CRD_GROUP, CRD_VERSION, NAMESPACE, CRD_PLURAL)
