@@ -60,7 +60,7 @@ class SparkJobService(ISparkJobService):
             termination_time = status.terminated_time
             err_msg = status.err_msg
             return {
-                'message': 'Status returned successfully',
+                'message': f'Job status for "{job_name}"',
                 'job status': job_status,
                 'created': creation_time,
                 'submission attempts': submission_attempts,

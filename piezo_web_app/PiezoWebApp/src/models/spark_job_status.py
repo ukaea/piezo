@@ -2,7 +2,7 @@ class SparkJobStatus:
 
     def __init__(self, api_response):
         self._api_response = api_response
-        self._status = "UNKOWN"
+        self._status = "UNKNOWN"
         self._creation_time = "UNKNOWN"
         self._submission_attempts = "UNKNOWN"
         self._last_submitted = "UNKNOWN"

@@ -55,7 +55,7 @@ class TestJobStatusIntegration(BaseIntegrationTest):
         self.assertDictEqual(response_body, {
             'status': 'success',
             'data': {
-                "message": "Status returned successfully",
+                "message": 'Job status for "test-spark-job"',
                 "job status": "RUNNING",
                 "created": 12345,
                 "submission attempts": 1,
@@ -88,7 +88,13 @@ class TestJobStatusIntegration(BaseIntegrationTest):
         self.assertDictEqual(response_body, {
             'status': 'success',
             'data': {
-                'message': 'UNKNOWN'
+                "message": "Status returned successfully",
+                "job status": "UNKNOWN",
+                "created": "UNKNOWN",
+                "submission attempts": "UNKNOWN",
+                "last submitted": "UNKNOWN",
+                "terminated": "UNKNOWN",
+                "error messages": "UNKNOWN"
             }
         })
 
