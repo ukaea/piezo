@@ -144,7 +144,7 @@ Status Of Job Immediately After Submission is Unknown
     ${job_name}=    Get Response Job Name   ${response}
     ${response}=  Get Status Of Spark Job   ${job_name}
     Confirm Ok Response     ${response}
-    ${status}=    Get Response Data Message   ${response}
+    ${status}=    Get Response Job Status   ${response}
     Should Be Equal As Strings    ${status}   UNKNOWN
 
 Job Can Use Data And Code On S3 And Write Back Results
