@@ -1,6 +1,7 @@
 from kubernetes.client.rest import ApiException
 
 from PiezoWebApp.src.models.return_status import StatusCodes
+from PiezoWebApp.src.models.spark_job_status import SparkJobStatus
 from PiezoWebApp.src.services.spark_job.i_spark_job_service import ISparkJobService
 from PiezoWebApp.src.services.spark_job.spark_job_constants import CRD_GROUP
 from PiezoWebApp.src.services.spark_job.spark_job_constants import CRD_PLURAL
@@ -51,12 +52,13 @@ class SparkJobService(ISparkJobService):
                 CRD_PLURAL,
                 job_name
             )
-            job_status = SparkJobService._retrieve_status(api_response)
-            creation_time = api_response['metadata']['creationTimestamp']
-            submission_attempts = api_response['status']['submissionAttempts']
-            submitted_time = api_response['status']['lastSubmissionAttemptTime']
-            termination_time = api_response['status']['terminationTime']
-            err_msg = api_response['status']['applicationState']['errorMessage']
+            status = SparkJobStatus(api_response)
+            job_status = status.status
+            creation_time = status.creation_time
+            submission_attempts = status.submission_attempts
+            submitted_time = status.last_submitted
+            termination_time = status.terminated_time
+            err_msg = status.err_msg
             return {
                 'message': 'Status returned successfully',
                 'job status': job_status,
