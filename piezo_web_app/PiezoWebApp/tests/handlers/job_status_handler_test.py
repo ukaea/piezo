@@ -34,7 +34,7 @@ class TestJobStatusHandler(BaseHandlerTest):
             "created": 123456,
             "submission attempts": 1,
             "last submitted": 123455,
-            "teminated": 1234567,
+            "terminated": 1234567,
             "error messages": ""
         }
         # Act
@@ -55,7 +55,7 @@ class TestJobStatusHandler(BaseHandlerTest):
                 "created": 123456,
                 "submission attempts": 1,
                 "last submitted": 123455,
-                "teminated": 1234567,
+                "terminated": 1234567,
                 "error messages": ""
 
             }
