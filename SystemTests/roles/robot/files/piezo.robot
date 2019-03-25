@@ -196,3 +196,10 @@ Get List Of SparkApplications Filters By Label
     Dictionary Should Contain Key   ${jobs}   ${job_name_1}
     Dictionary Should Contain Key   ${jobs}   ${job_name_3}
     Dictionary Should Not Contain Key   ${jobs}   ${job_name_2}
+
+Write Logs Of Completed Jobs Appears In S3
+    ${response}=    Submit SparkPi Job    spark-pi
+    ${new_job_name}=    Get Response Job Name   ${response}
+    Wait For Spark Job To Finish        ${new_job_name}
+    Write Logs To Storage   ${new_job_name}
+    File Should Exist In S3 Bucket    kubernetes      outputs/${job_name}/log.txt

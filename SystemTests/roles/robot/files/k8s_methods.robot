@@ -101,3 +101,9 @@ Wait For Spark Job To Finish
     \   ${finished}=    Set Variable If     '${message}'=='COMPLETED'   ${True}     ${False}
     \   Exit For Loop If    ${finished}
     [return]    ${finished}
+
+Write Logs To Storage
+    [arguments]   ${job_name}
+    ${submitbody}=    Create Dictionary   name=${job_name}
+    ${response}=    Post Request With Json Body   /piezo/writelogs    ${submitbody}
+    [return]  ${response}
