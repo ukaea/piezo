@@ -27,7 +27,8 @@ class BotoAdapter(IStorageAdapter):
 
     def set_contents_from_string(self, bucket_name, file_path, text):
         key = self._get_key(bucket_name, file_path)
-        key.set_contents_from_string(text)
+        contents_size = key.set_contents_from_string(text)
+        self._logger.debug(f'Wrote {contents_size} bytes to "{file_path}" in bucket "{bucket_name}"')
 
     def _get_bucket(self, bucket_name):
         bucket = self._s3_client.lookup(bucket_name)

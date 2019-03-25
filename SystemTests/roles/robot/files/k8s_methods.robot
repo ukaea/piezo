@@ -104,6 +104,6 @@ Wait For Spark Job To Finish
 
 Write Logs To Storage
     [arguments]   ${job_name}
-    ${submitbody}=    Create Dictionary   name=${job_name}
+    ${submitbody}=    Create Dictionary   job_name=${job_name}
     ${response}=    Post Request With Json Body   /piezo/writelogs    ${submitbody}
     [return]  ${response}

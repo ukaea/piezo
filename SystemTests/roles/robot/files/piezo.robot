@@ -200,6 +200,10 @@ Get List Of SparkApplications Filters By Label
 Write Logs Of Completed Jobs Appears In S3
     ${response}=    Submit SparkPi Job    spark-pi
     ${new_job_name}=    Get Response Job Name   ${response}
-    Wait For Spark Job To Finish        ${new_job_name}
+    Wait For Spark Job To Finish        ${new_job_name}   24
     Write Logs To Storage   ${new_job_name}
-    File Should Exist In S3 Bucket    kubernetes      outputs/${job_name}/log.txt
+    File Should Exist In S3 Bucket    kubernetes      outputs/${new_job_name}/log.txt
+    ${joblog}=    Get File In S3 Bucket    kubernetes      outputs/${new_job_name}/log.txt
+    ${pi_lines}=    Get Lines Containing String   ${joblog}   Pi is roughly 3
+    ${num_pi_lines}=    Get Line Count    ${pi_lines}
+    Should Be Equal As Integers   ${num_pi_lines}   1
