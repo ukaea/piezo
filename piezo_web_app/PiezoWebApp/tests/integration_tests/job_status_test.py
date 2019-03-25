@@ -62,7 +62,7 @@ class TestJobStatusIntegration(BaseIntegrationTest):
                 "last submitted": 123456,
                 "terminated": 1234567,
                 "error messages": ''
-        }})
+            }})
 
     @gen_test
     def test_unknown_status_is_returned_when_not_specified_by_kubernetes(self):
@@ -88,7 +88,7 @@ class TestJobStatusIntegration(BaseIntegrationTest):
         self.assertDictEqual(response_body, {
             'status': 'success',
             'data': {
-                "message": "Status returned successfully",
+                "message": 'Job status for "test-spark-job"',
                 "job status": "UNKNOWN",
                 "created": "UNKNOWN",
                 "submission attempts": "UNKNOWN",
