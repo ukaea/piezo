@@ -27,7 +27,7 @@ class BotoAdapter(IStorageAdapter):
 
     def set_contents_from_string(self, bucket_name, file_path, text):
         key = self._get_key(bucket_name, file_path)
-        key.set_contents_from_string
+        key.set_contents_from_string(text)
 
     def _get_bucket(self, bucket_name):
         bucket = self._s3_client.lookup(bucket_name)
@@ -38,4 +38,6 @@ class BotoAdapter(IStorageAdapter):
     def _get_key(self, bucket_name, file_path):
         bucket = self._get_bucket(bucket_name)
         key = bucket.get_key(file_path)
+        if key is None:
+            key = bucket.new_key(file_path)
         return key
