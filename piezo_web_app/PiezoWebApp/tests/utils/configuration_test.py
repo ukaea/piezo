@@ -15,7 +15,9 @@ class SampleConfigurationCreator:
                              run_environment,
                              k8s_cluster_config_file,
                              s3_endpoint,
-                             s3_secret_name):
+                             s3_secret_name,
+                             secrets_dir,
+                             is_s3_secure):
         template = "[Logging]\n"
         template = SampleConfigurationCreator.add_element_to_temp_file(template,
                                                                        "LogFolderLocation",
@@ -40,6 +42,12 @@ class SampleConfigurationCreator:
         template = SampleConfigurationCreator.add_element_to_temp_file(template,
                                                                        "S3KeysSecret",
                                                                        s3_secret_name)
+        template = SampleConfigurationCreator.add_element_to_temp_file(template,
+                                                                       "SecretsDir",
+                                                                       secrets_dir)
+        template = SampleConfigurationCreator.add_element_to_temp_file(template,
+                                                                       "IsS3Secure",
+                                                                       is_s3_secure)
 
         return SampleConfigurationCreator.write_sample_configuration_file(template)
 
@@ -80,7 +88,9 @@ def test_configuration_parses_with_arguments():
                                                                          "SYSTEM",
                                                                          "Some/Path",
                                                                          "0.0.0.0",
-                                                                         "some_secret")
+                                                                         "some_secret",
+                                                                         "/etc/secrets/",
+                                                                         "True")
 
     # Act
     configuration = Configuration(configuration_path)
@@ -93,6 +103,8 @@ def test_configuration_parses_with_arguments():
     assert configuration.k8s_cluster_config_file == "Some/Path"
     assert configuration.s3_endpoint == "0.0.0.0"
     assert configuration.s3_secrets_name == "some_secret"
+    assert configuration.secrets_dir == "/etc/secrets/"
+    assert configuration.is_s3_secure is True
 
     # Clean up
     SampleConfigurationCreator.remove_file(configuration_path)
