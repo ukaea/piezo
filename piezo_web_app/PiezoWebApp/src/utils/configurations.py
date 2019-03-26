@@ -2,6 +2,7 @@ import os
 import configparser
 from urllib.parse import urlparse
 
+from PiezoWebApp.src.utils.route_helper import is_scheme_secure
 from PiezoWebApp.src.utils.str_helper import str2bool
 from PiezoWebApp.src.utils.str_helper import str2non_negative_int
 
@@ -75,7 +76,8 @@ class Configuration:
 
     @property
     def is_s3_secure(self):
-        return self._is_s3_secure
+        parse_result = urlparse(self.s3_endpoint)
+        return is_scheme_secure(parse_result.scheme)
 
     def _parse(self, path):
         config = configparser.ConfigParser()
@@ -98,7 +100,6 @@ class Configuration:
         self._s3_endpoint = storage['S3Endpoint']
         self._s3_secrets_name = storage['S3KeysSecret']
         self._secrets_dir = storage['SecretsDir']
-        self._is_s3_secure = str2bool(storage['IsS3Secure'])
 
     @staticmethod
     def get_directory(settings, key):
