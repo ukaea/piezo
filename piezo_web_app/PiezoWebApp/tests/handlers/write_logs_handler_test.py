@@ -15,7 +15,7 @@ class TestWriteLogsHandler(BaseHandlerTest):
         return 'POST'
 
     @gen_test
-    def test_post_returns_400_when_driver_name_is_missing(self):
+    def test_post_returns_400_when_job_name_is_missing(self):
         body = {}
         yield self.assert_request_returns_400(body)
 
