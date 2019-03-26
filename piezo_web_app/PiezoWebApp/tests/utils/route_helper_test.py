@@ -20,11 +20,12 @@ def test_format_route_specification_raises_value_error_if_name_empty(name):
     assert str(exception_info.value) == "Route name must not be empty!"
 
 
-@pytest.mark.parametrize("label", ["acb123"])
+@pytest.mark.parametrize("label", ["acb123", "abc.123", "abc-123", "ab-c1.23", "a", "1"])
 def test_is_valid_pod_name_returns_true_for_valid_labels(label):
     assert is_valid_pod_name(label) is True
 
 
-@pytest.mark.parametrize("label", [".label"])
+@pytest.mark.parametrize("label", [
+    "", " ", ".abc123", "-abc123", "abc123.", "abc123-", "abc..123", "abc.-123", "abc-.123", "abc--123", "abc_123"])
 def test_is_valid_pod_name_returns_false_for_invalid_labels(label):
     assert is_valid_pod_name(label) is False
