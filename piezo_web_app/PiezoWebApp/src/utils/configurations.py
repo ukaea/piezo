@@ -100,7 +100,6 @@ class Configuration:
         self._secrets_dir = storage['SecretsDir']
         self._is_s3_secure = str2bool(storage['IsS3Secure'])
 
-
     @staticmethod
     def get_directory(settings, key):
         directory = settings[key]
