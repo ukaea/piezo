@@ -6,6 +6,7 @@
   vars:
     - harbor_url: host-172-16-113-64.nubes.stfc.ac.uk
     - k8s_master_url: host-172-16-113-146.nubes.stfc.ac.uk
+    - secrets_name: minio-keys
 
   roles:
     - { role: git, become: true }
