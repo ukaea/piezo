@@ -72,7 +72,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                 'sparkVersion': '2.4.0',
                 'restartPolicy': {'type': 'Never'},
                 'hadoopConf': {
-                    'fs.s3a.endpoint': '0.0.0.0'},
+                    'fs.s3a.endpoint': 'http://0.0.0.0:0'},
                 'arguments': ['1000'],
                 'volumes': [
                     {
@@ -173,7 +173,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                 'sparkVersion': '2.4.0',
                 'restartPolicy': {'type': 'Never'},
                 'hadoopConf': {
-                    'fs.s3a.endpoint': '0.0.0.0'},
+                    'fs.s3a.endpoint': 'http://0.0.0.0:0'},
                 'arguments': ['1000'],
                 'volumes': [
                     {
@@ -282,7 +282,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                 'sparkVersion': '2.4.0',
                 'restartPolicy': {'type': 'Never'},
                 "hadoopConf": {
-                    "fs.s3a.endpoint": "0.0.0.0"},
+                    "fs.s3a.endpoint": "http://0.0.0.0:0"},
                 'volumes': [
                     {
                         'name': 'secret',
