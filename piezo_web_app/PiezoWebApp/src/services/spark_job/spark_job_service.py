@@ -60,20 +60,14 @@ class SparkJobService(ISparkJobService):
                 job_name
             )
             status = SparkJobStatus(api_response)
-            job_status = status.status
-            creation_time = status.creation_time
-            submission_attempts = status.submission_attempts
-            submitted_time = status.last_submitted
-            termination_time = status.terminated_time
-            err_msg = status.err_msg
             return {
                 'message': f'Job status for "{job_name}"',
-                'job status': job_status,
-                'created': creation_time,
-                'submission attempts': submission_attempts,
-                'last submitted': submitted_time,
-                'terminated': termination_time,
-                'error messages': err_msg,
+                'job status': status.status,
+                'created': status.creation_time,
+                'submission attempts': status.submission_attempts,
+                'last submitted': status.last_submitted,
+                'terminated': status.terminated_time,
+                'error messages': status.err_msg,
                 'status': StatusCodes.Okay.value
             }
         except ApiException as exception:

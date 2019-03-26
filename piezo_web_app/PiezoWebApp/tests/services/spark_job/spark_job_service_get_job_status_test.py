@@ -74,5 +74,5 @@ class SparkJobServiceGetJobStatusTest(TestSparkJobService):
         self.mock_logger.error.assert_called_once_with(expected_message)
         self.assertDictEqual(result, {
             'status': 999,
-            'message': 'Kubernetes error when trying to get status of spark job "test-job": Reason'
+            'message': expected_message
         })
