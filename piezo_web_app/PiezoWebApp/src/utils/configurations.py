@@ -3,7 +3,6 @@ import configparser
 from urllib.parse import urlparse
 
 from PiezoWebApp.src.utils.route_helper import is_scheme_secure
-from PiezoWebApp.src.utils.str_helper import str2bool
 from PiezoWebApp.src.utils.str_helper import str2non_negative_int
 
 
