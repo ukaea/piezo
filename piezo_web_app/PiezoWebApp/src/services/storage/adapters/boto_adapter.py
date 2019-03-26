@@ -1,5 +1,6 @@
-import boto.s3.connection
 import os.path
+
+import boto.s3.connection
 
 from PiezoWebApp.src.services.storage.adapters.i_storage_adapter import IStorageAdapter
 
@@ -8,10 +9,10 @@ class BotoAdapter(IStorageAdapter):
     def __init__(self, configuration, logger):
         self._logger = logger
 
-        with open(os.path.join(configuration.secrets_dir, 'access_key')) as f:
-            access_key = f.read()
-        with open(os.path.join(configuration.secrets_dir, 'secret_key')) as f:
-            secret_key = f.read()
+        with open(os.path.join(configuration.secrets_dir, 'access_key')) as key_file:
+            access_key = key_file.read()
+        with open(os.path.join(configuration.secrets_dir, 'secret_key')) as key_file:
+            secret_key = key_file.read()
         try:
             self._s3_client = boto.connect_s3(
                 aws_access_key_id=access_key,
