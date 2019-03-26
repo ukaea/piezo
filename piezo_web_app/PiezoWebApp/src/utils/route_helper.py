@@ -10,6 +10,15 @@ def format_route_specification(name):
 
 
 def is_valid_pod_name(label):
-    match = re.match("^([0-9a-z])([\.\-0-9a-z]*)?$", label)
-    return match is not None
+    if len(label) > 1:
+        match = re.match("^([0-9a-z])([\\.\\-0-9a-z]*)?([0-9a-z])$", label)
+        if match is None:
+            return False
+        for pattern in ["--", "-.", ".-", ".."]:
+            if pattern in label:
+                return False
+        return True
+    else:
+        match = re.match("^[0-9a-z]$", label)
+        return match is not None
 

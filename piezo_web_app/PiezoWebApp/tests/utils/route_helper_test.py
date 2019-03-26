@@ -26,6 +26,18 @@ def test_is_valid_pod_name_returns_true_for_valid_labels(label):
 
 
 @pytest.mark.parametrize("label", [
-    "", " ", ".abc123", "-abc123", "abc123.", "abc123-", "abc..123", "abc.-123", "abc-.123", "abc--123", "abc_123"])
+    "",
+    " ",
+    ".abc123",
+    "-abc123",
+    "abc123.",
+    "abc123-",
+    "abc..123",
+    "abc.-123",
+    "abc-.123",
+    "abc--123",
+    "abc_123",
+    "Abc123"
+])
 def test_is_valid_pod_name_returns_false_for_invalid_labels(label):
     assert is_valid_pod_name(label) is False
