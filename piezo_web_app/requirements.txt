@@ -1,3 +1,4 @@
+boto
 flake8
 jsonschema
 kubernetes

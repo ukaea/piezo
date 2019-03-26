@@ -58,65 +58,73 @@ class TestTemplatePopulator(unittest.TestCase):
         # Act
         manifest = self.test_populator.build_manifest(self.arguments)
         # Assert
-        self.assertDictEqual(manifest, {"apiVersion": "sparkoperator.k8s.io/v1beta1",
-                                        "kind": "SparkApplication",
-                                        "metadata":
-                                            {"name": "test",
-                                             "namespace": "default",
-                                             "labels": {
-                                                 "userLabel": "myLabel"}},
-                                        "spec": {
-                                            "type": "Python",
-                                            "pythonVersion": "2",
-                                            "mode": "cluster",
-                                            "image": "gcr.io/spark-operator/spark:v2.4.0",
-                                            "imagePullPolicy": "Always",
-                                            "mainApplicationFile": "/path/to/file",
-                                            "sparkVersion": "2.4.0",
-                                            "restartPolicy": {
-                                                "type": "Never"},
-                                            "hadoopConf": {
-                                                "fs.s3a.endpoint": "0.0.0.0"},
-                                            "arguments": ["1000", "100"],
-                                            "volumes": [
-                                                {
-                                                    "name": "secret",
-                                                    "secret": {
-                                                        "secretName": "secret"}
-                                                }
-                                            ],
-                                            "driver": {
-                                                "cores": "0.1",
-                                                "memory": "512m",
-                                                "labels": {
-                                                    "version": "2.4.0"},
-                                                "serviceAccount": "spark",
-                                                "envSecretKeyRefs": {
-                                                    "AWS_ACCESS_KEY_ID": {
-                                                        "name": "secret",
-                                                        "key": "accessKey"},
-                                                    "AWS_SECRET_ACCESS_KEY": {
-                                                        "name": "secret",
-                                                        "key": "secretKey"}}},
-                                            "executor": {
-                                                "cores": "1",
-                                                "instances": "1",
-                                                "memory": "512m",
-                                                "labels": {
-                                                    "version": "2.4.0"},
-                                                "envSecretKeyRefs": {
-                                                    "AWS_ACCESS_KEY_ID": {
-                                                        "name": "secret",
-                                                        "key": "accessKey"},
-                                                    "AWS_SECRET_ACCESS_KEY": {
-                                                        "name": "secret",
-                                                        "key": "secretKey"}}},
-                                            "monitoring": {
-                                                "exposeDriverMetrics": True,
-                                                "exposeExecutorMetrics": True,
-                                                "prometheus": {
-                                                    "jmxExporterJar": "/prometheus/jmx_prometheus_javaagent-0.3.1.jar",
-                                                    "port": 8090}}}})
+        self.assertDictEqual(manifest, {
+            "apiVersion": "sparkoperator.k8s.io/v1beta1",
+            "kind": "SparkApplication",
+            "metadata": {
+                "name": "test",
+                "namespace": "default",
+                "labels": {"userLabel": "myLabel"}
+            },
+            "spec": {
+                "type": "Python",
+                "pythonVersion": "2",
+                "mode": "cluster",
+                "image": "gcr.io/spark-operator/spark:v2.4.0",
+                "imagePullPolicy": "Always",
+                "mainApplicationFile": "/path/to/file",
+                "sparkVersion": "2.4.0",
+                "restartPolicy": {"type": "Never"},
+                "hadoopConf": {"fs.s3a.endpoint": "0.0.0.0"},
+                "arguments": ["1000", "100"],
+                "volumes": [
+                    {
+                        "name": "secret",
+                        "secret": {"secretName": "secret"}
+                    }
+                ],
+                "driver": {
+                    "cores": "0.1",
+                    "memory": "512m",
+                    "labels": {"version": "2.4.0"},
+                    "serviceAccount": "spark",
+                    "envSecretKeyRefs": {
+                        "AWS_ACCESS_KEY_ID": {
+                            "name": "secret",
+                            "key": "accessKey"
+                        },
+                        "AWS_SECRET_ACCESS_KEY": {
+                            "name": "secret",
+                            "key": "secretKey"
+                        }
+                    }
+                },
+                "executor": {
+                    "cores": "1",
+                    "instances": "1",
+                    "memory": "512m",
+                    "labels": {"version": "2.4.0"},
+                    "envSecretKeyRefs": {
+                        "AWS_ACCESS_KEY_ID": {
+                            "name": "secret",
+                            "key": "accessKey"
+                        },
+                        "AWS_SECRET_ACCESS_KEY": {
+                            "name": "secret",
+                            "key": "secretKey"
+                        }
+                    }
+                },
+                "monitoring": {
+                    "exposeDriverMetrics": True,
+                    "exposeExecutorMetrics": True,
+                    "prometheus": {
+                        "jmxExporterJar": "/prometheus/jmx_prometheus_javaagent-0.3.1.jar",
+                        "port": 8090
+                    }
+                }
+            }
+        })
 
     def test_build_manifest_builds_scala_job_manifest_for_scala_applications(self):
         # Arrange
@@ -125,122 +133,138 @@ class TestTemplatePopulator(unittest.TestCase):
         # Act
         manifest = self.test_populator.build_manifest(self.arguments)
         # Assert
-        self.assertDictEqual(manifest, {"apiVersion": "sparkoperator.k8s.io/v1beta1",
-                                        "kind": "SparkApplication",
-                                        "metadata":
-                                            {"name": "test",
-                                             "namespace": "default",
-                                             "labels": {
-                                                 "userLabel": "myLabel"}},
-                                        "spec": {
-                                            "type": "Scala",
-                                            "mode": "cluster",
-                                            "image": "gcr.io/spark-operator/spark:v2.4.0",
-                                            "imagePullPolicy": "Always",
-                                            "mainApplicationFile": "/path/to/file",
-                                            "mainClass": "testClass",
-                                            "sparkVersion": "2.4.0",
-                                            "restartPolicy": {
-                                                "type": "Never"},
-                                            "hadoopConf": {
-                                                "fs.s3a.endpoint": "0.0.0.0"},
-                                            "arguments": ["1000", "100"],
-                                            "volumes": [
-                                                {
-                                                    "name": "secret",
-                                                    "secret": {
-                                                        "secretName": "secret"}
-                                                }
-                                            ],
-                                            "driver": {
-                                                "cores": "0.1",
-                                                "memory": "512m",
-                                                "labels": {
-                                                    "version": "2.4.0"},
-                                                "serviceAccount": "spark",
-                                                "envSecretKeyRefs": {
-                                                    "AWS_ACCESS_KEY_ID": {
-                                                        "name": "secret",
-                                                        "key": "accessKey"},
-                                                    "AWS_SECRET_ACCESS_KEY": {
-                                                        "name": "secret",
-                                                        "key": "secretKey"}}},
-                                            "executor": {
-                                                "cores": "1",
-                                                "instances": "1",
-                                                "memory": "512m",
-                                                "labels": {
-                                                    "version": "2.4.0"},
-                                                "envSecretKeyRefs": {
-                                                    "AWS_ACCESS_KEY_ID": {
-                                                        "name": "secret",
-                                                        "key": "accessKey"},
-                                                    "AWS_SECRET_ACCESS_KEY": {
-                                                        "name": "secret",
-                                                        "key": "secretKey"}}},
-                                            "monitoring": {
-                                                "exposeDriverMetrics": True,
-                                                "exposeExecutorMetrics": True,
-                                                "prometheus": {
-                                                    "jmxExporterJar": "/prometheus/jmx_prometheus_javaagent-0.3.1.jar",
-                                                    "port": 8090}}}})
+        self.assertDictEqual(manifest, {
+            "apiVersion": "sparkoperator.k8s.io/v1beta1",
+            "kind": "SparkApplication",
+            "metadata": {
+                "name": "test",
+                "namespace": "default",
+                "labels": {"userLabel": "myLabel"}
+            },
+            "spec": {
+                "type": "Scala",
+                "mode": "cluster",
+                "image": "gcr.io/spark-operator/spark:v2.4.0",
+                "imagePullPolicy": "Always",
+                "mainApplicationFile": "/path/to/file",
+                "mainClass": "testClass",
+                "sparkVersion": "2.4.0",
+                "restartPolicy": {"type": "Never"},
+                "hadoopConf": {"fs.s3a.endpoint": "0.0.0.0"},
+                "arguments": ["1000", "100"],
+                "volumes": [
+                    {
+                        "name": "secret",
+                        "secret": {"secretName": "secret"}
+                    }
+                ],
+                "driver": {
+                    "cores": "0.1",
+                    "memory": "512m",
+                    "labels": {"version": "2.4.0"},
+                    "serviceAccount": "spark",
+                    "envSecretKeyRefs": {
+                        "AWS_ACCESS_KEY_ID": {
+                            "name": "secret",
+                            "key": "accessKey"
+                        },
+                        "AWS_SECRET_ACCESS_KEY": {
+                            "name": "secret",
+                            "key": "secretKey"
+                        }
+                    }
+                },
+                "executor": {
+                    "cores": "1",
+                    "instances": "1",
+                    "memory": "512m",
+                    "labels": {"version": "2.4.0"},
+                    "envSecretKeyRefs": {
+                        "AWS_ACCESS_KEY_ID": {
+                            "name": "secret",
+                            "key": "accessKey"
+                        },
+                        "AWS_SECRET_ACCESS_KEY": {
+                            "name": "secret",
+                            "key": "secretKey"
+                        }
+                    }
+                },
+                "monitoring": {
+                    "exposeDriverMetrics": True,
+                    "exposeExecutorMetrics": True,
+                    "prometheus": {
+                        "jmxExporterJar": "/prometheus/jmx_prometheus_javaagent-0.3.1.jar",
+                        "port": 8090
+                    }
+                }
+            }
+        })
 
     def test_default_manifest_returns_a_filled_in_spark_application_template_with_default_values(self):
         # Arrange
         default_manifest = self.test_populator._default_spark_application_manifest()
         # Assert
-        self.assertDictEqual(default_manifest, {"apiVersion": "sparkoperator.k8s.io/v1beta1",
-                                                "kind": "SparkApplication",
-                                                "metadata":
-                                                    {"name": None,
-                                                     "namespace": "default"},
-                                                "spec": {
-                                                    "mode": "cluster",
-                                                    "image": "gcr.io/spark-operator/spark:v2.4.0",
-                                                    "imagePullPolicy": "Always",
-                                                    "mainApplicationFile": None,
-                                                    "sparkVersion": "2.4.0",
-                                                    "restartPolicy": {
-                                                        "type": "Never"},
-                                                    "hadoopConf": {
-                                                        "fs.s3a.endpoint": "0.0.0.0"},
-                                                    "volumes": [
-                                                        {
-                                                            "name": "secret",
-                                                            "secret": {
-                                                                "secretName": "secret"}
-                                                        }
-                                                    ],
-                                                    "driver": {
-                                                        "cores": 0.1,
-                                                        "memory": "512m",
-                                                        "labels": {
-                                                            "version": "2.4.0"},
-                                                        "serviceAccount": "spark",
-                                                        "envSecretKeyRefs": {
-                                                            "AWS_ACCESS_KEY_ID": {
-                                                                "name": "secret",
-                                                                "key": "accessKey"},
-                                                            "AWS_SECRET_ACCESS_KEY": {
-                                                                "name": "secret",
-                                                                "key": "secretKey"}}},
-                                                    "executor": {
-                                                        "cores": 1,
-                                                        "instances": 1,
-                                                        "memory": "512m",
-                                                        "labels": {
-                                                            "version": "2.4.0"},
-                                                        "envSecretKeyRefs": {
-                                                            "AWS_ACCESS_KEY_ID": {
-                                                                "name": "secret",
-                                                                "key": "accessKey"},
-                                                            "AWS_SECRET_ACCESS_KEY": {
-                                                                "name": "secret",
-                                                                "key": "secretKey"}}},
-                                                    "monitoring": {
-                                                        "exposeDriverMetrics": True,
-                                                        "exposeExecutorMetrics": True,
-                                                        "prometheus": {
-                                                            "jmxExporterJar":
-                                                                "/prometheus/jmx_prometheus_javaagent-0.3.1.jar",
-                                                                "port": 8090}}}})
+        self.assertDictEqual(default_manifest, {
+            "apiVersion": "sparkoperator.k8s.io/v1beta1",
+            "kind": "SparkApplication",
+            "metadata": {
+                "name": None,
+                "namespace": "default"
+            },
+            "spec": {
+                "mode": "cluster",
+                "image": "gcr.io/spark-operator/spark:v2.4.0",
+                "imagePullPolicy": "Always",
+                "mainApplicationFile": None,
+                "sparkVersion": "2.4.0",
+                "restartPolicy": {"type": "Never"},
+                "hadoopConf": {"fs.s3a.endpoint": "0.0.0.0"},
+                "volumes": [
+                    {
+                        "name": "secret",
+                        "secret": {"secretName": "secret"}
+                    }
+                ],
+                "driver": {
+                    "cores": 0.1,
+                    "memory": "512m",
+                    "labels": {"version": "2.4.0"},
+                    "serviceAccount": "spark",
+                    "envSecretKeyRefs": {
+                        "AWS_ACCESS_KEY_ID": {
+                            "name": "secret",
+                            "key": "accessKey"
+                        },
+                        "AWS_SECRET_ACCESS_KEY": {
+                            "name": "secret",
+                            "key": "secretKey"
+                        }
+                    }
+                },
+                "executor": {
+                    "cores": 1,
+                    "instances": 1,
+                    "memory": "512m",
+                    "labels": {"version": "2.4.0"},
+                    "envSecretKeyRefs": {
+                        "AWS_ACCESS_KEY_ID": {
+                            "name": "secret",
+                            "key": "accessKey"
+                        },
+                        "AWS_SECRET_ACCESS_KEY": {
+                            "name": "secret",
+                            "key": "secretKey"
+                        }
+                    }
+                },
+                "monitoring": {
+                    "exposeDriverMetrics": True,
+                    "exposeExecutorMetrics": True,
+                    "prometheus": {
+                        "jmxExporterJar": "/prometheus/jmx_prometheus_javaagent-0.3.1.jar",
+                        "port": 8090
+                    }
+                }
+            }
+        })

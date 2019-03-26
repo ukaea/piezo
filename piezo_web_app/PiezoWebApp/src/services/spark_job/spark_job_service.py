@@ -9,11 +9,18 @@ from PiezoWebApp.src.services.spark_job.spark_job_constants import NAMESPACE
 
 
 class SparkJobService(ISparkJobService):
-    def __init__(self, kubernetes_adapter, logger, manifest_populator, spark_job_namer, validation_service):
+    def __init__(self,
+                 kubernetes_adapter,
+                 logger,
+                 manifest_populator,
+                 spark_job_namer,
+                 storage_adapter,
+                 validation_service):
         self._kubernetes_adapter = kubernetes_adapter
         self._logger = logger
         self._manifest_populator = manifest_populator
         self._spark_job_namer = spark_job_namer
+        self._storage_adapter = storage_adapter
         self._validation_service = validation_service
 
     def delete_job(self, job_name):
@@ -162,6 +169,27 @@ class SparkJobService(ISparkJobService):
             message = f'Kubernetes error when trying to submit job: {exception.reason}'
             self._logger.error(message)
             self._logger.error(body)
+            return {
+                'status': exception.status,
+                'message': message
+            }
+
+    def write_logs_to_file(self, job_name):
+        api_response = self.get_logs(job_name)
+        if api_response['status'] != StatusCodes.Okay.value:
+            return api_response
+        try:
+            bucket_name = 'kubernetes'
+            file_name = f'outputs/{job_name}/log.txt'
+            self._storage_adapter.set_contents_from_string(bucket_name, file_name, api_response['message'])
+            return {
+                'message': f'Logs written to "{file_name}" in bucket "{bucket_name}"',
+                'status': StatusCodes.Okay.value
+            }
+        except ApiException as exception:
+            message = f'Got logs for job "{job_name}" but unable to write to "{file_name}" ' \
+                f'in bucket "{bucket_name}": {exception.reason}'
+            self._logger.error(message)
             return {
                 'status': exception.status,
                 'message': message

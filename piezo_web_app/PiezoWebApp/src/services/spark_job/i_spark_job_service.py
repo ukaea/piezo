@@ -22,3 +22,7 @@ class ISparkJobService(metaclass=ABCMeta):
     @abstractmethod
     def submit_job(self, body):
         pass
+
+    @abstractmethod
+    def write_logs_to_file(self, job_name):
+        pass
