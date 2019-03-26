@@ -7,6 +7,8 @@ def validate(key, value, validation_rule):
         return _validate_name(value)
     if key in ["name", "path_to_main_app_file", "main_class", "label"]:
         return _validate_non_empty_string(key, value)
+    if key in ["label"]:
+        return _validate_label(value)
     if key in ["language", "python_version"]:
         return _validate_string_from_list(key, value, validation_rule)
     if key in ["executors", "executor_cores"]:
@@ -29,6 +31,17 @@ def _validate_name(value):
     if len(value) > 29:
         return ValidationResult(False, '"name" input has a maximum length of 29 characters', None)
 
+    return ValidationResult(True, None, value)
+
+
+def _validate_label(value):
+    validation_result = _validate_non_empty_string("label", value)
+    if not validation_result.is_valid:
+        return validation_result
+    if len(value) > 63:
+        # Kubernetes spark operator restriction
+        return ValidationResult(False, '"label" input has a maximum length of 63 characters', None)
+    
     return ValidationResult(True, None, value)
 
 
