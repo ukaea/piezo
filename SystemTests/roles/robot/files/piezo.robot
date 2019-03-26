@@ -151,7 +151,7 @@ Status Of Job Contains All Information
     ${job_name}=     Set Variable       spark-pi
     ${response}=    Submit SparkPi Job    ${job_name}
     ${job_name}=    Get Response Job Name   ${response}
-    Wait    10 seconds
+    Sleep   10 seconds
     ${response}=  Get Status Of Spark Job   ${job_name}
     Confirm Ok Response     ${response}
     ${data}=    Get Response Data     ${response}
