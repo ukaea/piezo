@@ -1,5 +1,3 @@
-import re
-
 from PiezoWebApp.src.utils.str_helper import is_str_empty
 
 
