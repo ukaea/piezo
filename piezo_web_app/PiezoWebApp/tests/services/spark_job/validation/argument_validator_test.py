@@ -122,6 +122,8 @@ def test_validate_label_rejects_invalid_labels(label):
     # Act
     validation_result = argument_validator.validate("label", label, validation_rule)
     assert validation_result.is_valid is False
+    assert validation_result.message == '"label" input must obey naming convention: ' \
+                                        'see https://github.com/ukaea/piezo/wiki/WebAppUserGuide#submit-a-job'
 
 
 @pytest.mark.parametrize("language", ["Python", "Scala"])
