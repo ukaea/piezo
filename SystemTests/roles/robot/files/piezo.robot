@@ -144,8 +144,17 @@ Status Of Job Immediately After Submission is Unknown
     ${job_name}=    Get Response Job Name   ${response}
     ${response}=  Get Status Of Spark Job   ${job_name}
     Confirm Ok Response     ${response}
-    ${status}=    Get Response Job Status   ${response}
-    Should Be Equal As Strings    ${status}   UNKNOWN
+    ${data}=    Get Response Data     ${response}
+    Dictionary Should Contain Item    ${data}   message     Job status for "${job_name}"
+    Dictionary Should Contain Item    ${data}   job status    UNKNOWN
+    Dictionary Should Contain Item    ${data}   submission attempts     UNKNOWN
+    Dictionary Should Contain Item    ${data}   last submitted      UNKNOWN
+    Dictionary Should Contain Item    ${data}   terminated      UNKNOWN
+    Dictionary Should Contain Item    ${data}   error messages      UNKNOWN
+    ${created}=     Get From Dictionary    ${data}   created
+    Should Match Regexp   ${created}   [0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z
+
+
 
 Status Of Job Contains All Information
     ${job_name}=     Set Variable       spark-pi
