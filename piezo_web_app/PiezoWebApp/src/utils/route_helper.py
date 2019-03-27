@@ -21,4 +21,3 @@ def is_valid_pod_name(label):
     else:
         match = re.match("^[0-9a-z]$", label)
         return match is not None
-
