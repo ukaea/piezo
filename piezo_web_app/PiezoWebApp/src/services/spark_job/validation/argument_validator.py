@@ -1,12 +1,13 @@
 import re
+import string
 
-from PiezoWebApp.src.utils.str_helper import is_str_empty
 from PiezoWebApp.src.models.spark_job_validation_result import ValidationResult
+from PiezoWebApp.src.utils.str_helper import is_str_empty
 
 
 def validate(key, value, validation_rule):
     if key == "name":
-        return _validate_name(value)
+        return _validate_name(key, value)
     if key in ["path_to_main_app_file", "main_class"]:
         return _validate_non_empty_string(key, value)
     if key in ["label"]:
@@ -24,16 +25,27 @@ def validate(key, value, validation_rule):
     raise ValueError(f"Unexpected argument {key}")
 
 
-def _validate_name(value):
+def _validate_name(key, value):
     validation_result = _validate_non_empty_string("name", value)
     if not validation_result.is_valid:
         return validation_result
 
-    # https://github.com/ukaea/piezo/wiki/WebAppDecisionRecord#maximum-length-of-a-job-name
-    if len(value) > 29:
-        return ValidationResult(False, '"name" input has a maximum length of 29 characters', None)
+    is_name_valid = True
+    if len(value) == 1:
+        is_name_valid = value in string.ascii_lowercase
+    elif 1 < len(value) <= 29:
+        match = re.match("^([a-z])([\\.\\-0-9a-z]*)?([0-9a-z])$", value)
+        if match is None:
+            is_name_valid = False
+        for pattern in ["--", "-.", ".-", ".."]:
+            if pattern in value:
+                is_name_valid = False
+    else:
+        is_name_valid = False
 
-    return ValidationResult(True, None, value)
+    msg = None if is_name_valid else f'"{key}" input must obey naming convention: ' \
+        f'see https://github.com/ukaea/piezo/wiki/WebAppUserGuide#submit-a-job'
+    return ValidationResult(is_name_valid, msg, value)
 
 
 def _validate_label(value):

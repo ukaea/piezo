@@ -83,7 +83,7 @@ Submit Job With 30 Character Name Fails
     ${response}=    Submit SparkPi Job    abcdefghijklmnopqrstuvwxyzabcd
     Confirm Bad Input Response  ${response}
     ${error}=   Get Response Data     ${response}
-    Should Be Equal As Strings    ${error}    The following errors were found:\n\"name\" input has a maximum length of 29 characters\n
+    Should Be Equal As Strings    ${error}    The following errors were found:\n\"name\" input must obey naming convention: see https://github.com/ukaea/piezo/wiki/WebAppUserGuide#submit-a-job\n
 
 Submit GroupByTest Spark Job With Arguments Returns Ok Response
     ${response}=    Submit SparkGroupByTest Job With Arguments   spark-group-by-test
