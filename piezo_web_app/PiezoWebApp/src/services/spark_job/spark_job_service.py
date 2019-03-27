@@ -181,6 +181,16 @@ class SparkJobService(ISparkJobService):
                 'message': message
             }
 
+    def tidy_jobs(self):
+        dict_of_jobs = self.get_jobs(label=None)['spark_jobs']
+
+        for job in dict_of_jobs:
+            status = dict_of_jobs[job]
+            if status in ["COMPLETED", "FAILED"]:
+                self.write_logs_to_file(job)
+                self.delete_job(job)
+        return {'status': StatusCodes.Okay.value, "Jobs processed": "1", "Jobs untouched": "1"}
+
     def write_logs_to_file(self, job_name):
         api_response = self.get_logs(job_name)
         if api_response['status'] != StatusCodes.Okay.value:
