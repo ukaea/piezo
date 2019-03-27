@@ -85,6 +85,17 @@ def test_validate_name_rejects_30_character_name():
                                         'see https://github.com/ukaea/piezo/wiki/WebAppUserGuide#submit-a-job'
 
 
+@pytest.mark.parametrize("label", ["", "   "])
+def test_validate_name_rejects_empty_strings(label):
+    # Arrange
+    validation_rule = ValidationRule({'classification': 'Required'})
+    # Act
+    validation_result = argument_validator.validate("label", label, validation_rule)
+    # Assert
+    assert validation_result.is_valid is False
+    assert validation_result.message == '"label" input cannot be empty'
+
+
 @pytest.mark.parametrize("label", ["A", "a", "label", "LABEL", "LaBeL", "L-a-B-e-L", "lab-----el", "12345"])
 def test_validate_label_accepts_valid_labels(label):
     # Arrange
@@ -116,7 +127,7 @@ def test_validate_label_rejects_label_with_64_characters():
 
 
 @pytest.mark.parametrize("label", ["A-", "-a", "$label", "LA.BEL", "-", "lab/el"])
-def test_validate_label_rejects_invalid_labels(label):
+def test_validate_label_rejects_invalid_non_empty_labels(label):
     # Arrange
     validation_rule = ValidationRule({'classification': 'Required'})
     # Act
