@@ -246,7 +246,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             'executors': '10',
             'executor_cores': '4',
             'executor_memory': '4096m',
-            'label': 'my_label'
+            'label': 'my-label'
         }
         self.mock_k8s_adapter.get_namespaced_custom_object.side_effect = ApiException(status=999)
         kubernetes_response = {'metadata': {'name': 'test_python_job'}}
@@ -269,7 +269,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                 'name': 'test_python_job-abcd1',
                 'namespace': 'default',
                 'labels': {
-                    'userLabel': 'my_label'
+                    'userLabel': 'my-label'
                 }
             },
             'spec': {
