@@ -43,12 +43,12 @@ def _validate_label(value):
     if len(value) > 63:
         # Kubernetes spark operator restriction
         return ValidationResult(False, '"label" input has a maximum length of 63 characters', None)
-    pattern = re.compile(r'[0-9A-Za-z]+[0-9A-Za-z\-]*[0-9A-Za-z]+|[0-9A-Za-z]+')
+    pattern = re.compile(r'^[0-9A-Za-z]([0-9A-Za-z\-]*)?[0-9A-Za-z]$|[0-9A-Za-z]')
     match = re.match(pattern, value)
-    if match.group() == value:
-        return ValidationResult(True, None, value)
-    return ValidationResult(False, '"label" input must consist of "A-Z, a-z, 0-9" or "-" and must not start or end '
-                                   'with a "-"', None)
+    if match is None or match.group() != value:
+        return ValidationResult(False, '"label" input must consist of "A-Z, a-z, 0-9" or "-" and must not start or end '
+                                       'with a "-"', None)
+    return ValidationResult(True, None, value)
 
 
 def _validate_non_empty_string(key, value):
