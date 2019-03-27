@@ -24,7 +24,8 @@ def is_scheme_secure(scheme):
 
 
 def is_valid_pod_name(label):
-    if len(label) > 1:
+    # https://github.com/ukaea/piezo/wiki/WebAppDecisionRecord#maximum-length-of-a-job-name
+    if 1 < len(label) <= 29:
         match = re.match("^([0-9a-z])([\\.\\-0-9a-z]*)?([0-9a-z])$", label)
         if match is None:
             return False
@@ -32,6 +33,8 @@ def is_valid_pod_name(label):
             if pattern in label:
                 return False
         return True
-    else:
+    elif len(label) <= 1:
         match = re.match("^[0-9a-z]$", label)
         return match is not None
+    else:
+        return False

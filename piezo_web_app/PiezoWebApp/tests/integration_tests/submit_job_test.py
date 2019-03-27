@@ -35,14 +35,14 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
     def test_correct_python_job_is_submitted_correctly(self):
         # Arrange
         body = {
-            'name': 'test_python_job',
+            'name': 'test-python-job',
             'language': 'Python',
             'path_to_main_app_file': '/path_to/file',
             'python_version': '2',
             'arguments': ["1000"]
         }
         self.mock_k8s_adapter.get_namespaced_custom_object.side_effect = ApiException(status=999)
-        kubernetes_response = {'metadata': {'name': 'test_python_job'}}
+        kubernetes_response = {'metadata': {'name': 'test-python-job'}}
         self.mock_k8s_adapter.create_namespaced_custom_object.return_value = kubernetes_response
         # Act
         with patch('uuid.uuid4', return_value='abcd1234-ef56-gh78-ij90'):
@@ -53,13 +53,13 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             CRD_VERSION,
             NAMESPACE,
             CRD_PLURAL,
-            'test_python_job-abcd1'
+            'test-python-job-abcd1'
         )
         expected_body = {
             'apiVersion': 'sparkoperator.k8s.io/v1beta1',
             'kind': 'SparkApplication',
             'metadata': {
-                'name': 'test_python_job-abcd1',
+                'name': 'test-python-job-abcd1',
                 'namespace': 'default'
             },
             'spec': {
@@ -128,7 +128,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             'status': 'success',
             'data': {
                 'message': 'Job driver created successfully',
-                'job_name': 'test_python_job-abcd1'
+                'job_name': 'test-python-job-abcd1'
             }
         })
 
@@ -136,7 +136,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
     def test_correct_scala_job_is_submitted_correctly(self):
         # Arrange
         body = {
-            'name': 'test_scala_job',
+            'name': 'test-scala-job',
             'language': 'Scala',
             'path_to_main_app_file': '/path_to/file',
             'main_class': 'main.class',
@@ -154,13 +154,13 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             CRD_VERSION,
             NAMESPACE,
             CRD_PLURAL,
-            'test_scala_job-abcd1'
+            'test-scala-job-abcd1'
         )
         expected_body = {
             'apiVersion': 'sparkoperator.k8s.io/v1beta1',
             'kind': 'SparkApplication',
             'metadata': {
-                'name': 'test_scala_job-abcd1',
+                'name': 'test-scala-job-abcd1',
                 'namespace': 'default'
             },
             'spec': {
@@ -229,7 +229,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             'status': 'success',
             'data': {
                 'message': 'Job driver created successfully',
-                'job_name': 'test_scala_job-abcd1'
+                'job_name': 'test-scala-job-abcd1'
             }
         })
 
@@ -237,7 +237,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
     def test_all_optional_inputs_defined_to_maximum_succeeds(self):
         # Arrange
         body = {
-            'name': 'test_python_job',
+            'name': 'test-python-job',
             'language': 'Python',
             'path_to_main_app_file': '/path_to/file',
             'python_version': '2',
@@ -249,7 +249,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             'label': 'my_label'
         }
         self.mock_k8s_adapter.get_namespaced_custom_object.side_effect = ApiException(status=999)
-        kubernetes_response = {'metadata': {'name': 'test_python_job'}}
+        kubernetes_response = {'metadata': {'name': 'test-python-job'}}
         self.mock_k8s_adapter.create_namespaced_custom_object.return_value = kubernetes_response
         # Act
         with patch('uuid.uuid4', return_value='abcd1234-ef56-gh78-ij90'):
@@ -260,13 +260,13 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             CRD_VERSION,
             NAMESPACE,
             CRD_PLURAL,
-            'test_python_job-abcd1'
+            'test-python-job-abcd1'
         )
         expected_body = {
             'apiVersion': 'sparkoperator.k8s.io/v1beta1',
             'kind': 'SparkApplication',
             'metadata': {
-                'name': 'test_python_job-abcd1',
+                'name': 'test-python-job-abcd1',
                 'namespace': 'default',
                 'labels': {
                     'userLabel': 'my_label'
@@ -337,7 +337,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             'status': 'success',
             'data': {
                 'message': 'Job driver created successfully',
-                'job_name': 'test_python_job-abcd1'
+                'job_name': 'test-python-job-abcd1'
             }
         })
 
@@ -345,7 +345,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
     def test_all_optional_inputs_defined_to_above_maximum_returns_400_with_explanation(self):
         # Arrange
         body = {
-            'name': 'test_python_job',
+            'name': 'test-python-job',
             'language': 'Python',
             'path_to_main_app_file': '/path_to/file',
             'python_version': '2',
@@ -375,7 +375,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
         # Arrange
         body = {
             # Expected inputs
-            'name': 'test_python_job',
+            'name': 'test-python-job',
             'language': 'Python',
             'path_to_main_app_file': '/path_to/file',
             'python_version': '2',
@@ -397,7 +397,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
     def test_optional_inputs_in_wrong_format_returns_400_with_explanation(self):
         # Arrange
         body = {
-            'name': 'test_python_job',
+            'name': 'test-python-job',
             'language': 'Python',
             'path_to_main_app_file': '/path_to/file',
             'python_version': '2.3',

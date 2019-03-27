@@ -4,7 +4,7 @@ from PiezoWebApp.src.models.validation_rule import ValidationRule
 from PiezoWebApp.src.services.spark_job.validation import argument_validator
 
 
-@pytest.mark.parametrize("name", ["test", "name", "12ewq", "13234some_long_name!!!@"])
+@pytest.mark.parametrize("name", ["test", "name", "12ewq", "a-b.1"])
 def test_validate_name_validates_non_empty_strings(name):
     # Arrange
     validation_rule = ValidationRule({'classification': 'Required'})
@@ -36,6 +36,18 @@ def test_validate_name_rejects_non_string_values(name):
     assert validation_result.message == '"name" input must be a string'
 
 
+@pytest.mark.parametrize("name", ["13234some_long_name!!!@"])
+def test_validate_name_rejects_poorly_formatted_strings(name):
+    # Arrange
+    validation_rule = ValidationRule({'classification': 'Required'})
+    # Act
+    validation_result = argument_validator.validate("name", name, validation_rule)
+    # Assert
+    assert validation_result.is_valid is False
+    assert validation_result.message == '"name" input must obey naming convention: '\
+                                        'see https://github.com/ukaea/piezo/wiki/WebAppUserGuide#submit-a-job'
+
+
 def test_validate_name_allows_29_character_name():
     # Arrange
     validation_rule = ValidationRule({'classification': 'Required'})
@@ -56,7 +68,8 @@ def test_validate_name_rejects_30_character_name():
     validation_result = argument_validator.validate("name", name, validation_rule)
     # Assert
     assert validation_result.is_valid is False
-    assert validation_result.message == '"name" input has a maximum length of 29 characters'
+    assert validation_result.message == '"name" input must obey naming convention: ' \
+                                        'see https://github.com/ukaea/piezo/wiki/WebAppUserGuide#submit-a-job'
 
 
 @pytest.mark.parametrize("language", ["Python", "Scala"])
