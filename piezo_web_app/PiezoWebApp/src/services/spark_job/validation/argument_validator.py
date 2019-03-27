@@ -52,14 +52,13 @@ def _validate_label(value):
     validation_result = _validate_non_empty_string("label", value)
     if not validation_result.is_valid:
         return validation_result
+    # Kubernetes spark operator restriction
     if len(value) > 63:
-        # Kubernetes spark operator restriction
         return ValidationResult(False, '"label" input has a maximum length of 63 characters', None)
-    pattern = re.compile('^[0-9A-Za-z]([0-9A-Za-z\\-]*)?[0-9A-Za-z]$|[0-9A-Za-z]')
-    match = re.match(pattern, value)
-    if match is None or match.group() != value:
-        return ValidationResult(False, '"label" input must consist of "A-Z, a-z, 0-9" or "-" and must not start or end '
-                                       'with a "-"', None)
+    match = re.match('^[0-9A-Za-z]([0-9A-Za-z\\-]*)?[0-9A-Za-z]$|[0-9A-Za-z]', value)
+    if match is None:
+        return ValidationResult(False, f'"label" input must obey naming convention: '
+                                       f'see https://github.com/ukaea/piezo/wiki/WebAppUserGuide#submit-a-job', None)
     return ValidationResult(True, None, value)
 
 
