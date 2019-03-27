@@ -85,6 +85,58 @@ def test_validate_name_rejects_30_character_name():
                                         'see https://github.com/ukaea/piezo/wiki/WebAppUserGuide#submit-a-job'
 
 
+@pytest.mark.parametrize("label", ["", "   "])
+def test_validate_label_rejects_empty_strings(label):
+    # Arrange
+    validation_rule = ValidationRule({'classification': 'Required'})
+    # Act
+    validation_result = argument_validator.validate("label", label, validation_rule)
+    # Assert
+    assert validation_result.is_valid is False
+    assert validation_result.message == '"label" input cannot be empty'
+
+
+@pytest.mark.parametrize("label", ["A", "a", "label", "LABEL", "LaBeL", "L-a-B-e-L", "lab-----el", "12345"])
+def test_validate_label_accepts_valid_labels(label):
+    # Arrange
+    validation_rule = ValidationRule({'classification': 'Required'})
+    # Act
+    validation_result = argument_validator.validate("label", label, validation_rule)
+    assert validation_result.is_valid is True
+
+
+def test_validate_label_validates_label_with_63_characters():
+    # Arrange
+    validation_rule = ValidationRule({'classification': 'Required'})
+    label = "abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklm"
+    assert len(label) == 63
+    # Act
+    validation_result = argument_validator.validate("label", label, validation_rule)
+    assert validation_result.is_valid is True
+
+
+def test_validate_label_rejects_label_with_64_characters():
+    # Arrange
+    validation_rule = ValidationRule({'classification': 'Required'})
+    label = "abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklm" + "n"
+    assert len(label) == 64
+    # Act
+    validation_result = argument_validator.validate("label", label, validation_rule)
+    assert validation_result.is_valid is False
+    assert validation_result.message == '"label" input has a maximum length of 63 characters'
+
+
+@pytest.mark.parametrize("label", ["A-", "-a", "$label", "LA.BEL", "-", "lab/el"])
+def test_validate_label_rejects_invalid_non_empty_labels(label):
+    # Arrange
+    validation_rule = ValidationRule({'classification': 'Required'})
+    # Act
+    validation_result = argument_validator.validate("label", label, validation_rule)
+    assert validation_result.is_valid is False
+    assert validation_result.message == '"label" input must obey naming convention: ' \
+                                        'see https://github.com/ukaea/piezo/wiki/WebAppUserGuide#submit-a-job'
+
+
 @pytest.mark.parametrize("language", ["Python", "Scala"])
 def test_validate_language_validates_valid_languages(language):
     # Arrange

@@ -246,7 +246,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             'executors': '10',
             'executor_cores': '4',
             'executor_memory': '4096m',
-            'label': 'my_label'
+            'label': 'my-label'
         }
         self.mock_k8s_adapter.get_namespaced_custom_object.side_effect = ApiException(status=999)
         kubernetes_response = {'metadata': {'name': 'test-python-job'}}
@@ -269,7 +269,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                 'name': 'test-python-job-abcd1',
                 'namespace': 'default',
                 'labels': {
-                    'userLabel': 'my_label'
+                    'userLabel': 'my-label'
                 }
             },
             'spec': {
@@ -444,4 +444,26 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
         msg = json.loads(error.value.response.body, encoding='utf-8')['data']
         assert msg == "The following errors were found:\n" \
                       '"name\" input must obey naming convention: ' \
+                      'see https://github.com/ukaea/piezo/wiki/WebAppUserGuide#submit-a-job\n'
+
+    @gen_test
+    def test_label_in_wrong_format_returns_400_with_explanation(self):
+        # Arrange
+        body = {
+            'name': 'test-job',
+            'language': 'Python',
+            'path_to_main_app_file': '/path_to/file',
+            'python_version': '2',
+            'label': '-label-'
+        }
+        # Act
+        with pytest.raises(HTTPClientError) as error:
+            yield self.send_request(body)
+        # Assert
+        self.mock_k8s_adapter.get_namespaced_custom_object.assert_not_called()
+        self.mock_k8s_adapter.create_namespaced_custom_object.assert_not_called()
+        assert error.value.response.code == 400
+        msg = json.loads(error.value.response.body, encoding='utf-8')['data']
+        assert msg == "The following errors were found:\n" \
+                      '"label\" input must obey naming convention: ' \
                       'see https://github.com/ukaea/piezo/wiki/WebAppUserGuide#submit-a-job\n'
