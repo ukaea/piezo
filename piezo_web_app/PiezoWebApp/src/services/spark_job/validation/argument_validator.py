@@ -1,10 +1,10 @@
-from PiezoWebApp.src.utils.str_helper import is_str_empty
 from PiezoWebApp.src.models.spark_job_validation_result import ValidationResult
-
+from PiezoWebApp.src.utils.route_helper import is_valid_pod_name
+from PiezoWebApp.src.utils.str_helper import is_str_empty
 
 def validate(key, value, validation_rule):
     if key == "name":
-        return _validate_name(value)
+        return _validate_name(key, value)
     if key in ["name", "path_to_main_app_file", "main_class", "label"]:
         return _validate_non_empty_string(key, value)
     if key in ["language", "python_version"]:
@@ -20,14 +20,14 @@ def validate(key, value, validation_rule):
     raise ValueError(f"Unexpected argument {key}")
 
 
-def _validate_name(value):
+def _validate_name(key, value):
     validation_result = _validate_non_empty_string("name", value)
     if not validation_result.is_valid:
         return validation_result
 
-    # https://github.com/ukaea/piezo/wiki/WebAppDecisionRecord#maximum-length-of-a-job-name
-    if len(value) > 29:
-        return ValidationResult(False, '"name" input has a maximum length of 29 characters', None)
+    if not is_valid_pod_name(value):
+        return ValidationResult(False, f'"{key}" input must obey naming convention: '
+                                'see https://github.com/ukaea/piezo/wiki/WebAppUserGuide#submit-a-job', None)
 
     return ValidationResult(True, None, value)
 
