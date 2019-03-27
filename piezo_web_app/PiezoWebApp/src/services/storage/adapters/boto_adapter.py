@@ -1,3 +1,5 @@
+import os.path
+
 import boto.s3.connection
 
 from PiezoWebApp.src.services.storage.adapters.i_storage_adapter import IStorageAdapter
@@ -6,17 +8,18 @@ from PiezoWebApp.src.services.storage.adapters.i_storage_adapter import IStorage
 class BotoAdapter(IStorageAdapter):
     def __init__(self, configuration, logger):
         self._logger = logger
-        with open('/etc/secrets/access_key') as f:
-            access_key = f.read()
-        with open('/etc/secrets/secret_key') as f:
-            secret_key = f.read()
+
+        with open(os.path.join(configuration.secrets_dir, 'access_key')) as key_file:
+            access_key = key_file.read()
+        with open(os.path.join(configuration.secrets_dir, 'secret_key')) as key_file:
+            secret_key = key_file.read()
         try:
             self._s3_client = boto.connect_s3(
                 aws_access_key_id=access_key,
                 aws_secret_access_key=secret_key,
                 host=configuration.s3_host,
                 port=configuration.s3_port,
-                is_secure=True,
+                is_secure=configuration.is_s3_secure,
                 calling_format=boto.s3.connection.OrdinaryCallingFormat()
             )
         except Exception as exception:
@@ -25,7 +28,8 @@ class BotoAdapter(IStorageAdapter):
 
     def set_contents_from_string(self, bucket_name, file_path, text):
         key = self._get_key(bucket_name, file_path)
-        key.set_contents_from_string
+        contents_size = key.set_contents_from_string(text)
+        self._logger.debug(f'Wrote {contents_size} bytes to "{file_path}" in bucket "{bucket_name}"')
 
     def _get_bucket(self, bucket_name):
         bucket = self._s3_client.lookup(bucket_name)
@@ -36,4 +40,6 @@ class BotoAdapter(IStorageAdapter):
     def _get_key(self, bucket_name, file_path):
         bucket = self._get_bucket(bucket_name)
         key = bucket.get_key(file_path)
+        if key is None:
+            key = bucket.new_key(file_path)
         return key

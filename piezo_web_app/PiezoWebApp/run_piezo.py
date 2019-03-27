@@ -8,8 +8,9 @@ from PiezoWebApp.src.handlers.delete_job import DeleteJobHandler
 from PiezoWebApp.src.handlers.get_jobs import GetJobsHandler
 from PiezoWebApp.src.handlers.get_logs import GetLogsHandler
 from PiezoWebApp.src.handlers.heartbeat_handler import HeartbeatHandler
-from PiezoWebApp.src.handlers.submit_job import SubmitJobHandler
 from PiezoWebApp.src.handlers.job_status import JobStatusHandler
+from PiezoWebApp.src.handlers.submit_job import SubmitJobHandler
+from PiezoWebApp.src.handlers.write_logs_handler import WriteLogsHandler
 from PiezoWebApp.src.services.kubernetes.kubernetes_adapter import KubernetesAdapter
 from PiezoWebApp.src.services.spark_job.spark_job_namer import SparkJobNamer
 from PiezoWebApp.src.services.spark_job.spark_job_service import SparkJobService
@@ -85,7 +86,8 @@ def build_app(container, use_route_stem=False):
             (format_route_specification(route_stem + 'getjobs'), GetJobsHandler, container),
             (format_route_specification(route_stem + 'getlogs'), GetLogsHandler, container),
             (format_route_specification(route_stem + 'jobstatus'), JobStatusHandler, container),
-            (format_route_specification(route_stem + 'submitjob'), SubmitJobHandler, container)
+            (format_route_specification(route_stem + 'submitjob'), SubmitJobHandler, container),
+            (format_route_specification(route_stem + 'writelogs'), WriteLogsHandler, container)
         ]
     )
     return app

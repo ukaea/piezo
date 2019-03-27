@@ -39,8 +39,9 @@ class BaseIntegrationTest(tornado.testing.AsyncHTTPTestCase, metaclass=ABCMeta):
     @pytest.fixture(autouse=True)
     def setup(self):
         self.mock_configuration = mock.create_autospec(Configuration)
-        self.mock_configuration.s3_endpoint = "0.0.0.0"
+        self.mock_configuration.s3_endpoint = "http://0.0.0.0:0"
         self.mock_configuration.s3_secrets_name = "secret"
+        self.mock_configuration.secrets_dir = "/etc/secrets/"
         self.mock_k8s_adapter = mock.create_autospec(IKubernetesAdapter)
         self.mock_logger = mock.create_autospec(logging.Logger)
         self.mock_storage_adapter = mock.create_autospec(IStorageAdapter)
