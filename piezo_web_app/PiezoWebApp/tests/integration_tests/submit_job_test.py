@@ -424,3 +424,24 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                       '"executor_cores" input must be an integer\n' \
                       '"executor_memory" input must be a string integer value ending in "m" ' \
                       '(e.g. "512m" for 512 megabytes)\n'
+
+    @gen_test
+    def test_name_in_wrong_format_returns_400_with_explanation(self):
+        # Arrange
+        body = {
+            'name': 'test.python--job',
+            'language': 'Python',
+            'path_to_main_app_file': '/path_to/file',
+            'python_version': '2'
+        }
+        # Act
+        with pytest.raises(HTTPClientError) as error:
+            yield self.send_request(body)
+        # Assert
+        self.mock_k8s_adapter.get_namespaced_custom_object.assert_not_called()
+        self.mock_k8s_adapter.create_namespaced_custom_object.assert_not_called()
+        assert error.value.response.code == 400
+        msg = json.loads(error.value.response.body, encoding='utf-8')['data']
+        assert msg == "The following errors were found:\n" \
+                      '"name\" input must obey naming convention: ' \
+                      'see https://github.com/ukaea/piezo/wiki/WebAppUserGuide#submit-a-job\n'
