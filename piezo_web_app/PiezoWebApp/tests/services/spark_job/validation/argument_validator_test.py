@@ -68,10 +68,20 @@ def test_validate_label_accepts_valid_labels(label):
     assert validation_result.is_valid is True
 
 
+def test_validate_label_validates_label_with_63_characters():
+    # Arrange
+    validation_rule = ValidationRule({'classification': 'Required'})
+    label = "abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklm"
+    assert len(label) == 63
+    # Act
+    validation_result = argument_validator.validate("label", label, validation_rule)
+    assert validation_result.is_valid is True
+
+
 def test_validate_label_rejects_label_with_64_characters():
     # Arrange
     validation_rule = ValidationRule({'classification': 'Required'})
-    label = "abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmn"
+    label = "abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklm" + "n"
     assert len(label) == 64
     # Act
     validation_result = argument_validator.validate("label", label, validation_rule)
