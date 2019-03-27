@@ -7,8 +7,8 @@ class TidyJobsHandler(BaseHandler):
         output_schema={
             "type": "object",
             "properties": {
-                "Jobs processed": {"type": "string"},
-                "Jobs untouched": {"type": "string"}
+                "Jobs processed": {"type": "integer"},
+                "Jobs untouched": {"type": "integer"}
             },
         }
     )

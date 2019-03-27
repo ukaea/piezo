@@ -38,6 +38,7 @@ class SparkJobService(ISparkJobService):
 
             msg = f"{job_name} deleted" if api_response['status'] == "Success"\
                 else f"Trying to delete job {job_name} resulted in status: {api_response['status']}"
+            self._logger.debug(msg)
             return {
                 'message': msg,
                 'status': StatusCodes.Okay.value
@@ -183,13 +184,27 @@ class SparkJobService(ISparkJobService):
 
     def tidy_jobs(self):
         dict_of_jobs = self.get_jobs(label=None)['spark_jobs']
-
-        for job in dict_of_jobs:
-            status = dict_of_jobs[job]
-            if status in ["COMPLETED", "FAILED"]:
-                self.write_logs_to_file(job)
-                self.delete_job(job)
-        return {'status': StatusCodes.Okay.value, "Jobs processed": "1", "Jobs untouched": "1"}
+        jobs_untouched = len(dict_of_jobs)
+        jobs_tidied = 0
+        try:
+            for job in dict_of_jobs:
+                status = dict_of_jobs[job]
+                if status in ["COMPLETED", "FAILED"]:
+                    self.write_logs_to_file(job)
+                    self.delete_job(job)
+                    jobs_tidied += 1
+                    jobs_untouched -= 1
+            return {'status': StatusCodes.Okay.value,
+                    'message': 'Spark jobs tidied successfully',
+                    'Jobs tidied': jobs_tidied,
+                    'Jobs untouched': jobs_untouched}
+        except ApiException as exception:
+            message = f'Trying to tidy spark jobs resulted in api exception: {exception.reason}'
+            self._logger.error(message)
+            return {
+                'status': exception.status,
+                'message': message
+            }
 
     def write_logs_to_file(self, job_name):
         api_response = self.get_logs(job_name)
