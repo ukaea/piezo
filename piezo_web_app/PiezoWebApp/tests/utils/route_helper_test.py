@@ -38,7 +38,7 @@ def test_is_scheme_secure_raises_value_error_for_unrecognised(scheme):
     assert str(exception_info.value) == f'"{scheme}" not recognised as a valid scheme'
 
 
-@pytest.mark.parametrize("label", ["acb123", "abc.123", "abc-123", "ab-c1.23", "a", "1"])
+@pytest.mark.parametrize("label", ["acb123", "abc.123", "abc-123", "ab-c1.23", "a"])
 def test_is_valid_pod_name_returns_true_for_valid_labels(label):
     assert is_valid_pod_name(label) is True
 
@@ -55,7 +55,8 @@ def test_is_valid_pod_name_returns_true_for_valid_labels(label):
     "abc-.123",
     "abc--123",
     "abc_123",
-    "Abc123"
+    "Abc123",
+    "123abc"
 ])
 def test_is_valid_pod_name_returns_false_for_invalid_labels(label):
     assert is_valid_pod_name(label) is False
