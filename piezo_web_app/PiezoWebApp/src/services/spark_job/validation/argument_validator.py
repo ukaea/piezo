@@ -2,7 +2,6 @@ import re
 import string
 
 from PiezoWebApp.src.models.spark_job_validation_result import ValidationResult
-from PiezoWebApp.src.utils.route_helper import is_valid_pod_name
 from PiezoWebApp.src.utils.str_helper import is_str_empty
 
 

@@ -2,7 +2,6 @@ import pytest
 
 from PiezoWebApp.src.utils.route_helper import format_route_specification
 from PiezoWebApp.src.utils.route_helper import is_scheme_secure
-from PiezoWebApp.src.utils.route_helper import is_valid_pod_name
 
 
 def test_format_route_specification_returns_flexible_route_for_appropriate_name():
