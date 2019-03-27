@@ -7,7 +7,7 @@ from PiezoWebApp.src.models.spark_job_validation_result import ValidationResult
 def validate(key, value, validation_rule):
     if key == "name":
         return _validate_name(value)
-    if key in ["name", "path_to_main_app_file", "main_class", "label"]:
+    if key in ["path_to_main_app_file", "main_class"]:
         return _validate_non_empty_string(key, value)
     if key in ["label"]:
         return _validate_label(value)
