@@ -86,7 +86,7 @@ def test_validate_name_rejects_30_character_name():
 
 
 @pytest.mark.parametrize("label", ["", "   "])
-def test_validate_name_rejects_empty_strings(label):
+def test_validate_label_rejects_empty_strings(label):
     # Arrange
     validation_rule = ValidationRule({'classification': 'Required'})
     # Act
