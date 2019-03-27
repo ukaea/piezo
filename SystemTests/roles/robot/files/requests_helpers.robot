@@ -28,6 +28,10 @@ Get Response Data Message
   [Arguments]   ${response}
   [return]    ${response.json()["data"]["message"]}
 
+Get Response Job Status
+  [Arguments]   ${response}
+  [return]    ${response.json()["data"]["job status"]}
+
 Get Response Spark Jobs
   [Arguments]   ${response}
   [return]    ${response.json()["data"]["spark_jobs"]}

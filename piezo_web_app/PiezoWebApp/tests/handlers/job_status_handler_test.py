@@ -29,7 +29,13 @@ class TestJobStatusHandler(BaseHandlerTest):
         body = {'job_name': 'test-job'}
         self.mock_spark_job_service.get_job_status.return_value = {
             "message": "status",
-            "status": 200
+            "status": 200,
+            "job status": "RUNNING",
+            "created": 123456,
+            "submission attempts": 1,
+            "last submitted": 123455,
+            "terminated": 1234567,
+            "error messages": ""
         }
         # Act
         response_body, response_code = yield self.send_request(body)
@@ -44,7 +50,14 @@ class TestJobStatusHandler(BaseHandlerTest):
         self.assertDictEqual(response_body, {
             'status': 'success',
             'data': {
-                'message': 'status'
+                'message': 'status',
+                "job status": "RUNNING",
+                "created": 123456,
+                "submission attempts": 1,
+                "last submitted": 123455,
+                "terminated": 1234567,
+                "error messages": ""
+
             }
         })
 

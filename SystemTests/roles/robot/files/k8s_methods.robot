@@ -97,7 +97,7 @@ Wait For Spark Job To Finish
     :For    ${i}    IN RANGE   0    24
     \   Sleep     ${step_size}
     \   ${response}=   Get Status Of Spark Job   ${job_name}
-    \   ${message}=  Get Response Data Message     ${response}
+    \   ${message}=  Get Response Job Status     ${response}
     \   ${finished}=    Set Variable If     '${message}'=='COMPLETED'   ${True}     ${False}
     \   Exit For Loop If    ${finished}
     [return]    ${finished}

@@ -144,8 +144,33 @@ Status Of Job Immediately After Submission is Unknown
     ${job_name}=    Get Response Job Name   ${response}
     ${response}=  Get Status Of Spark Job   ${job_name}
     Confirm Ok Response     ${response}
-    ${status}=    Get Response Data Message   ${response}
-    Should Be Equal As Strings    ${status}   UNKNOWN
+    ${data}=    Get Response Data     ${response}
+    Dictionary Should Contain Item    ${data}   message     Job status for "${job_name}"
+    Dictionary Should Contain Item    ${data}   job status    UNKNOWN
+    Dictionary Should Contain Item    ${data}   submission attempts     UNKNOWN
+    Dictionary Should Contain Item    ${data}   last submitted      UNKNOWN
+    Dictionary Should Contain Item    ${data}   terminated      UNKNOWN
+    Dictionary Should Contain Item    ${data}   error messages      UNKNOWN
+    ${created}=     Get From Dictionary    ${data}   created
+    Should Match Regexp   ${created}   [0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z
+
+
+
+Status Of Job Contains All Information
+    ${job_name}=     Set Variable       spark-pi
+    ${response}=    Submit SparkPi Job    ${job_name}
+    ${job_name}=    Get Response Job Name   ${response}
+    Sleep   10 seconds
+    ${response}=  Get Status Of Spark Job   ${job_name}
+    Confirm Ok Response     ${response}
+    ${data}=    Get Response Data     ${response}
+    Dictionary Should Contain Key   ${data}   message
+    Dictionary Should Contain Key   ${data}   job status
+    Dictionary Should Contain Key   ${data}   created
+    Dictionary Should Contain Key   ${data}   submission attempts
+    Dictionary Should Contain Key   ${data}   last submitted
+    Dictionary Should Contain Key   ${data}   terminated
+    Dictionary Should Contain Key   ${data}   error messages
 
 Job Can Use Data And Code On S3 And Write Back Results
     ${job_name}=    Set Variable      wordcount

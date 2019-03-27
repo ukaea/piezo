@@ -33,7 +33,14 @@ class TestJobStatusIntegration(BaseIntegrationTest):
     def test_status_is_returned_from_correct_spark_job(self):
         # Arrange
         body = {'job_name': 'test-spark-job'}
-        kubernetes_response = {'status': {'applicationState': {'state': 'Running'}}}
+        kubernetes_response = {
+            'metadata': {
+                'creationTimestamp': 12345},
+            'status': {
+                'applicationState': {'state': 'RUNNING', 'errorMessage': ''},
+                'submissionAttempts': 1,
+                'lastSubmissionAttemptTime': 123456,
+                'terminationTime': 1234567}}
         self.mock_k8s_adapter.get_namespaced_custom_object.return_value = kubernetes_response
         # Act
         response_body, response_code = yield self.send_request(body)
@@ -48,9 +55,14 @@ class TestJobStatusIntegration(BaseIntegrationTest):
         self.assertDictEqual(response_body, {
             'status': 'success',
             'data': {
-                'message': 'Running'
-            }
-        })
+                "message": 'Job status for "test-spark-job"',
+                "job status": "RUNNING",
+                "created": 12345,
+                "submission attempts": 1,
+                "last submitted": 123456,
+                "terminated": 1234567,
+                "error messages": ''
+            }})
 
     @gen_test
     def test_unknown_status_is_returned_when_not_specified_by_kubernetes(self):
@@ -76,7 +88,13 @@ class TestJobStatusIntegration(BaseIntegrationTest):
         self.assertDictEqual(response_body, {
             'status': 'success',
             'data': {
-                'message': 'UNKNOWN'
+                "message": 'Job status for "test-spark-job"',
+                "job status": "UNKNOWN",
+                "created": "UNKNOWN",
+                "submission attempts": "UNKNOWN",
+                "last submitted": "UNKNOWN",
+                "terminated": "UNKNOWN",
+                "error messages": "UNKNOWN"
             }
         })
 
