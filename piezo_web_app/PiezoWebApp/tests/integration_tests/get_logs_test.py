@@ -68,6 +68,5 @@ class GetLogsIntegrationTest(BaseIntegrationTest):
         assert error.value.response.code == 400
         self.mock_k8s_adapter.read_namespaced_pod_log.assert_not_called()
         msg = json.loads(error.value.response.body, encoding='utf-8')['data']
-        assert msg == "'job_name' is a required property\n\nFailed validating 'required' in schema:\n " \
-                      "   {'properties': {'job_name': {'type': 'string'}},\n     'required': ['job_name'],\n  " \
-                      "   'type': 'object'}\n\nOn instance:\n    {}"
+        assert 'job_name' in msg
+        assert 'required' in msg
