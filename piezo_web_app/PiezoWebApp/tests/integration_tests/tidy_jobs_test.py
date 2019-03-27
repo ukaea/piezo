@@ -27,4 +27,59 @@ class TestTidyJobsIntegration(BaseIntegrationTest):
 
     @gen_test
     def test_post_successfully_writes_logs_and_deletes_completed_and_failed_jobs(self):
-        pass
+        # Arrange
+        kubernetes_list_jobs_response = {
+            "items": [
+                {
+                    "metadata":
+                        {
+                            "name": "job1",
+                            "labels": {
+                                "version": "2.4.0"
+                            }
+                        },
+                    "status":
+                        {
+                            "applicationState":
+                                {
+                                    "state": "RUNNING"
+                                }
+                        }
+                },
+                {
+                    "metadata":
+                        {
+                            "name": "job2",
+                            "labels": {
+                                "userLabel": "test-label",
+                                "version": "2.4.0"
+                            }
+                        },
+                    "status":
+                        {
+                            "applicationState":
+                                {
+                                    "state": "COMPLETED"
+                                }
+                        }
+                }
+                {
+                    "metadata":
+                        {
+                            "name": "job3",
+                            "labels": {
+                                "userLabel": "test-label",
+                                "version": "2.4.0"
+                            }
+                        },
+                    "status":
+                        {
+                            "applicationState":
+                                {
+                                    "state": "FAILED"
+                                }
+                        }
+                }
+            ]
+        }
+        self.mock_k8s_adapter.list_namespaced_custom_object.return_value = kubernetes_list_jobs_response
