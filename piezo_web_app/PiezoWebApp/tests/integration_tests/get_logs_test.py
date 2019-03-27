@@ -45,7 +45,6 @@ class GetLogsIntegrationTest(BaseIntegrationTest):
                 'message': 'Some logs'
             }})
 
-
     @gen_test
     def test_trying_to_get_logs_from_non_existent_spark_job_returns_404(self):
         # Arrange
@@ -57,3 +56,18 @@ class GetLogsIntegrationTest(BaseIntegrationTest):
         assert exception.value.response.code == 404
         msg = json.loads(exception.value.response.body, encoding='utf-8')['data']
         assert msg == 'Kubernetes error when trying to get logs for spark job "test-spark-job": Not Found'
+
+    @gen_test
+    def test_trying_to_get_logs_when_not_specifying_job_returns_400_with_reason(self):
+        # Arrange
+        body = {}
+        # Act
+        with pytest.raises(HTTPClientError) as error:
+            yield self.send_request(body)
+        # Assert
+        assert error.value.response.code == 400
+        self.mock_k8s_adapter.read_namespaced_pod_log.assert_not_called()
+        msg = json.loads(error.value.response.body, encoding='utf-8')['data']
+        assert msg == "'job_name' is a required property\n\nFailed validating 'required' in schema:\n " \
+                      "   {'properties': {'job_name': {'type': 'string'}},\n     'required': ['job_name'],\n  " \
+                      "   'type': 'object'}\n\nOn instance:\n    {}"
