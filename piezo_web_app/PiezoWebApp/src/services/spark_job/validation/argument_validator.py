@@ -1,3 +1,6 @@
+import re
+import string
+
 from PiezoWebApp.src.models.spark_job_validation_result import ValidationResult
 from PiezoWebApp.src.utils.route_helper import is_valid_pod_name
 from PiezoWebApp.src.utils.str_helper import is_str_empty
@@ -26,11 +29,22 @@ def _validate_name(key, value):
     if not validation_result.is_valid:
         return validation_result
 
-    if not is_valid_pod_name(value):
-        return ValidationResult(False, f'"{key}" input must obey naming convention: '
-                                'see https://github.com/ukaea/piezo/wiki/WebAppUserGuide#submit-a-job', None)
+    is_name_valid = True
+    if len(value) == 1:
+        is_name_valid = value in string.ascii_lowercase
+    elif 1 < len(value) <= 29:
+        match = re.match("^([a-z])([\\.\\-0-9a-z]*)?([0-9a-z])$", value)
+        if match is None:
+            is_name_valid = False
+        for pattern in ["--", "-.", ".-", ".."]:
+            if pattern in value:
+                is_name_valid = False
+    else:
+        is_name_valid = False
 
-    return ValidationResult(True, None, value)
+    msg = None if is_name_valid else f'"{key}" input must obey naming convention: ' \
+        f'see https://github.com/ukaea/piezo/wiki/WebAppUserGuide#submit-a-job'
+    return ValidationResult(is_name_valid, msg, value)
 
 
 def _validate_non_empty_string(key, value):

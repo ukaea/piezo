@@ -4,8 +4,8 @@ from PiezoWebApp.src.models.validation_rule import ValidationRule
 from PiezoWebApp.src.services.spark_job.validation import argument_validator
 
 
-@pytest.mark.parametrize("name", ["test", "name", "a-b.1"])
-def test_validate_name_validates_non_empty_strings(name):
+@pytest.mark.parametrize("name", ["test", "acb123", "abc.123", "abc-123", "ab-c1.23", "a"])
+def test_validate_name_validates_well_formatted_strings(name):
     # Arrange
     validation_rule = ValidationRule({'classification': 'Required'})
     # Act
@@ -36,7 +36,20 @@ def test_validate_name_rejects_non_string_values(name):
     assert validation_result.message == '"name" input must be a string'
 
 
-@pytest.mark.parametrize("name", ["some_long_name!!!@13234", "12ewq"])
+@pytest.mark.parametrize("name", [
+    ".abc123",
+    "-abc123",
+    "abc123.",
+    "abc123-",
+    "abc..123",
+    "abc.-123",
+    "abc-.123",
+    "abc--123",
+    "abc_123",
+    "Abc123",
+    "123abc",
+    "some_long_name!!!@13234"
+])
 def test_validate_name_rejects_poorly_formatted_strings(name):
     # Arrange
     validation_rule = ValidationRule({'classification': 'Required'})
