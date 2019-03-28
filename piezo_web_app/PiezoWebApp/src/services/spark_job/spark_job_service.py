@@ -208,7 +208,7 @@ class SparkJobService(ISparkJobService):
                 self._logger.debug(f'Not processing job "{job}", current status is "{status}"')
                 jobs_untouched[job] = status
         return {'status': StatusCodes.Okay.value,
-                'message': 'Spark jobs tidied successfully',
+                'message': f'{len(dict_of_jobs)} Spark jobs found',
                 'Jobs tidied': jobs_tidied,
                 'Jobs untouched': jobs_untouched,
                 'Jobs failed to process': jobs_failed_to_process}

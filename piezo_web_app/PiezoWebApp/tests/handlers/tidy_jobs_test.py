@@ -23,7 +23,7 @@ class TestGetJobsHandler(BaseHandlerTest):
         # Arrange
         self.mock_spark_job_service.tidy_jobs.return_value = {
             'status': 200,
-            'message': 'Spark jobs tidied successfully',
+            'message': 'x Spark jobs found',
             'Jobs tidied': {'some job': 'some status'},
             'Jobs untouched': {'some job': 'some status'},
             'Jobs failed to process': {'some job': 'some reason'}}
@@ -38,7 +38,7 @@ class TestGetJobsHandler(BaseHandlerTest):
         self.assertDictEqual(response_body, {
             'status': 'success',
             'data': {
-                'message': 'Spark jobs tidied successfully',
+                'message': 'x Spark jobs found',
                 'Jobs tidied': {'some job': 'some status'},
                 'Jobs untouched': {'some job': 'some status'},
                 'Jobs failed to process': {'some job': 'some reason'}

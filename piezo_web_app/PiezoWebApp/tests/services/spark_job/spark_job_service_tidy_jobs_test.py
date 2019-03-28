@@ -55,7 +55,7 @@ class SparkJobServiceGetJobStatusTest(TestSparkJobService):
                                                                                      'Delete_options')
         assert self.mock_kubernetes_adapter.delete_namespaced_custom_object.call_count == 3
         assert response == {'status': 200,
-                            'message': 'Spark jobs tidied successfully',
+                            'message': '8 Spark jobs found',
                             'Jobs tidied': {'job4': 'COMPLETED',
                                             'job7': 'FAILED',
                                             'job8': 'COMPLETED'},
@@ -100,7 +100,7 @@ class SparkJobServiceGetJobStatusTest(TestSparkJobService):
         result = self.test_service.tidy_jobs()
         # Assert
         self.assertDictEqual(result, {'status': 200,
-                                      'message': 'Spark jobs tidied successfully',
+                                      'message': '8 Spark jobs found',
                                       'Jobs tidied': {'job4': 'COMPLETED'},
                                       'Jobs untouched': {'job1': 'RUNNING',
                                                          'job2': 'PENDING',

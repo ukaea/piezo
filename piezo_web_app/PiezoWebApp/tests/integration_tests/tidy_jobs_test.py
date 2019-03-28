@@ -119,7 +119,7 @@ class TestTidyJobsIntegration(BaseIntegrationTest):
         self.assertDictEqual(response_body, {
             'status': 'success',
             'data': {
-                'message': 'Spark jobs tidied successfully',
+                'message': '3 Spark jobs found',
                 'Jobs tidied': {'job2': 'COMPLETED', 'job3': 'FAILED'},
                 'Jobs untouched': {'job1': 'RUNNING'},
                 'Jobs failed to process': {}}})
