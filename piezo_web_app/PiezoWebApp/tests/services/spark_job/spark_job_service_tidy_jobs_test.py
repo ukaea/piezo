@@ -68,3 +68,28 @@ class SparkJobServiceGetJobStatusTest(TestSparkJobService):
         # Assert
         expected_message = 'Unexpected response from Kubernetes API when trying to get list of spark jobs: K8s Reason'
         self.assertDictEqual(result, {'status': 999, 'message': expected_message})
+
+
+    @patch('PiezoWebApp.src.services.spark_job.spark_job_service.SparkJobService.get_jobs',
+           return_value={"spark_jobs": {"job1": "RUNNING",
+                                        "job2": "PENDING",
+                                        "job3": "SUCCEEDED",
+                                        "job4": "COMPLETED",
+                                        "job5": "CrashLoopBackOff",
+                                        "job6": "UNKNOWN",
+                                        "job7": "FAILED",
+                                        "job8": "COMPLETED"},
+                         "status": 200})
+    @patch('PiezoWebApp.src.services.spark_job.spark_job_service.SparkJobService.write_logs_to_file',
+           side_effect=[{'status': 200, 'message': 'pass'},
+                        {'status': 999, 'message': 'FAIL'},
+                        {'status': 200, 'message': 'pass'}])
+    def test_tidy_jobs_skips_jobs_that_cannot_get_logs_from(self, write_logs, get_jobs):
+        # Act
+        result = self.test_service.tidy_jobs()
+        # Assert
+        self.assertDictEqual(result, {'status': 200,
+                                      'message': 'Spark jobs tidied successfully',
+                                      'Jobs tidied': 2,
+                                      'Jobs untouched': 5,
+                                      'Jobs failed to process': 1})

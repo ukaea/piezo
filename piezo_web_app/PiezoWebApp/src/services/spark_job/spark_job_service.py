@@ -186,31 +186,32 @@ class SparkJobService(ISparkJobService):
         api_response = self.get_jobs(label=None)
         if api_response['status'] != StatusCodes.Okay.value:
             return api_response
-        try:
-            dict_of_jobs = api_response['spark_jobs']
-            jobs_untouched = len(dict_of_jobs)
-            jobs_tidied = 0
+        dict_of_jobs = api_response['spark_jobs']
+        jobs_untouched = {}
+        jobs_tidied = {}
+        jobs_failed_to_process = {}
 
-            for job in dict_of_jobs:
-                status = dict_of_jobs[job]
-                if status in ["COMPLETED", "FAILED"]:
-                    self.write_logs_to_file(job)
-                    self.delete_job(job)
-                    jobs_tidied += 1
-                    jobs_untouched -= 1
+        for job in dict_of_jobs:
+            status = dict_of_jobs[job]
+            if status in ["COMPLETED", "FAILED"]:
+                write_logs_response = self.write_logs_to_file(job)
+                if write_logs_response['status'] == StatusCodes.Okay.value:
+                    delete_response = self.delete_job(job)
+                    if delete_response['status'] == StatusCodes.Okay.value:
+                        jobs_tidied[job] = status
+                    else:
+                        jobs_failed_to_process[job] = delete_response['message']
                 else:
-                    self._logger.debug(f'Not processing job "{job}", current status is "{status}"')
+                    jobs_failed_to_process[job] = write_logs_response['message']
+
+            else:
+                self._logger.debug(f'Not processing job "{job}", current status is "{status}"')
+                jobs_untouched[job] = status
             return {'status': StatusCodes.Okay.value,
                     'message': 'Spark jobs tidied successfully',
                     'Jobs tidied': jobs_tidied,
-                    'Jobs untouched': jobs_untouched}
-        except ApiException as exception:
-            message = f'Trying to tidy spark jobs resulted in api exception: {exception.reason}'
-            self._logger.error(message)
-            return {
-                'status': exception.status,
-                'message': message
-            }
+                    'Jobs untouched': jobs_untouched,
+                    'Jobs failed to process': jobs_failed_to_process}
 
     def write_logs_to_file(self, job_name):
         api_response = self.get_logs(job_name)
