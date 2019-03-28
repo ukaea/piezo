@@ -56,8 +56,15 @@ class SparkJobServiceGetJobStatusTest(TestSparkJobService):
         assert self.mock_kubernetes_adapter.delete_namespaced_custom_object.call_count == 3
         assert response == {'status': 200,
                             'message': 'Spark jobs tidied successfully',
-                            'Jobs tidied': 3,
-                            'Jobs untouched': 5}
+                            'Jobs tidied': {'job4': 'COMPLETED',
+                                            'job7': 'FAILED',
+                                            'job8': 'COMPLETED'},
+                            'Jobs untouched': {'job1': 'RUNNING',
+                                               'job2': 'PENDING',
+                                               'job3': 'SUCCEEDED',
+                                               'job5': 'CrashLoopBackOff',
+                                               'job6': 'UNKNOWN'},
+                            'Jobs failed to process': {}}
 
     @patch('PiezoWebApp.src.services.spark_job.spark_job_service.SparkJobService.get_jobs',
            return_value={'status': 999, 'message': 'Unexpected response from Kubernetes API when trying to get'
@@ -69,7 +76,13 @@ class SparkJobServiceGetJobStatusTest(TestSparkJobService):
         expected_message = 'Unexpected response from Kubernetes API when trying to get list of spark jobs: K8s Reason'
         self.assertDictEqual(result, {'status': 999, 'message': expected_message})
 
-
+    @patch('PiezoWebApp.src.services.spark_job.spark_job_service.SparkJobService.delete_job',
+           side_effect=[{'status': 200, 'message': 'pass'},
+                        {'status': 999, 'message': 'FAILED TO DELETE JOB'}])
+    @patch('PiezoWebApp.src.services.spark_job.spark_job_service.SparkJobService.write_logs_to_file',
+           side_effect=[{'status': 200, 'message': 'pass'},
+                        {'status': 999, 'message': 'FAILED TO WRITE LOGS'},
+                        {'status': 200, 'message': 'pass'}])
     @patch('PiezoWebApp.src.services.spark_job.spark_job_service.SparkJobService.get_jobs',
            return_value={"spark_jobs": {"job1": "RUNNING",
                                         "job2": "PENDING",
@@ -80,16 +93,17 @@ class SparkJobServiceGetJobStatusTest(TestSparkJobService):
                                         "job7": "FAILED",
                                         "job8": "COMPLETED"},
                          "status": 200})
-    @patch('PiezoWebApp.src.services.spark_job.spark_job_service.SparkJobService.write_logs_to_file',
-           side_effect=[{'status': 200, 'message': 'pass'},
-                        {'status': 999, 'message': 'FAIL'},
-                        {'status': 200, 'message': 'pass'}])
-    def test_tidy_jobs_skips_jobs_that_cannot_get_logs_from(self, write_logs, get_jobs):
+    def test_tidy_jobs_skips_jobs_that_fail_to_process(self, get_jobs, write_logs, delete_job):
         # Act
         result = self.test_service.tidy_jobs()
         # Assert
         self.assertDictEqual(result, {'status': 200,
                                       'message': 'Spark jobs tidied successfully',
-                                      'Jobs tidied': 2,
-                                      'Jobs untouched': 5,
-                                      'Jobs failed to process': 1})
+                                      'Jobs tidied': {'job4': 'COMPLETED'},
+                                      'Jobs untouched': {'job1': 'RUNNING',
+                                                         'job2': 'PENDING',
+                                                         'job3': 'SUCCEEDED',
+                                                         'job5': 'CrashLoopBackOff',
+                                                         'job6': 'UNKNOWN'},
+                                      'Jobs failed to process': {'job7': 'FAILED TO WRITE LOGS',
+                                                                 'job8': 'FAILED TO DELETE JOB'}})

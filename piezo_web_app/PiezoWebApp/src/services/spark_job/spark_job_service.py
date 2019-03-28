@@ -207,11 +207,11 @@ class SparkJobService(ISparkJobService):
             else:
                 self._logger.debug(f'Not processing job "{job}", current status is "{status}"')
                 jobs_untouched[job] = status
-            return {'status': StatusCodes.Okay.value,
-                    'message': 'Spark jobs tidied successfully',
-                    'Jobs tidied': jobs_tidied,
-                    'Jobs untouched': jobs_untouched,
-                    'Jobs failed to process': jobs_failed_to_process}
+        return {'status': StatusCodes.Okay.value,
+                'message': 'Spark jobs tidied successfully',
+                'Jobs tidied': jobs_tidied,
+                'Jobs untouched': jobs_untouched,
+                'Jobs failed to process': jobs_failed_to_process}
 
     def write_logs_to_file(self, job_name):
         api_response = self.get_logs(job_name)
