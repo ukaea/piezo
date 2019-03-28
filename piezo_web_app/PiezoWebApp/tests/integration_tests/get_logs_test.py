@@ -36,7 +36,6 @@ class GetLogsIntegrationTest(BaseIntegrationTest):
         # Act
         response_body, response_code = yield self.send_request(body)
         # Assert
-        assert self.mock_k8s_adapter.read_namespaced_pod_log.call_count == 1
         self.mock_k8s_adapter.read_namespaced_pod_log.assert_called_once_with('test-spark-job-driver', NAMESPACE)
         assert response_code == 200
         self.assertDictEqual(response_body, {
