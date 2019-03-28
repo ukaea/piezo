@@ -30,7 +30,7 @@ Get Response Data Message
 
 Get Response Job Status
   [Arguments]   ${response}
-  [return]    ${response.json()["data"]["job status"]}
+  [return]    ${response.json()["data"]["job_status"]}
 
 Get Response Spark Jobs
   [Arguments]   ${response}
@@ -38,11 +38,11 @@ Get Response Spark Jobs
 
 Get Response Tidied Jobs
   [Arguments]   ${response}
-  [return]    ${response.json()["data"]["Jobs tidied"]}
+  [return]    ${response.json()["data"]["jobs_tidied"]}
 
 Get Response Untouched Jobs
   [Arguments]   ${response}
-  [return]    ${response.json()["data"]["Jobs untouched"]}
+  [return]    ${response.json()["data"]["jobs_untouched"]}
 
 Get Response Job Name
   [Arguments]   ${response}
