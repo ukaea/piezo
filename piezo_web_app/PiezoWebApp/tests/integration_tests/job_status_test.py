@@ -56,12 +56,12 @@ class TestJobStatusIntegration(BaseIntegrationTest):
             'status': 'success',
             'data': {
                 "message": 'Job status for "test-spark-job"',
-                "job status": "RUNNING",
+                "job_status": "RUNNING",
                 "created": 12345,
-                "submission attempts": 1,
-                "last submitted": 123456,
+                "submission_attempts": 1,
+                "last_submitted": 123456,
                 "terminated": 1234567,
-                "error messages": ''
+                "error_messages": ''
             }})
 
     @gen_test
@@ -89,12 +89,12 @@ class TestJobStatusIntegration(BaseIntegrationTest):
             'status': 'success',
             'data': {
                 "message": 'Job status for "test-spark-job"',
-                "job status": "UNKNOWN",
+                "job_status": "UNKNOWN",
                 "created": "UNKNOWN",
-                "submission attempts": "UNKNOWN",
-                "last submitted": "UNKNOWN",
+                "submission_attempts": "UNKNOWN",
+                "last_submitted": "UNKNOWN",
                 "terminated": "UNKNOWN",
-                "error messages": "UNKNOWN"
+                "error_messages": "UNKNOWN"
             }
         })
 

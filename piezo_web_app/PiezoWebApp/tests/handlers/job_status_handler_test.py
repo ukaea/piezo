@@ -30,12 +30,12 @@ class TestJobStatusHandler(BaseHandlerTest):
         self.mock_spark_job_service.get_job_status.return_value = {
             "message": "status",
             "status": 200,
-            "job status": "RUNNING",
+            "job_status": "RUNNING",
             "created": 123456,
-            "submission attempts": 1,
-            "last submitted": 123455,
+            "submission_attempts": 1,
+            "last_submitted": 123455,
             "terminated": 1234567,
-            "error messages": ""
+            "error_messages": ""
         }
         # Act
         response_body, response_code = yield self.send_request(body)
@@ -51,12 +51,12 @@ class TestJobStatusHandler(BaseHandlerTest):
             'status': 'success',
             'data': {
                 'message': 'status',
-                "job status": "RUNNING",
+                "job_status": "RUNNING",
                 "created": 123456,
-                "submission attempts": 1,
-                "last submitted": 123455,
+                "submission_attempts": 1,
+                "last_submitted": 123455,
                 "terminated": 1234567,
-                "error messages": ""
+                "error_messages": ""
 
             }
         })

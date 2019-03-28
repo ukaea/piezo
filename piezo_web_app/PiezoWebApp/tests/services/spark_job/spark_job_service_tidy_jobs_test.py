@@ -55,15 +55,15 @@ class SparkJobServiceGetJobStatusTest(TestSparkJobService):
         assert self.mock_kubernetes_adapter.delete_namespaced_custom_object.call_count == 3
         assert response == {'status': 200,
                             'message': '8 Spark jobs found',
-                            'Jobs tidied': {'job4': 'COMPLETED',
+                            'jobs_tidied': {'job4': 'COMPLETED',
                                             'job7': 'FAILED',
                                             'job8': 'COMPLETED'},
-                            'Jobs untouched': {'job1': 'RUNNING',
+                            'jobs_untouched': {'job1': 'RUNNING',
                                                'job2': 'PENDING',
                                                'job3': 'SUCCEEDED',
                                                'job5': 'CrashLoopBackOff',
                                                'job6': 'UNKNOWN'},
-                            'Jobs failed to process': {}}
+                            'jobs_failed_to_process': {}}
         get_jobs.assert_called_once_with(label=None)
 
     @patch('PiezoWebApp.src.services.spark_job.spark_job_service.SparkJobService.get_jobs',
@@ -100,13 +100,13 @@ class SparkJobServiceGetJobStatusTest(TestSparkJobService):
         # Assert
         self.assertDictEqual(result, {'status': 200,
                                       'message': '8 Spark jobs found',
-                                      'Jobs tidied': {'job4': 'COMPLETED'},
-                                      'Jobs untouched': {'job1': 'RUNNING',
+                                      'jobs_tidied': {'job4': 'COMPLETED'},
+                                      'jobs_untouched': {'job1': 'RUNNING',
                                                          'job2': 'PENDING',
                                                          'job3': 'SUCCEEDED',
                                                          'job5': 'CrashLoopBackOff',
                                                          'job6': 'UNKNOWN'},
-                                      'Jobs failed to process': {'job7': 'FAILED TO WRITE LOGS FOR JOB7',
+                                      'jobs_failed_to_process': {'job7': 'FAILED TO WRITE LOGS FOR JOB7',
                                                                  'job8': 'FAILED TO DELETE JOB8'}})
         get_jobs.assert_called_once_with(label=None)
         assert write_logs.call_count == 3

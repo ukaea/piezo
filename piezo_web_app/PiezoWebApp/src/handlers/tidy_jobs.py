@@ -8,9 +8,9 @@ class TidyJobsHandler(BaseHandler):
         output_schema={
             "type": "object",
             "properties": {
-                "Jobs processed": {"type": "object"},
-                "Jobs untouched": {"type": "object"},
-                "Jobs failed to process": {"type": "object"}
+                "jobs_processed": {"type": "object"},
+                "jobs_untouched": {"type": "object"},
+                "jobs_failed to process": {"type": "object"}
             },
         }
     )

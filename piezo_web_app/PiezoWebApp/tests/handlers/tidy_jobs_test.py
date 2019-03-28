@@ -24,9 +24,9 @@ class TestGetJobsHandler(BaseHandlerTest):
         self.mock_spark_job_service.tidy_jobs.return_value = {
             'status': 200,
             'message': 'x Spark jobs found',
-            'Jobs tidied': {'some job': 'some status'},
-            'Jobs untouched': {'some job': 'some status'},
-            'Jobs failed to process': {'some job': 'some reason'}}
+            'jobs_tidied': {'some job': 'some status'},
+            'jobs_untouched': {'some job': 'some status'},
+            'jobs_failed to process': {'some job': 'some reason'}}
         # Act
         response_body, response_code = yield self.send_request_without_body()
         # Assert
@@ -39,9 +39,9 @@ class TestGetJobsHandler(BaseHandlerTest):
             'status': 'success',
             'data': {
                 'message': 'x Spark jobs found',
-                'Jobs tidied': {'some job': 'some status'},
-                'Jobs untouched': {'some job': 'some status'},
-                'Jobs failed to process': {'some job': 'some reason'}
+                'jobs_tidied': {'some job': 'some status'},
+                'jobs_untouched': {'some job': 'some status'},
+                'jobs_failed to process': {'some job': 'some reason'}
             }
         })
 

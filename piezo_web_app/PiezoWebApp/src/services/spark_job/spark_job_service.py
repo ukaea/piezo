@@ -63,12 +63,12 @@ class SparkJobService(ISparkJobService):
             status = SparkJobStatus(api_response)
             return {
                 'message': f'Job status for "{job_name}"',
-                'job status': status.status,
+                'job_status': status.status,
                 'created': status.creation_time,
-                'submission attempts': status.submission_attempts,
+                'submission_attempts': status.submission_attempts,
                 'last submitted': status.last_submitted,
                 'terminated': status.terminated_time,
-                'error messages': status.err_msg,
+                'error_messages': status.err_msg,
                 'status': StatusCodes.Okay.value
             }
         except ApiException as exception:
@@ -209,9 +209,9 @@ class SparkJobService(ISparkJobService):
                 jobs_untouched[job] = status
         return {'status': StatusCodes.Okay.value,
                 'message': f'{len(dict_of_jobs)} Spark jobs found',
-                'Jobs tidied': jobs_tidied,
-                'Jobs untouched': jobs_untouched,
-                'Jobs failed to process': jobs_failed_to_process}
+                'jobs_tidied': jobs_tidied,
+                'jobs_untouched': jobs_untouched,
+                'jobs_failed_to_process': jobs_failed_to_process}
 
     def write_logs_to_file(self, job_name):
         api_response = self.get_logs(job_name)
