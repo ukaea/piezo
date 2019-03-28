@@ -196,7 +196,6 @@ class SparkJobService(ISparkJobService):
             if status in ["COMPLETED", "FAILED"]:
                 write_logs_response = self.write_logs_to_file(job)
                 if write_logs_response['status'] == StatusCodes.Okay.value:
-                    self._logger.debug(write_logs_response['message'])
                     delete_response = self.delete_job(job)
                     if delete_response['status'] == StatusCodes.Okay.value:
                         jobs_tidied[job] = status
@@ -222,8 +221,10 @@ class SparkJobService(ISparkJobService):
             bucket_name = 'kubernetes'
             file_name = f'outputs/{job_name}/log.txt'
             self._storage_adapter.set_contents_from_string(bucket_name, file_name, api_response['message'])
+            msg = f'Logs written to "{file_name}" in bucket "{bucket_name}"'
+            self._logger.debug(msg)
             return {
-                'message': f'Logs written to "{file_name}" in bucket "{bucket_name}"',
+                'message': msg,
                 'status': StatusCodes.Okay.value
             }
         except ApiException as exception:

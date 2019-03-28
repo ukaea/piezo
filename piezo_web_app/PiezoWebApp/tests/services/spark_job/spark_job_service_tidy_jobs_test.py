@@ -79,12 +79,12 @@ class SparkJobServiceGetJobStatusTest(TestSparkJobService):
         get_jobs.assert_called_once_with(label=None)
 
     @patch('PiezoWebApp.src.services.spark_job.spark_job_service.SparkJobService.delete_job',
-           side_effect=[{'status': 200, 'message': 'pass'},
-                        {'status': 999, 'message': 'FAILED TO DELETE JOB'}])
+           side_effect=[{'status': 200, 'message': 'pass for job4'},
+                        {'status': 999, 'message': 'FAILED TO DELETE JOB8'}])
     @patch('PiezoWebApp.src.services.spark_job.spark_job_service.SparkJobService.write_logs_to_file',
-           side_effect=[{'status': 200, 'message': 'pass'},
-                        {'status': 999, 'message': 'FAILED TO WRITE LOGS'},
-                        {'status': 200, 'message': 'pass'}])
+           side_effect=[{'status': 200, 'message': 'pass for job4'},
+                        {'status': 999, 'message': 'FAILED TO WRITE LOGS FOR JOB7'},
+                        {'status': 200, 'message': 'pass for job8'}])
     @patch('PiezoWebApp.src.services.spark_job.spark_job_service.SparkJobService.get_jobs',
            return_value={"spark_jobs": {"job1": "RUNNING",
                                         "job2": "PENDING",
@@ -107,8 +107,8 @@ class SparkJobServiceGetJobStatusTest(TestSparkJobService):
                                                          'job3': 'SUCCEEDED',
                                                          'job5': 'CrashLoopBackOff',
                                                          'job6': 'UNKNOWN'},
-                                      'Jobs failed to process': {'job7': 'FAILED TO WRITE LOGS',
-                                                                 'job8': 'FAILED TO DELETE JOB'}})
+                                      'Jobs failed to process': {'job7': 'FAILED TO WRITE LOGS FOR JOB7',
+                                                                 'job8': 'FAILED TO DELETE JOB8'}})
         get_jobs.assert_called_once_with(label=None)
         assert write_logs.call_count == 3
         write_logs.assert_any_call('job4')
