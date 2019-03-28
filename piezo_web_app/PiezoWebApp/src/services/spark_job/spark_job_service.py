@@ -36,8 +36,8 @@ class SparkJobService(ISparkJobService):
                 body
             )
 
-            msg = f"{job_name} deleted" if api_response['status'] == "Success"\
-                else f"Trying to delete job {job_name} resulted in status: {api_response['status']}"
+            msg = f'"{job_name}" deleted' if api_response['status'] == "Success"\
+                else f'Trying to delete job "{job_name}" resulted in status: {api_response["status"]}'
             self._logger.debug(msg)
             return {
                 'message': msg,
@@ -196,6 +196,7 @@ class SparkJobService(ISparkJobService):
             if status in ["COMPLETED", "FAILED"]:
                 write_logs_response = self.write_logs_to_file(job)
                 if write_logs_response['status'] == StatusCodes.Okay.value:
+                    self._logger.debug(write_logs_response['message'])
                     delete_response = self.delete_job(job)
                     if delete_response['status'] == StatusCodes.Okay.value:
                         jobs_tidied[job] = status

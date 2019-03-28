@@ -84,12 +84,12 @@ class TestTidyJobsIntegration(BaseIntegrationTest):
         }
         self.mock_k8s_adapter.list_namespaced_custom_object.return_value = kubernetes_list_jobs_response
         self.mock_k8s_adapter.delete_options.return_value = {"api_version": "version", "other_values": "values"}
+        self.mock_k8s_adapter.delete_namespaced_custom_object.return_value = {'status': 200}
         # Act
         response_body, response_code = yield self.send_request_without_body()
         # Assert
         self.mock_k8s_adapter.read_namespaced_pod_log.assert_any_call('job2-driver', 'default')
         self.mock_k8s_adapter.read_namespaced_pod_log.assert_any_call('job3-driver', 'default')
-        self.mock_logger.debug.assert_any_call('Not processing job "job1", current status is "RUNNING"')
         assert self.mock_k8s_adapter.read_namespaced_pod_log.call_count == 2
         self.mock_k8s_adapter.delete_namespaced_custom_object.assert_any_call(CRD_GROUP,
                                                                               CRD_VERSION,
@@ -111,12 +111,16 @@ class TestTidyJobsIntegration(BaseIntegrationTest):
                                                                               })
         assert self.mock_k8s_adapter.delete_namespaced_custom_object.call_count == 2
         assert response_code == 200
+        self.mock_logger.debug.assert_any_call('Not processing job "job1", current status is "RUNNING"')
+        self.mock_logger.debug.assert_any_call('Logs written to "outputs/job2/log.txt" in bucket "kubernetes"')
+        self.mock_logger.debug.assert_any_call('Trying to delete job "job2" resulted in status: 200')
+        self.mock_logger.debug.assert_any_call('Logs written to "outputs/job3/log.txt" in bucket "kubernetes"')
+        self.mock_logger.debug.assert_any_call('Trying to delete job "job3" resulted in status: 200')
         self.assertDictEqual(response_body, {
             'status': 'success',
             'data': {
                 'message': 'Spark jobs tidied successfully',
-                'Jobs tidied': 2,
-                'Jobs untouched': 1
-            }
-        })
+                'Jobs tidied': {'job2': 'COMPLETED', 'job3': 'FAILED'},
+                'Jobs untouched': {'job1': 'RUNNING'},
+                'Jobs failed to process': {}}})
 
