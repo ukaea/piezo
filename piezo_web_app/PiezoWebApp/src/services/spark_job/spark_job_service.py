@@ -183,10 +183,14 @@ class SparkJobService(ISparkJobService):
             }
 
     def tidy_jobs(self):
-        dict_of_jobs = self.get_jobs(label=None)['spark_jobs']
-        jobs_untouched = len(dict_of_jobs)
-        jobs_tidied = 0
+        api_response = self.get_jobs(label=None)
+        if api_response['status'] != StatusCodes.Okay.value:
+            return api_response
         try:
+            dict_of_jobs = api_response['spark_jobs']
+            jobs_untouched = len(dict_of_jobs)
+            jobs_tidied = 0
+
             for job in dict_of_jobs:
                 status = dict_of_jobs[job]
                 if status in ["COMPLETED", "FAILED"]:
