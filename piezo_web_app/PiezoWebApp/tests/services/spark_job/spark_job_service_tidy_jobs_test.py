@@ -117,5 +117,3 @@ class SparkJobServiceGetJobStatusTest(TestSparkJobService):
         assert delete_job.call_count == 2
         delete_job.assert_any_call('job4')
         delete_job.assert_any_call('job8')
-
-
