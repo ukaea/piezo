@@ -1,4 +1,3 @@
-from kubernetes.client.rest import ApiException
 from unittest.mock import patch
 
 from PiezoWebApp.src.services.spark_job.spark_job_constants import CRD_GROUP

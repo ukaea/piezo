@@ -2,6 +2,7 @@ from tornado_json import schema
 
 from PiezoWebApp.src.handlers.base_handler import BaseHandler
 
+
 class TidyJobsHandler(BaseHandler):
     @schema.validate(
         output_schema={

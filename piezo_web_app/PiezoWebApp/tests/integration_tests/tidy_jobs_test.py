@@ -123,4 +123,3 @@ class TestTidyJobsIntegration(BaseIntegrationTest):
                 'Jobs tidied': {'job2': 'COMPLETED', 'job3': 'FAILED'},
                 'Jobs untouched': {'job1': 'RUNNING'},
                 'Jobs failed to process': {}}})
-
