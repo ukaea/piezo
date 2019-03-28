@@ -65,6 +65,7 @@ class SparkJobServiceGetJobStatusTest(TestSparkJobService):
                                                'job5': 'CrashLoopBackOff',
                                                'job6': 'UNKNOWN'},
                             'Jobs failed to process': {}}
+        get_jobs.assert_called_once_with(label=None)
 
     @patch('PiezoWebApp.src.services.spark_job.spark_job_service.SparkJobService.get_jobs',
            return_value={'status': 999, 'message': 'Unexpected response from Kubernetes API when trying to get'
