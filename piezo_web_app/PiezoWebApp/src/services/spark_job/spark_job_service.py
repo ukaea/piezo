@@ -194,6 +194,8 @@ class SparkJobService(ISparkJobService):
                     self.delete_job(job)
                     jobs_tidied += 1
                     jobs_untouched -= 1
+                else:
+                    self._logger.debug(f'Not processing job "{job}", current status is "{status}"')
             return {'status': StatusCodes.Okay.value,
                     'message': 'Spark jobs tidied successfully',
                     'Jobs tidied': jobs_tidied,

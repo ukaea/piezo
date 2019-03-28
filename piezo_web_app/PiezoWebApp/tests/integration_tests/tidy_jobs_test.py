@@ -89,6 +89,7 @@ class TestTidyJobsIntegration(BaseIntegrationTest):
         # Assert
         self.mock_k8s_adapter.read_namespaced_pod_log.assert_any_call('job2-driver', 'default')
         self.mock_k8s_adapter.read_namespaced_pod_log.assert_any_call('job3-driver', 'default')
+        self.mock_logger.debug.assert_any_call('Not processing job "job1", current status is "RUNNING"')
         assert self.mock_k8s_adapter.read_namespaced_pod_log.call_count == 2
         self.mock_k8s_adapter.delete_namespaced_custom_object.assert_any_call(CRD_GROUP,
                                                                               CRD_VERSION,
