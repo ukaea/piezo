@@ -52,7 +52,7 @@ class DeleteJobIntegrationTest(BaseIntegrationTest):
         self.assertDictEqual(response_body, {
             'status': 'success',
             'data': {
-                'message': 'test-spark-job deleted'
+                'message': '"test-spark-job" deleted'
             }
         })
 
