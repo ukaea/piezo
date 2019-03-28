@@ -251,11 +251,11 @@ Tidy Jobs Does Not Affect Unfinished Jobs
     Dictionary Should Contain Key   ${untouched_jobs}    ${new_job_name2}
     Dictionary Should Not Contain Value   ${untouched_jobs}     COMPLETED
     Dictionary Should Not Contain Value   ${untouched_jobs}     FAILED
-    Dictionary Should Not Contain Values    ${tidied_jobs}    RUNNING
-    Dictionary Should Not Contain Values    ${tidied_jobs}    PENDING
-    Dictionary Should Not Contain Values    ${tidied_jobs}    UNKNOWN
-    Dictionary Should Not Contain Values    ${tidied_jobs}    CrashLoopBackOff
-    Dictionary Should Not Contain Values    ${tidied_jobs}    SUCCEEDED
+    Dictionary Should Not Contain Value    ${tidied_jobs}    RUNNING
+    Dictionary Should Not Contain Value    ${tidied_jobs}    PENDING
+    Dictionary Should Not Contain Value    ${tidied_jobs}    UNKNOWN
+    Dictionary Should Not Contain Value    ${tidied_jobs}    CrashLoopBackOff
+    Dictionary Should Not Contain Value    ${tidied_jobs}    SUCCEEDED
 
 Tidy Jobs Writes Logs And Deletes Completed Jobs
     ${response1}=    Submit SparkPi Job    spark-pi-1
