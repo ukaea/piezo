@@ -232,3 +232,40 @@ Write Logs Of Completed Jobs Appears In S3
     ${pi_lines}=    Get Lines Containing String   ${joblog}   Pi is roughly 3
     ${num_pi_lines}=    Get Line Count    ${pi_lines}
     Should Be Equal As Integers   ${num_pi_lines}   1
+
+Tidy Jobs Does Not Affect Unfinished Jobs
+    ${response1}=    Submit SparkPi Job    spark-pi-1
+    Submit SparkPi Job    spark-pi-2
+    Submit SparkPi Job    spark-pi-3
+    Submit SparkPi Job    spark-pi-4
+    Submit SparkPi Job    spark-pi-5
+    ${new_job_name1}=    Get Response Job Name   ${response1}
+    Wait For Spark Job To Finish        ${new_job_name1}   24
+    ${response2}=    Submit SparkPi Job    spark-pi-6
+    ${new_job_name2}=    Get Response Job Name   ${response2}
+    ${request_response}=    Tidy Jobs
+    Confirm Ok Response     ${request_response}
+    ${tidied_jobs}=    Get Response Tidied Jobs     ${request_response}
+    ${untouched_jobs}=    Get Response Untouched Jobs     ${request_response}
+    Dictionary Should Contain Item    ${tidied_jobs}    ${new_job_name1}    COMPLETED
+    Dictionary Should Contain Key   ${untouched_jobs}    ${new_job_name2}
+    Dictionary Should Not Contain Value   ${untouched_jobs}     COMPLETED
+    Dictionary Should Not Contain Value   ${untouched_jobs}     FAILED
+    Dictionary Should Not Contain Values    ${tidied_jobs}    RUNNING
+    Dictionary Should Not Contain Values    ${tidied_jobs}    PENDING
+    Dictionary Should Not Contain Values    ${tidied_jobs}    UNKNOWN
+    Dictionary Should Not Contain Values    ${tidied_jobs}    CrashLoopBackOff
+    Dictionary Should Not Contain Values    ${tidied_jobs}    SUCCEEDED
+
+Tidy Jobs Writes Logs And Deletes Completed Jobs
+    ${response1}=    Submit SparkPi Job    spark-pi-1
+    ${new_job_name1}=    Get Response Job Name   ${response1}
+    ${response2}=    Submit SparkPi Job    spark-pi-2
+    ${new_job_name2}=    Get Response Job Name   ${response2}
+    Wait For Spark Job To Finish        ${new_job_name1}   24
+    Wait For Spark Job To Finish        ${new_job_name2}   24
+    ${request_response}=    Tidy Jobs
+    Confirm Ok Response     ${request_response}
+    ${tidied_jobs}=    Get Response Tidied Jobs     ${request_response}
+    Dictionary Should Contain Item    ${tidied_jobs}    ${new_job_name1}    COMPLETED
+    Dictionary Should Contain Item    ${tidied_jobs}    ${new_job_name2}    COMPLETED

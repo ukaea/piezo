@@ -58,6 +58,7 @@ Get Status Of Spark Job
     ${response}=  Get Request With Json Body   /piezo/jobstatus    ${body}
     [return]    ${response}
 
+
 Post Request With Json Body
     [Arguments]   ${route}    ${body}
     ${headers}=   Json Header
@@ -91,6 +92,13 @@ Submit Wordcount On Minio Job
     ${submitbody}=    Create Dictionary   name=${job_name}   language=Python   python_version=2    path_to_main_app_file=s3a://kubernetes/inputs/wordcount.py     label=systemTest      arguments=${arguments}    executors=4
     ${response}=    Post Request With Json Body   /piezo/submitjob    ${submitbody}
     [return]  ${response}
+
+Tidy jobs
+    ${headers}=   Json Header
+    Create Session    k8s   ${K8S_ENDPOINT}
+    ${response}=  Post Request   k8s   /piezo/tidyjobs    headers=${headers}
+    [return]  ${response}
+
 
 Wait For Spark Job To Finish
     [Arguments]    ${job_name}    ${step_size}

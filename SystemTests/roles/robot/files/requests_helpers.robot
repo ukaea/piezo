@@ -36,6 +36,14 @@ Get Response Spark Jobs
   [Arguments]   ${response}
   [return]    ${response.json()["data"]["spark_jobs"]}
 
+Get Response Tidied Jobs
+  [Arguments]   ${response}
+  [return]    ${response.json()["data"]["Jobs tidied"]}
+
+Get Response Untouched Jobs
+  [Arguments]   ${response}
+  [return]    ${response.json()["data"]["Jobs untouched"]}
+
 Get Response Job Name
   [Arguments]   ${response}
   [return]    ${response.json()["data"]["job_name"]}
