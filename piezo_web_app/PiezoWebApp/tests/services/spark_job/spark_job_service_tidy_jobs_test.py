@@ -69,12 +69,13 @@ class SparkJobServiceGetJobStatusTest(TestSparkJobService):
     @patch('PiezoWebApp.src.services.spark_job.spark_job_service.SparkJobService.get_jobs',
            return_value={'status': 999, 'message': 'Unexpected response from Kubernetes API when trying to get'
                                                    ' list of spark jobs: K8s Reason'})
-    def test_tidy_jobs_returns_kubernetes_api_exception_reason(self, get_jobs):
+    def test_tidy_jobs_returns_kubernetes_api_exception_reason_raised_getting_jobs(self, get_jobs):
         # Act
         result = self.test_service.tidy_jobs()
         # Assert
         expected_message = 'Unexpected response from Kubernetes API when trying to get list of spark jobs: K8s Reason'
         self.assertDictEqual(result, {'status': 999, 'message': expected_message})
+        get_jobs.assert_called_once_with(label=None)
 
     @patch('PiezoWebApp.src.services.spark_job.spark_job_service.SparkJobService.delete_job',
            side_effect=[{'status': 200, 'message': 'pass'},
@@ -107,3 +108,13 @@ class SparkJobServiceGetJobStatusTest(TestSparkJobService):
                                                          'job6': 'UNKNOWN'},
                                       'Jobs failed to process': {'job7': 'FAILED TO WRITE LOGS',
                                                                  'job8': 'FAILED TO DELETE JOB'}})
+        get_jobs.assert_called_once_with(label=None)
+        assert write_logs.call_count == 3
+        write_logs.assert_any_call('job4')
+        write_logs.assert_any_call('job7')  # Call where logs fail to be written
+        write_logs.assert_any_call('job8')
+        assert delete_job.call_count == 2
+        delete_job.assert_any_call('job4')
+        delete_job.assert_any_call('job8')
+
+
