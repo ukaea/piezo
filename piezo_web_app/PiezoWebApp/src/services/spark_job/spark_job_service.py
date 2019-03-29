@@ -1,3 +1,5 @@
+import asyncio
+
 from kubernetes.client.rest import ApiException
 
 from PiezoWebApp.src.models.return_status import StatusCodes
@@ -182,6 +184,17 @@ class SparkJobService(ISparkJobService):
                 'message': message
             }
 
+    def tidy_jobs_a(self):
+        api_response = self.get_jobs(label=None)
+        if api_response['status'] != StatusCodes.Okay.value:
+            return api_response
+        dict_of_jobs = api_response['spark_jobs']
+        jobs_skipped = {}
+        jobs_tidied = {}
+        jobs_failed_to_process = {}
+        summary = self.process_jobs(dict_of_jobs, jobs_tidied, jobs_skipped, jobs_failed_to_process)
+        return summary
+
     def tidy_jobs(self):
         api_response = self.get_jobs(label=None)
         if api_response['status'] != StatusCodes.Okay.value:
@@ -242,3 +255,29 @@ class SparkJobService(ISparkJobService):
             return item['status']['applicationState']['state']
         except KeyError:
             return 'UNKNOWN'
+
+    async def write_and_delete(self, job, status, jobs_tidied, jobs_skipped, jobs_failed_to_process):
+        if status in ["COMPLETED", "FAILED"]:
+            write_logs_response = self.write_logs_to_file(job)
+            if write_logs_response['status'] == StatusCodes.Okay.value:
+                delete_response = self.delete_job(job)
+                if delete_response['status'] == StatusCodes.Okay.value:
+                    jobs_tidied[job] = status
+                else:
+                    jobs_failed_to_process[job] = delete_response['message']
+            else:
+                jobs_failed_to_process[job] = write_logs_response['message']
+        else:
+            self._logger.debug(f'Not processing job "{job}", current status is "{status}"')
+            jobs_skipped[job] = status
+
+
+    def process_jobs(self, dict_of_jobs, jobs_tidied, jobs_skipped, jobs_failed_to_process):
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(asyncio.gather(*(self.write_and_delete(job, status, jobs_tidied, jobs_skipped, jobs_failed_to_process) for job, status in dict_of_jobs.items())))
+        return {'status': StatusCodes.Okay.value,
+                'message': f'{len(dict_of_jobs)} Spark jobs found',
+                'jobs_tidied': jobs_tidied,
+                'jobs_skipped': jobs_skipped,
+                'jobs_failed_to_process': jobs_failed_to_process}
+
