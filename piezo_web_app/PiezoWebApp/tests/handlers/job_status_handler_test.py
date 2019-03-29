@@ -2,7 +2,7 @@ import json
 import pytest
 
 from mock import call
-from tornado.httpclient import HTTPClientError
+from tornado.httpclient import HTTPError
 from tornado.testing import gen_test
 
 from PiezoWebApp.tests.handlers.base_handler_test import BaseHandlerTest
@@ -70,7 +70,7 @@ class TestJobStatusHandler(BaseHandlerTest):
             "status": 404
         }
         # Act
-        with pytest.raises(HTTPClientError) as error:
+        with pytest.raises(HTTPError) as error:
             yield self.send_request(body)
         assert error.value.response.code == 404
         msg = json.loads(error.value.response.body, encoding='utf-8')['data']
@@ -79,7 +79,7 @@ class TestJobStatusHandler(BaseHandlerTest):
     @gen_test
     def test_get_returns_input_malformed_message_if_no_body_provided(self):
         # Act
-        with pytest.raises(HTTPClientError) as error:
+        with pytest.raises(HTTPError) as error:
             yield self.send_request_without_body()
         assert error.value.response.code == 400
         msg = json.loads(error.value.response.body, encoding='utf-8')['data']
