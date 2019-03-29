@@ -23,6 +23,8 @@ spec:
         volumeMounts:
         - name: {{ secrets_name }}
           mountPath: "/etc/secrets/"
+        - name: validation-rules
+          mountPath: "/etc/"
       volumes:
       - name: {{ secrets_name }}
         secret:
@@ -32,6 +34,12 @@ spec:
             path: access_key
           - key: secretKey
             path: secret_key
+      - name: validation-rules
+        configMap:
+          name: test-conf
+          items:
+          - key: validation_rules.json
+            path: validation_rules.json
 ---
 kind: Service
 apiVersion: v1
