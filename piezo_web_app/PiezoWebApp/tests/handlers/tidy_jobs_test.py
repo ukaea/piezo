@@ -44,17 +44,3 @@ class TestGetJobsHandler(BaseHandlerTest):
                 'jobs_failed_to_process': {'some job': 'some reason'}
             }
         })
-
-    @gen_test
-    def test_post_returns_message_and_status_code_when_k8s_error(self):
-        # Arrange
-        self.mock_spark_job_service.tidy_jobs.return_value = {
-            "message": "Kubernetes error",
-            "status": 999
-        }
-        # Act
-        with pytest.raises(HTTPClientError) as error:
-            yield self.send_request_without_body()
-        assert error.value.response.code == 999
-        msg = json.loads(error.value.response.body, encoding='utf-8')['data']
-        assert msg == "Kubernetes error"
