@@ -1,8 +1,4 @@
-import json
-import pytest
-
 from mock import call
-from tornado.httpclient import HTTPClientError
 from tornado.testing import gen_test
 
 from PiezoWebApp.tests.handlers.base_handler_test import BaseHandlerTest
