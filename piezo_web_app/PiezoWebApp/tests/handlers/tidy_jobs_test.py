@@ -26,7 +26,7 @@ class TestGetJobsHandler(BaseHandlerTest):
             'message': 'x Spark jobs found',
             'jobs_tidied': {'some job': 'some status'},
             'jobs_untouched': {'some job': 'some status'},
-            'jobs_failed to process': {'some job': 'some reason'}}
+            'jobs_failed_to_process': {'some job': 'some reason'}}
         # Act
         response_body, response_code = yield self.send_request_without_body()
         # Assert
@@ -41,7 +41,7 @@ class TestGetJobsHandler(BaseHandlerTest):
                 'message': 'x Spark jobs found',
                 'jobs_tidied': {'some job': 'some status'},
                 'jobs_untouched': {'some job': 'some status'},
-                'jobs_failed to process': {'some job': 'some reason'}
+                'jobs_failed_to_process': {'some job': 'some reason'}
             }
         })
 
