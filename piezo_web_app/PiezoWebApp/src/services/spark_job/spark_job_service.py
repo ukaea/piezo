@@ -66,7 +66,7 @@ class SparkJobService(ISparkJobService):
                 'job_status': status.status,
                 'created': status.creation_time,
                 'submission_attempts': status.submission_attempts,
-                'last submitted': status.last_submitted,
+                'last_submitted': status.last_submitted,
                 'terminated': status.terminated_time,
                 'error_messages': status.err_msg,
                 'status': StatusCodes.Okay.value

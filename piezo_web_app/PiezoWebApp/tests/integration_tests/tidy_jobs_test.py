@@ -121,5 +121,5 @@ class TestTidyJobsIntegration(BaseIntegrationTest):
             'data': {
                 'message': '3 Spark jobs found',
                 'jobs_tidied': {'job2': 'COMPLETED', 'job3': 'FAILED'},
-                'jobs untouched': {'job1': 'RUNNING'},
+                'jobs_untouched': {'job1': 'RUNNING'},
                 'jobs_failed_to_process': {}}})
