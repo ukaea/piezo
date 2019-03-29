@@ -195,7 +195,12 @@ class SparkJobService(ISparkJobService):
             self.write_and_delete(job, status) for job, status in dict_of_jobs.items())))
         jobs_skipped = {job.job_name: job.status for job in summary if job.tidied == "NO"}
         jobs_tidied = {job.job_name: job.status for job in summary if job.tidied == "YES"}
-        jobs_failed_to_process = {job.job_name: job.status for job in summary if job.tidied == "FAIL"}
+        jobs_failed_to_process = {
+            job.job_name: {
+                "job_status": job.status,
+                "error_message": job.err_msg,
+                "error_status_code": job.err_status
+            } for job in summary if job.tidied == "FAIL"}
         return {'status': StatusCodes.Okay.value,
                 'message': f'{len(dict_of_jobs)} Spark jobs found',
                 'jobs_tidied': jobs_tidied,
@@ -238,11 +243,15 @@ class SparkJobService(ISparkJobService):
             if write_logs_response['status'] == StatusCodes.Okay.value:
                 delete_response = self.delete_job(job)
                 if delete_response['status'] == StatusCodes.Okay.value:
-                    return TidiedJobStatus(job, status, "YES", None)
+                    return TidiedJobStatus(job, status, "YES", None, None)
                 else:
-                    return TidiedJobStatus(job, status, "FAIL", delete_response['message'])
+                    return TidiedJobStatus(job, status, "FAIL", delete_response['message'], delete_response['status'])
             else:
-                return TidiedJobStatus(job, status, "FAIL", write_logs_response['message'])
+                return TidiedJobStatus(job,
+                                       status,
+                                       "FAIL",
+                                       write_logs_response['message'],
+                                       write_logs_response['status'])
         else:
             self._logger.debug(f'Not processing job "{job}", current status is "{status}"')
-            return TidiedJobStatus(job, status, "NO", None)
+            return TidiedJobStatus(job, status, "NO", None, None)
