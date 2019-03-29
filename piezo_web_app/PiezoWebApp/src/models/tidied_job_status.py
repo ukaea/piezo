@@ -23,5 +23,5 @@ class TidiedJobStatus:
         return self._err_msg
 
     @property
-    def err_msg(self):
+    def err_status(self):
         return self._err_status
