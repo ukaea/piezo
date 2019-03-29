@@ -15,7 +15,7 @@ class TidyJobsHandler(BaseHandler):
         }
     )
     def post(self, *args, **kwargs):
-        result = self._spark_job_service.tidy_jobs_a()
+        result = self._spark_job_service.tidy_jobs()
         self._logger.debug(f'Tidying spark application returned: "{result}".')
         self.check_request_was_completed_successfully(result)
         del result['status']
