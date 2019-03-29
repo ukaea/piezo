@@ -9,7 +9,7 @@ class TidyJobsHandler(BaseHandler):
             "type": "object",
             "properties": {
                 "jobs_processed": {"type": "object"},
-                "jobs_untouched": {"type": "object"},
+                "jobs_skipped": {"type": "object"},
                 "jobs_failed_to_process": {"type": "object"}
             },
         }

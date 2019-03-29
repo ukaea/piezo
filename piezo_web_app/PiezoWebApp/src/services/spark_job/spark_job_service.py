@@ -187,7 +187,7 @@ class SparkJobService(ISparkJobService):
         if api_response['status'] != StatusCodes.Okay.value:
             return api_response
         dict_of_jobs = api_response['spark_jobs']
-        jobs_untouched = {}
+        jobs_skipped = {}
         jobs_tidied = {}
         jobs_failed_to_process = {}
 
@@ -206,11 +206,11 @@ class SparkJobService(ISparkJobService):
 
             else:
                 self._logger.debug(f'Not processing job "{job}", current status is "{status}"')
-                jobs_untouched[job] = status
+                jobs_skipped[job] = status
         return {'status': StatusCodes.Okay.value,
                 'message': f'{len(dict_of_jobs)} Spark jobs found',
                 'jobs_tidied': jobs_tidied,
-                'jobs_untouched': jobs_untouched,
+                'jobs_skipped': jobs_skipped,
                 'jobs_failed_to_process': jobs_failed_to_process}
 
     def write_logs_to_file(self, job_name):
