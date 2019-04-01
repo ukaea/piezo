@@ -246,11 +246,11 @@ Tidy Jobs Does Not Affect Unfinished Jobs
     ${request_response}=    Tidy Jobs
     Confirm Ok Response     ${request_response}
     ${tidied_jobs}=    Get Response Tidied Jobs     ${request_response}
-    ${untouched_jobs}=    Get Response Untouched Jobs     ${request_response}
+    ${skipped_jobs}=    Get Response Skipped Jobs     ${request_response}
     Dictionary Should Contain Item    ${tidied_jobs}    ${new_job_name1}    COMPLETED
-    Dictionary Should Contain Key   ${untouched_jobs}    ${new_job_name2}
-    Dictionary Should Not Contain Value   ${untouched_jobs}     COMPLETED
-    Dictionary Should Not Contain Value   ${untouched_jobs}     FAILED
+    Dictionary Should Contain Key   ${skipped_jobs}    ${new_job_name2}
+    Dictionary Should Not Contain Value   ${skipped_jobs}     COMPLETED
+    Dictionary Should Not Contain Value   ${skipped_jobs}     FAILED
     Dictionary Should Not Contain Value    ${tidied_jobs}    RUNNING
     Dictionary Should Not Contain Value    ${tidied_jobs}    PENDING
     Dictionary Should Not Contain Value    ${tidied_jobs}    UNKNOWN

@@ -40,9 +40,9 @@ Get Response Tidied Jobs
   [Arguments]   ${response}
   [return]    ${response.json()["data"]["jobs_tidied"]}
 
-Get Response Untouched Jobs
+Get Response Skipped Jobs
   [Arguments]   ${response}
-  [return]    ${response.json()["data"]["jobs_untouched"]}
+  [return]    ${response.json()["data"]["jobs_skipped"]}
 
 Get Response Job Name
   [Arguments]   ${response}
