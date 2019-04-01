@@ -24,7 +24,7 @@ spec:
         - name: {{ secrets_name }}
           mountPath: "/etc/secrets/"
         - name: validation-rules
-          mountPath: "/etc/configs/"
+          mountPath: "/piezo_web_app/PiezoWebApp/" # If changed then update VALIDATION_RULES_PATH in run_piezo.py
       volumes:
       - name: {{ secrets_name }}
         secret:
@@ -36,7 +36,7 @@ spec:
             path: secret_key
       - name: validation-rules
         configMap:
-          name: test-conf
+          name: validation-rules
           items:
           - key: validation_rules.json
             path: validation_rules.json
