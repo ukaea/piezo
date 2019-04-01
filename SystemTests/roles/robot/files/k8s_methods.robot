@@ -58,7 +58,6 @@ Get Status Of Spark Job
     ${response}=  Get Request With Json Body   /piezo/jobstatus    ${body}
     [return]    ${response}
 
-
 Post Request With Json Body
     [Arguments]   ${route}    ${body}
     ${headers}=   Json Header
