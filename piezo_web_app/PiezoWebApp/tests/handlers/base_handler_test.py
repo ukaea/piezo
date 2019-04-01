@@ -3,7 +3,7 @@ import json
 import logging
 import mock
 import pytest
-from tornado.httpclient import HTTPClientError
+from tornado.httpclient import HTTPError
 from tornado.testing import AsyncHTTPTestCase
 from tornado.web import Application
 
@@ -91,6 +91,6 @@ class BaseHandlerTest(AsyncHTTPTestCase, metaclass=ABCMeta):
         return response_body, response.code
 
     async def assert_request_returns_400(self, body):
-        with pytest.raises(HTTPClientError) as error:
+        with pytest.raises(HTTPError) as error:
             await self._request(self.standard_request_method, body)
         assert error.value.response.code == 400

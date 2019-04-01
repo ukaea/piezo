@@ -3,7 +3,7 @@ from unittest.mock import patch
 import json
 from kubernetes.client.rest import ApiException
 import pytest
-from tornado.httpclient import HTTPClientError
+from tornado.httpclient import HTTPError
 from tornado.testing import gen_test
 
 from PiezoWebApp.src.handlers.submit_job import SubmitJobHandler
@@ -356,7 +356,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             'executor_memory': '4097m'
         }
         # Act
-        with pytest.raises(HTTPClientError) as error:
+        with pytest.raises(HTTPError) as error:
             yield self.send_request(body)
         # Assert
         self.mock_k8s_adapter.get_namespaced_custom_object.assert_not_called()
@@ -383,7 +383,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             'dummy-key': 'dummy-value'
         }
         # Act
-        with pytest.raises(HTTPClientError) as error:
+        with pytest.raises(HTTPError) as error:
             yield self.send_request(body)
         # Assert
         self.mock_k8s_adapter.get_namespaced_custom_object.assert_not_called()
@@ -408,7 +408,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             'executor_memory': '2048'
         }
         # Act
-        with pytest.raises(HTTPClientError) as error:
+        with pytest.raises(HTTPError) as error:
             yield self.send_request(body)
         # Assert
         self.mock_k8s_adapter.get_namespaced_custom_object.assert_not_called()
@@ -435,7 +435,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             'python_version': '2'
         }
         # Act
-        with pytest.raises(HTTPClientError) as error:
+        with pytest.raises(HTTPError) as error:
             yield self.send_request(body)
         # Assert
         self.mock_k8s_adapter.get_namespaced_custom_object.assert_not_called()
@@ -457,7 +457,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             'label': '-label-'
         }
         # Act
-        with pytest.raises(HTTPClientError) as error:
+        with pytest.raises(HTTPError) as error:
             yield self.send_request(body)
         # Assert
         self.mock_k8s_adapter.get_namespaced_custom_object.assert_not_called()

@@ -73,11 +73,25 @@ class BaseIntegrationTest(tornado.testing.AsyncHTTPTestCase, metaclass=ABCMeta):
         )
         return response
 
+    async def _request_without_body(self, method):
+        response = await self.http_client.fetch(
+            self.url,
+            method=method,
+            body=None,
+            allow_nonstandard_methods=True
+        )
+        return response
+
     @staticmethod
     def _get_body(response):
         return json.loads(response.body, encoding='utf-8')
 
     async def send_request(self, body):
         response = await self._request(self.standard_request_method, body)
+        response_body = BaseIntegrationTest._get_body(response)
+        return response_body, response.code
+
+    async def send_request_without_body(self):
+        response = await self._request_without_body(self.standard_request_method)
         response_body = BaseIntegrationTest._get_body(response)
         return response_body, response.code

@@ -24,5 +24,9 @@ class ISparkJobService(metaclass=ABCMeta):
         pass
 
     @abstractmethod
+    def tidy_jobs(self):
+        pass
+
+    @abstractmethod
     def write_logs_to_file(self, job_name):
         pass

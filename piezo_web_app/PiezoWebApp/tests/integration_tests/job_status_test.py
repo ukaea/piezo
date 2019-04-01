@@ -1,6 +1,6 @@
 import json
 import pytest
-from tornado.httpclient import HTTPClientError
+from tornado.httpclient import HTTPError
 from tornado.testing import gen_test
 from kubernetes.client.rest import ApiException
 
@@ -56,12 +56,12 @@ class TestJobStatusIntegration(BaseIntegrationTest):
             'status': 'success',
             'data': {
                 "message": 'Job status for "test-spark-job"',
-                "job status": "RUNNING",
+                "job_status": "RUNNING",
                 "created": 12345,
-                "submission attempts": 1,
-                "last submitted": 123456,
+                "submission_attempts": 1,
+                "last_submitted": 123456,
                 "terminated": 1234567,
-                "error messages": ''
+                "error_messages": ''
             }})
 
     @gen_test
@@ -89,12 +89,12 @@ class TestJobStatusIntegration(BaseIntegrationTest):
             'status': 'success',
             'data': {
                 "message": 'Job status for "test-spark-job"',
-                "job status": "UNKNOWN",
+                "job_status": "UNKNOWN",
                 "created": "UNKNOWN",
-                "submission attempts": "UNKNOWN",
-                "last submitted": "UNKNOWN",
+                "submission_attempts": "UNKNOWN",
+                "last_submitted": "UNKNOWN",
                 "terminated": "UNKNOWN",
-                "error messages": "UNKNOWN"
+                "error_messages": "UNKNOWN"
             }
         })
 
@@ -104,7 +104,7 @@ class TestJobStatusIntegration(BaseIntegrationTest):
         body = {'job_name': 'test-spark-job'}
         self.mock_k8s_adapter.get_namespaced_custom_object.side_effect = ApiException(status=404, reason="Not Found")
         # Act
-        with pytest.raises(HTTPClientError) as exception:
+        with pytest.raises(HTTPError) as exception:
             yield self.send_request(body)
         assert exception.value.response.code == 404
         msg = json.loads(exception.value.response.body, encoding='utf-8')['data']

@@ -1,7 +1,10 @@
+import asyncio
+
 from kubernetes.client.rest import ApiException
 
 from PiezoWebApp.src.models.return_status import StatusCodes
 from PiezoWebApp.src.models.spark_job_status import SparkJobStatus
+from PiezoWebApp.src.models.tidied_job_status import TidiedJobStatus
 from PiezoWebApp.src.services.spark_job.i_spark_job_service import ISparkJobService
 from PiezoWebApp.src.services.spark_job.spark_job_constants import CRD_GROUP
 from PiezoWebApp.src.services.spark_job.spark_job_constants import CRD_PLURAL
@@ -36,8 +39,9 @@ class SparkJobService(ISparkJobService):
                 body
             )
 
-            msg = f"{job_name} deleted" if api_response['status'] == "Success"\
-                else f"Trying to delete job {job_name} resulted in status: {api_response['status']}"
+            msg = f'"{job_name}" deleted' if api_response['status'] == "Success"\
+                else f'Trying to delete job "{job_name}" resulted in status: {api_response["status"]}'
+            self._logger.debug(msg)
             return {
                 'message': msg,
                 'status': StatusCodes.Okay.value
@@ -62,12 +66,12 @@ class SparkJobService(ISparkJobService):
             status = SparkJobStatus(api_response)
             return {
                 'message': f'Job status for "{job_name}"',
-                'job status': status.status,
+                'job_status': status.status,
                 'created': status.creation_time,
-                'submission attempts': status.submission_attempts,
-                'last submitted': status.last_submitted,
+                'submission_attempts': status.submission_attempts,
+                'last_submitted': status.last_submitted,
                 'terminated': status.terminated_time,
-                'error messages': status.err_msg,
+                'error_messages': status.err_msg,
                 'status': StatusCodes.Okay.value
             }
         except ApiException as exception:
@@ -181,6 +185,28 @@ class SparkJobService(ISparkJobService):
                 'message': message
             }
 
+    def tidy_jobs(self):
+        api_response = self.get_jobs(label=None)
+        if api_response['status'] != StatusCodes.Okay.value:
+            return api_response
+        dict_of_jobs = api_response['spark_jobs']
+        loop = asyncio.get_event_loop()
+        summary = loop.run_until_complete(asyncio.gather(*(
+            self.write_and_delete(job, status) for job, status in dict_of_jobs.items())))
+        jobs_skipped = {job.job_name: job.status for job in summary if job.tidied == "NO"}
+        jobs_tidied = {job.job_name: job.status for job in summary if job.tidied == "YES"}
+        jobs_failed_to_process = {
+            job.job_name: {
+                "job_status": job.status,
+                "error_message": job.err_msg,
+                "error_status_code": job.err_status
+            } for job in summary if job.tidied == "FAIL"}
+        return {'status': StatusCodes.Okay.value,
+                'message': f'{len(dict_of_jobs)} Spark jobs found',
+                'jobs_tidied': jobs_tidied,
+                'jobs_skipped': jobs_skipped,
+                'jobs_failed_to_process': jobs_failed_to_process}
+
     def write_logs_to_file(self, job_name):
         api_response = self.get_logs(job_name)
         if api_response['status'] != StatusCodes.Okay.value:
@@ -189,8 +215,10 @@ class SparkJobService(ISparkJobService):
             bucket_name = 'kubernetes'
             file_name = f'outputs/{job_name}/log.txt'
             self._storage_adapter.set_contents_from_string(bucket_name, file_name, api_response['message'])
+            msg = f'Logs written to "{file_name}" in bucket "{bucket_name}"'
+            self._logger.debug(msg)
             return {
-                'message': f'Logs written to "{file_name}" in bucket "{bucket_name}"',
+                'message': msg,
                 'status': StatusCodes.Okay.value
             }
         except ApiException as exception:
@@ -208,3 +236,22 @@ class SparkJobService(ISparkJobService):
             return item['status']['applicationState']['state']
         except KeyError:
             return 'UNKNOWN'
+
+    async def write_and_delete(self, job, status):
+        if status in ["COMPLETED", "FAILED"]:
+            write_logs_response = self.write_logs_to_file(job)
+            if write_logs_response['status'] == StatusCodes.Okay.value:
+                delete_response = self.delete_job(job)
+                if delete_response['status'] == StatusCodes.Okay.value:
+                    return TidiedJobStatus(job, status, "YES", None, None)
+                else:
+                    return TidiedJobStatus(job, status, "FAIL", delete_response['message'], delete_response['status'])
+            else:
+                return TidiedJobStatus(job,
+                                       status,
+                                       "FAIL",
+                                       write_logs_response['message'],
+                                       write_logs_response['status'])
+        else:
+            self._logger.debug(f'Not processing job "{job}", current status is "{status}"')
+            return TidiedJobStatus(job, status, "NO", None, None)

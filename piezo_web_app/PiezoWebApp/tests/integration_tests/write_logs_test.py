@@ -1,9 +1,10 @@
 import json
+import pytest
 
 from kubernetes.client.rest import ApiException
-import pytest
-from tornado.httpclient import HTTPClientError
+
 from tornado.testing import gen_test
+from tornado.httpclient import HTTPError
 
 from PiezoWebApp.src.handlers.write_logs_handler import WriteLogsHandler
 from PiezoWebApp.tests.integration_tests.base_integration_test import BaseIntegrationTest
@@ -41,7 +42,7 @@ class TestWriteLogsToFileIntegration(BaseIntegrationTest):
         body = {'job_name': 'test-spark-job'}
         self.mock_k8s_adapter.read_namespaced_pod_log.side_effect = ApiException(status=404, reason="Not Found")
         # Act
-        with pytest.raises(HTTPClientError) as exception:
+        with pytest.raises(HTTPError) as exception:
             yield self.send_request(body)
         assert exception.value.response.code == 404
         msg = json.loads(exception.value.response.body, encoding='utf-8')['data']

@@ -1,6 +1,6 @@
 import json
 import pytest
-from tornado.httpclient import HTTPClientError
+from tornado.httpclient import HTTPError
 from tornado.testing import gen_test
 from kubernetes.client.rest import ApiException
 
@@ -52,7 +52,7 @@ class DeleteJobIntegrationTest(BaseIntegrationTest):
         self.assertDictEqual(response_body, {
             'status': 'success',
             'data': {
-                'message': 'test-spark-job deleted'
+                'message': '"test-spark-job" deleted'
             }
         })
 
@@ -62,7 +62,7 @@ class DeleteJobIntegrationTest(BaseIntegrationTest):
         body = {'job_name': 'test-spark-job'}
         self.mock_k8s_adapter.delete_namespaced_custom_object.side_effect = ApiException(status=404, reason="Not Found")
         # Act
-        with pytest.raises(HTTPClientError) as exception:
+        with pytest.raises(HTTPError) as exception:
             yield self.send_request(body)
         assert exception.value.response.code == 404
         msg = json.loads(exception.value.response.body, encoding='utf-8')['data']

@@ -24,12 +24,12 @@ class SparkJobServiceGetJobStatusTest(TestSparkJobService):
         # Assert
         self.assertDictEqual(result, {
             'message': 'Job status for "test-job"', 'status': 200,
-            "job status": "RUNNING",
+            "job_status": "RUNNING",
             "created": 12345,
-            "submission attempts": 1,
-            "last submitted": 123456,
+            "submission_attempts": 1,
+            "last_submitted": 123456,
             "terminated": 1234567,
-            "error messages": ''})
+            "error_messages": ''})
         self.mock_kubernetes_adapter.get_namespaced_custom_object.assert_called_once_with(
             CRD_GROUP,
             CRD_VERSION,
@@ -47,12 +47,12 @@ class SparkJobServiceGetJobStatusTest(TestSparkJobService):
         self.assertDictEqual(result, {
             "status": 200,
             "message": 'Job status for "test-job"',
-            "job status": "UNKNOWN",
+            "job_status": "UNKNOWN",
             "created": "UNKNOWN",
-            "submission attempts": "UNKNOWN",
-            "last submitted": "UNKNOWN",
+            "submission_attempts": "UNKNOWN",
+            "last_submitted": "UNKNOWN",
             "terminated": "UNKNOWN",
-            "error messages": "UNKNOWN"
+            "error_messages": "UNKNOWN"
         })
         self.mock_kubernetes_adapter.get_namespaced_custom_object.assert_called_once_with(
             CRD_GROUP,
