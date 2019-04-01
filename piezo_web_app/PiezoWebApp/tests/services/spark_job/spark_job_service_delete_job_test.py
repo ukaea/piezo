@@ -17,7 +17,7 @@ class SparkJobServiceDeleteJobTest(TestSparkJobService):
         # Act
         result = self.test_service.delete_job('test-spark-job')
         # Assert
-        self.assertDictEqual(result, {'message': 'test-spark-job deleted', 'status': 200})
+        self.assertDictEqual(result, {'message': '"test-spark-job" deleted', 'status': 200})
         self.mock_kubernetes_adapter.delete_namespaced_custom_object.assert_called_once_with(
             CRD_GROUP,
             CRD_VERSION,

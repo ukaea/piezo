@@ -30,11 +30,19 @@ Get Response Data Message
 
 Get Response Job Status
   [Arguments]   ${response}
-  [return]    ${response.json()["data"]["job status"]}
+  [return]    ${response.json()["data"]["job_status"]}
 
 Get Response Spark Jobs
   [Arguments]   ${response}
   [return]    ${response.json()["data"]["spark_jobs"]}
+
+Get Response Tidied Jobs
+  [Arguments]   ${response}
+  [return]    ${response.json()["data"]["jobs_tidied"]}
+
+Get Response Skipped Jobs
+  [Arguments]   ${response}
+  [return]    ${response.json()["data"]["jobs_skipped"]}
 
 Get Response Job Name
   [Arguments]   ${response}

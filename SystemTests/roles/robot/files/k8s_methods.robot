@@ -92,6 +92,13 @@ Submit Wordcount On Minio Job
     ${response}=    Post Request With Json Body   /piezo/submitjob    ${submitbody}
     [return]  ${response}
 
+Tidy jobs
+    ${headers}=   Json Header
+    Create Session    k8s   ${K8S_ENDPOINT}
+    ${response}=  Post Request   k8s   /piezo/tidyjobs    headers=${headers}
+    [return]  ${response}
+
+
 Wait For Spark Job To Finish
     [Arguments]    ${job_name}    ${step_size}
     :For    ${i}    IN RANGE   0    24
