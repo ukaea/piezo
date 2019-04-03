@@ -99,12 +99,12 @@ def build_app(container, use_route_stem=False):
 
 
 @gen.coroutine
-def background_tidy(logger):
+def background_tidy(logger, tidy_frequency):
     spark_job_service = CONTAINER['spark_job_service']
     while True:
         response = spark_job_service.tidy_jobs()
         logger.debug(f'Summary of jobs tidied at {datetime.datetime.now()}: {response}')
-        yield gen.sleep(3600)
+        yield gen.sleep(tidy_frequency)
 
 
 if __name__ == "__main__":
@@ -119,5 +119,5 @@ if __name__ == "__main__":
     CONTAINER = build_container(CONFIGURATION, KUBERNETES_ADAPTER, LOGGER, STORAGE_ADAPTER, VALIDATION_RULES_PATH)
     APPLICATION = build_app(CONTAINER, use_route_stem=True)
     APPLICATION.listen(CONFIGURATION.app_port)
-    tornado.ioloop.IOLoop.instance().spawn_callback(background_tidy, LOGGER)
+    tornado.ioloop.IOLoop.instance().spawn_callback(background_tidy, LOGGER, CONFIGURATION.tidy_frequency)
     tornado.ioloop.IOLoop.current().start()

@@ -22,6 +22,7 @@ class Configuration:
         self._app_port = None
         self._run_environment = None
         self._k8s_cluster_config_file = None
+        self._tidy_frequency = None
 
         # Storage
         self._s3_endpoint = None
@@ -50,6 +51,10 @@ class Configuration:
     @property
     def k8s_cluster_config_file(self):
         return self._k8s_cluster_config_file
+
+    @property
+    def tidy_frequency(self):
+        return self._tidy_frequency
 
     @property
     def s3_endpoint(self):
@@ -91,9 +96,9 @@ class Configuration:
 
         # Application
         self._app_port = str2non_negative_int(application['ApplicationPort'])
-
         self._run_environment = application['RunEnvironment']
         self._k8s_cluster_config_file = application['K8sClusterConfigFile']
+        self._tidy_frequency = str2non_negative_int(application['TidyFrequency'])
 
         # Storage
         self._s3_endpoint = storage['S3Endpoint']
