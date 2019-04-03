@@ -87,7 +87,7 @@ def test_configuration_parses_with_arguments():
                                                                          "8888",
                                                                          "SYSTEM",
                                                                          "Some/Path",
-                                                                         "3600"
+                                                                         "3600",
                                                                          "https://0.0.0.0:0",
                                                                          "some_secret",
                                                                          "/etc/secrets/")
