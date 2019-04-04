@@ -1,8 +1,11 @@
+import datetime
 import logging
 import os
 
 import kubernetes
 import tornado
+
+from tornado import gen
 
 from PiezoWebApp.src.handlers.delete_job import DeleteJobHandler
 from PiezoWebApp.src.handlers.get_jobs import GetJobsHandler
@@ -95,6 +98,15 @@ def build_app(container, use_route_stem=False):
     return app
 
 
+@gen.coroutine
+def background_tidy(logger, tidy_frequency):
+    spark_job_service = CONTAINER['spark_job_service']
+    while True:
+        response = spark_job_service.tidy_jobs()
+        logger.debug(f'Summary of jobs tidied at {datetime.datetime.now()}: {response}')
+        yield gen.sleep(tidy_frequency)
+
+
 if __name__ == "__main__":
     CONFIGURATION_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), 'configuration.ini'))
     CONFIGURATION = Configuration(CONFIGURATION_PATH)
@@ -107,4 +119,5 @@ if __name__ == "__main__":
     CONTAINER = build_container(CONFIGURATION, KUBERNETES_ADAPTER, LOGGER, STORAGE_ADAPTER, VALIDATION_RULES_PATH)
     APPLICATION = build_app(CONTAINER, use_route_stem=True)
     APPLICATION.listen(CONFIGURATION.app_port)
+    tornado.ioloop.IOLoop.instance().spawn_callback(background_tidy, LOGGER, CONFIGURATION.tidy_frequency)
     tornado.ioloop.IOLoop.current().start()

@@ -14,6 +14,7 @@ class SampleConfigurationCreator:
                              app_port,
                              run_environment,
                              k8s_cluster_config_file,
+                             tidy_frequency,
                              s3_endpoint,
                              s3_secret_name,
                              secrets_dir):
@@ -34,6 +35,9 @@ class SampleConfigurationCreator:
         template = SampleConfigurationCreator.add_element_to_temp_file(template,
                                                                        "K8sClusterConfigFile",
                                                                        k8s_cluster_config_file)
+        template = SampleConfigurationCreator.add_element_to_temp_file(template,
+                                                                       "TidyFrequency",
+                                                                       tidy_frequency)
         template += "[Storage]\n"
         template = SampleConfigurationCreator.add_element_to_temp_file(template,
                                                                        "S3Endpoint",
@@ -83,6 +87,7 @@ def test_configuration_parses_with_arguments():
                                                                          "8888",
                                                                          "SYSTEM",
                                                                          "Some/Path",
+                                                                         "3600",
                                                                          "https://0.0.0.0:0",
                                                                          "some_secret",
                                                                          "/etc/secrets/")
@@ -96,6 +101,7 @@ def test_configuration_parses_with_arguments():
     assert configuration.app_port == 8888
     assert configuration.run_environment == "SYSTEM"
     assert configuration.k8s_cluster_config_file == "Some/Path"
+    assert configuration.tidy_frequency == 3600
     assert configuration.s3_endpoint == "https://0.0.0.0:0"
     assert configuration.s3_host == "0.0.0.0"
     assert configuration.s3_port == 0
