@@ -44,7 +44,6 @@ class KubernetesAdapter(IKubernetesAdapter):
     def list_namespaced_custom_object(self, group, version, namespace, plural, **kwargs):
         return self._custom_connection.list_namespaced_custom_object(group, version, namespace, plural, **kwargs)
 
-
     def expose_spark_ui(self, namespace, job_name):
         # spark ui proxy deployment
         proxy_name = job_name + '-ui-proxy'
@@ -52,9 +51,9 @@ class KubernetesAdapter(IKubernetesAdapter):
                                                              name=proxy_name,
                                                              namespace=namespace)
         template_metadata = kubernetes.client.V1ObjectMeta(labels={'name': proxy_name})
-        port = kubernetes.client.V1ContainerPort(container_port=80)
+        port = kubernetes.client.V1ContainerPort(container_port=4040)
         resources = kubernetes.client.V1ResourceRequirements(requests={'cpu': '100m'})
-        http_get = kubernetes.client.V1HTTPGetAction(path='/', port=80)
+        http_get = kubernetes.client.V1HTTPGetAction(path='/', port=4040)
         probe = kubernetes.client.V1Probe(http_get=http_get, initial_delay_seconds=120, timeout_seconds=5)
         container = kubernetes.client.V1Container(name=proxy_name,
                                                   image='networkaispark/spark-ui-proxy:1.0.0',
@@ -73,7 +72,7 @@ class KubernetesAdapter(IKubernetesAdapter):
         self._extension_connection.create_namespaced_deployment(namespace, deployment_body)
 
         # spark ui proxy sevice
-        service_port = kubernetes.client.V1ServicePort(port=80, target_port=80)
+        service_port = kubernetes.client.V1ServicePort(port=4040, target_port=4040)
         service_spec = kubernetes.client.V1ServiceSpec(ports=[service_port],
                                                        selector={'name': proxy_name},
                                                        type='NodePort')
@@ -85,13 +84,15 @@ class KubernetesAdapter(IKubernetesAdapter):
 
         # spark ui proxy ingress
         ingress_name = f'{proxy_name}-ingress'
-        path = f'/{job_name}/?(.*)'
-        metadata = kubernetes.client.V1ObjectMeta(annotations={'kubernetes.io/ingress.class': 'nginx', 'nginx.ingress.kubernetes.io/rewrite-target': '/$1', 'nginx.ingress.kubernetes.io/app-root': f'/{job_name}'}, name=ingress_name)
+        path = f'/'
+        #path = f'/{job_name}/?(.*)'
+        metadata = kubernetes.client.V1ObjectMeta(annotations={'kubernetes.io/ingress.class': 'nginx'}, name=ingress_name)
+        #metadata = kubernetes.client.V1ObjectMeta(annotations={'kubernetes.io/ingress.class': 'nginx', 'nginx.ingress.kubernetes.io/rewrite-target': '/$1'}, name=ingress_name)
         backend = kubernetes.client.V1beta1IngressBackend(service_name=proxy_name, service_port=4040)
         ingress_path = kubernetes.client.V1beta1HTTPIngressPath(backend=backend, path=path)
         http = kubernetes.client.V1beta1HTTPIngressRuleValue(paths=[ingress_path])
         rules = kubernetes.client.V1beta1IngressRule(host=f'host-172-16-113-146.nubes.stfc.ac.uk', http=http)
         spec = kubernetes.client.V1beta1IngressSpec(backend=backend, rules=[rules])
         ingress_body = kubernetes.client.V1beta1Ingress(api_version='extensions/v1beta1', kind='Ingress', metadata=metadata, spec=spec)
-        
+        self._extension_connection.create_namespaced_ingress(namespace, ingress_body)
 
