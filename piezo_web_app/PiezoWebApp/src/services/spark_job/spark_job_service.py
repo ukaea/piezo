@@ -170,6 +170,9 @@ class SparkJobService(ISparkJobService):
                 CRD_PLURAL,
                 body
             )
+
+            # Expose the spark ui
+            self._kubernetes_adapter.expose_spark_ui(NAMESPACE, job_name)
             result = {
                 'status': StatusCodes.Okay.value,
                 'message': 'Job driver created successfully',
