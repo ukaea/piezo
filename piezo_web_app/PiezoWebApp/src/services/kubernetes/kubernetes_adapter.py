@@ -84,5 +84,14 @@ class KubernetesAdapter(IKubernetesAdapter):
         self._core_connection.create_namespaced_service(namespace=namespace, body=service_body)
 
         # spark ui proxy ingress
-
+        ingress_name = f'{proxy_name}-ingress'
+        path = f'/{job_name}/?(.*)'
+        metadata = kubernetes.client.V1ObjectMeta(annotations={'kubernetes.io/ingress.class': 'nginx', 'nginx.ingress.kubernetes.io/rewrite-target': '/$1', 'nginx.ingress.kubernetes.io/app-root': f'/{job_name}'}, name=ingress_name)
+        backend = kubernetes.client.V1beta1IngressBackend(service_name=proxy_name, service_port=4040)
+        ingress_path = kubernetes.client.V1beta1HTTPIngressPath(backend=backend, path=path)
+        http = kubernetes.client.V1beta1HTTPIngressRuleValue(paths=[ingress_path])
+        rules = kubernetes.client.V1beta1IngressRule(host=f'host-172-16-113-146.nubes.stfc.ac.uk', http=http)
+        spec = kubernetes.client.V1beta1IngressSpec(backend=backend, rules=[rules])
+        ingress_body = kubernetes.client.V1beta1Ingress(api_version='extensions/v1beta1', kind='Ingress', metadata=metadata, spec=spec)
+        
 
