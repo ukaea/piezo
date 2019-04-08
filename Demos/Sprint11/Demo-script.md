@@ -62,13 +62,13 @@ json_body = `{}` to show initially no jobs running
   `POST request to http://host-172-16-113-146.nubes.stfc.ac.uk:31924/piezo/submitjob/` with json_body
   ``` json
   {
- "name": "spark-pi",
- "language":"Scala",
- "main_class": "org.apache.spark.examples.SparkPi",
- "path_to_main_app_file": "local:///opt/spark/examples/jars/spark-examples_2.11-2.4.0.jar",
- "executors": "10",
- "label": "demo-2",
- "arguments": ["1000"]
+  "name": "spark-pi",
+  "language":"Scala",
+  "main_class": "org.apache.spark.examples.SparkPi",
+  "path_to_main_app_file": "local:///opt/spark/examples/jars/spark-examples_2.11-2.4.0.jar",
+  "executors": "10",
+  "label": "demo-2",
+  "arguments": ["1000"]
   }
   ```
 
