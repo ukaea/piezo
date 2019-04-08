@@ -176,7 +176,8 @@ class SparkJobService(ISparkJobService):
             result = {
                 'status': StatusCodes.Okay.value,
                 'message': 'Job driver created successfully',
-                'job_name': job_name
+                'job_name': job_name,
+                'spark-ui': f'http://host-172-16-113-146.nubes.stfc.ac.uk:31924/{job_name}'
             }
             return result
         except ApiException as exception:
