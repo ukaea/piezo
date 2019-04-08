@@ -59,7 +59,7 @@ class KubernetesAdapter(IKubernetesAdapter):
                                                   image='networkaispark/spark-ui-proxy:1.0.0',
                                                   ports=[port],
                                                   resources=resources,
-                                                  args=[f'{job_name}-driver:4040', '80'],
+                                                  args=[f'{job_name}-ui-svc:4040', '80'],
                                                   liveness_probe=probe)
         template_spec = kubernetes.client.V1PodSpec(containers=[container])
         deployment_template = kubernetes.client.V1PodTemplateSpec(metadata=template_metadata,
@@ -84,10 +84,10 @@ class KubernetesAdapter(IKubernetesAdapter):
 
         # spark ui proxy ingress
         ingress_name = f'{proxy_name}-ingress'
-        #path = f'/'
-        path = f'/{job_name}/?(.*)'
-        #metadata = kubernetes.client.V1ObjectMeta(annotations={'kubernetes.io/ingress.class': 'nginx'}, name=ingress_name)
-        metadata = kubernetes.client.V1ObjectMeta(annotations={'kubernetes.io/ingress.class': 'nginx', 'nginx.ingress.kubernetes.io/rewrite-target': f'/$1'}, name=ingress_name)
+        path = f'/'
+        #path = f'/{job_name}/'
+        metadata = kubernetes.client.V1ObjectMeta(annotations={'kubernetes.io/ingress.class': 'nginx'}, name=ingress_name)
+        #metadata = kubernetes.client.V1ObjectMeta(annotations={'kubernetes.io/ingress.class': 'nginx', 'nginx.ingress.kubernetes.io/rewrite-target': f'/'}, name=ingress_name)
         backend = kubernetes.client.V1beta1IngressBackend(service_name=proxy_name, service_port=80)
         ingress_path = kubernetes.client.V1beta1HTTPIngressPath(backend=backend, path=path)
         http = kubernetes.client.V1beta1HTTPIngressRuleValue(paths=[ingress_path])
