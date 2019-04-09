@@ -192,7 +192,7 @@ class SparkJobService(ISparkJobService):
         dict_of_jobs = api_response['spark_jobs']
         loop = asyncio.get_event_loop()
         summary = loop.run_until_complete(asyncio.gather(*(
-            self.write_and_delete(job, status) for job, status in dict_of_jobs.items())))
+            self._write_and_delete(job, status) for job, status in dict_of_jobs.items())))
         jobs_skipped = {job.job_name: job.status for job in summary if job.tidied == "NO"}
         jobs_tidied = {job.job_name: job.status for job in summary if job.tidied == "YES"}
         jobs_failed_to_process = {
@@ -237,7 +237,7 @@ class SparkJobService(ISparkJobService):
         except KeyError:
             return 'UNKNOWN'
 
-    async def write_and_delete(self, job, status):
+    async def _write_and_delete(self, job, status):
         if status in ["COMPLETED", "FAILED"]:
             write_logs_response = self.write_logs_to_file(job)
             if write_logs_response['status'] == StatusCodes.Okay.value:
