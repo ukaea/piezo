@@ -138,6 +138,12 @@ class SparkJobService(ISparkJobService):
                 'status': exception.status
             }
 
+    def get_output_files_temp_urls(self, job_name):
+        output_dir = self._job_output_dir_path(job_name)
+        temp_urls = self._storage_adapter.get_temp_url_for_each_file(self._bucket_name, output_dir)
+        self._logger.debug(f'Got temporary URLs for {len(temp_urls)} output files for job "{job_name}"')
+        return temp_urls
+
     def submit_job(self, body):
         # Validate the body keys
         validated_body_keys = self._validation_service.validate_request_keys(body)
