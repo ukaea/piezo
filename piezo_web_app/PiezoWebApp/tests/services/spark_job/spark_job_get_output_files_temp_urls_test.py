@@ -12,6 +12,7 @@ class SparkJobServiceGetOutputFilesTempUrlsTest(TestSparkJobService):
         # Assert
         self.assertDictEqual(result, {
             'status': 200,
+            'message': 'Got temporary URLs for 1 output files for job "test-job-abc12"',
             'files': {'log.txt': 's3://log.txt.temp.url'}
         })
         self.mock_logger.debug.assert_called_once_with('Got temporary URLs for 1 output files for job "test-job-abc12"')
@@ -26,7 +27,11 @@ class SparkJobServiceGetOutputFilesTempUrlsTest(TestSparkJobService):
         # Act
         result = self.test_service.get_output_files_temp_urls('test-job-abc12')
         # Assert
-        self.assertDictEqual(result, {'status': 404, 'files': {}})
+        self.assertDictEqual(result, {
+            'status': 404,
+            'message': 'Got temporary URLs for 0 output files for job "test-job-abc12"',
+            'files': {}
+        })
         self.mock_logger.debug.assert_called_once_with('Got temporary URLs for 0 output files for job "test-job-abc12"')
         self.mock_storage_adapter.get_temp_url_for_each_file.assert_called_once_with(
             'kubernetes',
@@ -45,6 +50,7 @@ class SparkJobServiceGetOutputFilesTempUrlsTest(TestSparkJobService):
         # Assert
         self.assertDictEqual(result, {
             'status': 200,
+            'message': 'Got temporary URLs for 3 output files for job "test-job-abc12"',
             'files': {
                 'log.txt': 's3://log.txt.temp.url',
                 'output1.csv': 's3://output1.csv.temp.url',
