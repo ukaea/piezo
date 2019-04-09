@@ -10,7 +10,7 @@ class JobStatusHandler(BaseHandler):
         input_schema=create_object_schema_with_string_properties(
             ['job_name'], required=['job_name']),
         input_example={
-            'job_name': 'example-driver'
+            'job_name': 'example-job'
         }
     )
     def get(self, *args, **kwargs):
