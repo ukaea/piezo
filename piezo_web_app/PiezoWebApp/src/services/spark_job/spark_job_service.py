@@ -142,7 +142,11 @@ class SparkJobService(ISparkJobService):
         output_dir = self._job_output_dir_path(job_name)
         temp_urls = self._storage_adapter.get_temp_url_for_each_file(self._bucket_name, output_dir)
         self._logger.debug(f'Got temporary URLs for {len(temp_urls)} output files for job "{job_name}"')
-        return temp_urls
+        status = StatusCodes.Okay if temp_urls else StatusCodes.Not_found
+        return {
+            'files': temp_urls,
+            'status': status.value
+        }
 
     def submit_job(self, body):
         # Validate the body keys
