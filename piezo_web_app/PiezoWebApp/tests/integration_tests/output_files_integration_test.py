@@ -1,7 +1,6 @@
 import json
 import pytest
 
-from mock import call
 from tornado.httpclient import HTTPError
 from tornado.testing import gen_test
 
