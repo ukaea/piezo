@@ -213,7 +213,7 @@ class SparkJobService(ISparkJobService):
         if api_response['status'] != StatusCodes.Okay.value:
             return api_response
         try:
-            file_name = f'outputs/{job_name}/log.txt'
+            file_name = f'{self._job_output_dir_path(job_name)}/log.txt'
             self._storage_adapter.set_contents_from_string(self._bucket_name, file_name, api_response['message'])
             msg = f'Logs written to "{file_name}" in bucket "{self._bucket_name}"'
             self._logger.debug(msg)
@@ -229,6 +229,10 @@ class SparkJobService(ISparkJobService):
                 'status': exception.status,
                 'message': message
             }
+
+    @staticmethod
+    def _job_output_dir_path(job_name):
+        return f'outputs/{job_name}/'
 
     @staticmethod
     def _retrieve_status(item):
