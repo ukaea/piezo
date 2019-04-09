@@ -20,6 +20,7 @@ class SparkJobService(ISparkJobService):
                  spark_job_namer,
                  storage_adapter,
                  validation_service):
+        self._bucket_name = 'kubernetes'
         self._kubernetes_adapter = kubernetes_adapter
         self._logger = logger
         self._manifest_populator = manifest_populator
@@ -212,10 +213,9 @@ class SparkJobService(ISparkJobService):
         if api_response['status'] != StatusCodes.Okay.value:
             return api_response
         try:
-            bucket_name = 'kubernetes'
             file_name = f'outputs/{job_name}/log.txt'
-            self._storage_adapter.set_contents_from_string(bucket_name, file_name, api_response['message'])
-            msg = f'Logs written to "{file_name}" in bucket "{bucket_name}"'
+            self._storage_adapter.set_contents_from_string(self._bucket_name, file_name, api_response['message'])
+            msg = f'Logs written to "{file_name}" in bucket "{self._bucket_name}"'
             self._logger.debug(msg)
             return {
                 'message': msg,
@@ -223,7 +223,7 @@ class SparkJobService(ISparkJobService):
             }
         except ApiException as exception:
             message = f'Got logs for job "{job_name}" but unable to write to "{file_name}" ' \
-                f'in bucket "{bucket_name}": {exception.reason}'
+                f'in bucket "{self._bucket_name}": {exception.reason}'
             self._logger.error(message)
             return {
                 'status': exception.status,
