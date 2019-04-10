@@ -1,4 +1,5 @@
 import asyncio
+from os.path import basename
 
 from kubernetes.client.rest import ApiException
 
@@ -141,6 +142,7 @@ class SparkJobService(ISparkJobService):
     def get_output_files_temp_urls(self, job_name):
         output_dir = self._job_output_dir_path(job_name)
         temp_urls = self._storage_adapter.get_temp_url_for_each_file(self._bucket_name, output_dir)
+        temp_urls = {basename(file_path): temp_url for file_path, temp_url in temp_urls.items()}
         msg = f'Got temporary URLs for {len(temp_urls)} output files for job "{job_name}"'
         self._logger.debug(msg)
         status = StatusCodes.Okay if temp_urls else StatusCodes.Not_found
