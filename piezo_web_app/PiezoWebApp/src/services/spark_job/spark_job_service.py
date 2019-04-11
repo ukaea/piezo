@@ -19,14 +19,13 @@ class SparkJobService(ISparkJobService):
                  logger,
                  manifest_populator,
                  spark_job_namer,
-                 storage_adapter,
+                 storage_service,
                  validation_service):
-        self._bucket_name = 'kubernetes'
         self._kubernetes_adapter = kubernetes_adapter
         self._logger = logger
         self._manifest_populator = manifest_populator
         self._spark_job_namer = spark_job_namer
-        self._storage_adapter = storage_adapter
+        self._storage_service = storage_service
         self._validation_service = validation_service
 
     def delete_job(self, job_name):
@@ -141,7 +140,7 @@ class SparkJobService(ISparkJobService):
 
     def get_output_files_temp_urls(self, job_name):
         output_dir = self._job_output_dir_path(job_name)
-        temp_urls = self._storage_adapter.get_temp_url_for_each_file(self._bucket_name, output_dir)
+        temp_urls = self._storage_service.get_temp_url_for_each_file(output_dir)
         temp_urls = {basename(file_path): temp_url for file_path, temp_url in temp_urls.items()}
         msg = f'Got temporary URLs for {len(temp_urls)} output files for job "{job_name}"'
         self._logger.debug(msg)
@@ -228,16 +227,15 @@ class SparkJobService(ISparkJobService):
             return api_response
         try:
             file_name = f'{self._job_output_dir_path(job_name)}log.txt'
-            self._storage_adapter.set_contents_from_string(self._bucket_name, file_name, api_response['message'])
-            msg = f'Logs written to "{file_name}" in bucket "{self._bucket_name}"'
+            self._storage_service.set_contents_from_string(file_name, api_response['message'])
+            msg = f'Logs written to "{file_name}"'
             self._logger.debug(msg)
             return {
                 'message': msg,
                 'status': StatusCodes.Okay.value
             }
         except ApiException as exception:
-            message = f'Got logs for job "{job_name}" but unable to write to "{file_name}" ' \
-                f'in bucket "{self._bucket_name}": {exception.reason}'
+            message = f'Got logs for job "{job_name}" but unable to write to "{file_name}": {exception.reason}'
             self._logger.error(message)
             return {
                 'status': exception.status,

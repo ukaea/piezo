@@ -22,6 +22,7 @@ from PiezoWebApp.src.services.spark_job.spark_job_service import SparkJobService
 from PiezoWebApp.src.services.spark_job.validation.manifest_populator import ManifestPopulator
 from PiezoWebApp.src.services.spark_job.validation.validation_ruleset import ValidationRuleset
 from PiezoWebApp.src.services.spark_job.validation.validation_service import ValidationService
+from PiezoWebApp.src.services.storage.storage_service import StorageService
 from PiezoWebApp.src.services.storage.adapters.boto_adapter import BotoAdapter
 from PiezoWebApp.src.utils.configurations import Configuration
 from PiezoWebApp.src.utils.route_helper import format_route_specification
@@ -60,6 +61,7 @@ def build_logger(configuration):
 
 
 def build_container(configuration, k8s_adapter, log, storage_adapter, validation_rules_path):
+    storage_service = StorageService(configuration, log, storage_adapter)
     validation_rules = ValidationRulesetParser().parse(validation_rules_path)
     validation_ruleset = ValidationRuleset(validation_rules)
     validation_service = ValidationService(validation_ruleset)
@@ -70,7 +72,7 @@ def build_container(configuration, k8s_adapter, log, storage_adapter, validation
         log,
         manifest_populator,
         spark_job_namer,
-        storage_adapter,
+        storage_service,
         validation_service
     )
     container = dict(

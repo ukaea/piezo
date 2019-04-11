@@ -40,11 +40,14 @@ class BaseIntegrationTest(tornado.testing.AsyncHTTPTestCase, metaclass=ABCMeta):
     def setup(self):
         self.mock_configuration = mock.create_autospec(Configuration)
         self.mock_configuration.s3_endpoint = "http://0.0.0.0:0"
+        self.mock_configuration.s3_bucket_name = 'kubernetes'
         self.mock_configuration.s3_secrets_name = "secret"
         self.mock_configuration.secrets_dir = "/etc/secrets/"
+        self.mock_configuration.temp_url_expiry_seconds = 10
         self.mock_k8s_adapter = mock.create_autospec(IKubernetesAdapter)
         self.mock_logger = mock.create_autospec(logging.Logger)
         self.mock_storage_adapter = mock.create_autospec(IStorageAdapter)
+        self.mock_storage_adapter.does_bucket_exist.return_value = True
         self.ruleset_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'example_validation_rules.json'))
 
     def get_app(self):
