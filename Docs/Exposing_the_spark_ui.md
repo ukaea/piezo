@@ -63,3 +63,15 @@ spec:
               servicePort: service
             path: /monitoring/
 ```
+
+
+
+#### Useful helm commands
+* `helm ls` # show curently installed helm charts
+* `helm install {chart name} --name {name to call it} --set {variable}={values},{variable2}={value2}....` # install a helm chart with custom values
+* `helm del --purge {name of release installed}` # delete an installed release of a helm chart 
+* `helm inspect values {chart name}` # see what values are editable in the chart
+* `helm search` # list charts that can be installed
+* `helm repo update` # Update the charts listed that you can install
+* `helm repo add {repo name} {url}` # add a new repo of helm charts to your local repo
+ 
