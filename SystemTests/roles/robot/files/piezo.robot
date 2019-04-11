@@ -269,3 +269,26 @@ Tidy Jobs Writes Logs And Deletes Completed Jobs
     ${tidied_jobs}=    Get Response Tidied Jobs     ${request_response}
     Dictionary Should Contain Item    ${tidied_jobs}    ${new_job_name1}    COMPLETED
     Dictionary Should Contain Item    ${tidied_jobs}    ${new_job_name2}    COMPLETED
+
+Output Files Provides Temporary URLs
+    ${job_name}=    Set Variable   wordcount-tempurl
+    ${response}=    Submit Wordcount On Minio Job   ${job_name}
+    Confirm Ok Response  ${response}
+    ${new_job_name}=    Get Response Job Name   ${response}
+    ${finished}=    Wait For Spark Job To Finish        ${new_job_name}     15 seconds
+    Should Be True    ${finished}
+    Write Logs To Storage   ${new_job_name}
+    ${output_files}=    Output Files Of Spark Job   ${job_name}
+    ${success_file}=    Download From Temporary URL   ${output_files["_SUCCESS"]}
+    ${line_count}=    Get Line Count    ${success_file}
+    Should Be Equal As Integers   ${line_count}   0
+    ${part0_file}=    Download From Temporary URL   ${output_files["part-00000"]}
+    ${line_count}=    Get Line Count    ${part0_file}
+    Should Be True   ${line_count} > 0
+    ${part1_file}=    Download From Temporary URL   ${output_files["part-00001"]}
+    ${line_count}=    Get Line Count    ${part1_file}
+    Should Be True   ${line_count} > 0
+    ${output_files}=    Output Files Of Spark Job   ${new_job_name}
+    ${log_file}=    Download From Temporary URL   ${output_files["log.txt"]}
+    ${line_count}=    Get Line Count    ${log_file}
+    Should Be True   ${line_count} > 0

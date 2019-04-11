@@ -58,6 +58,12 @@ Get Status Of Spark Job
     ${response}=  Get Request With Json Body   /piezo/jobstatus    ${body}
     [return]    ${response}
 
+Output Files Of Spark Job
+    [Arguments]   ${job_name}
+    ${body}=    Create Dictionary   job_name=${job_name}
+    ${response}=  Get Request With Json Body   /piezo/outputfiles    ${body}
+    [return]    ${response.json()["data"]["files"]}
+
 Post Request With Json Body
     [Arguments]   ${route}    ${body}
     ${headers}=   Json Header

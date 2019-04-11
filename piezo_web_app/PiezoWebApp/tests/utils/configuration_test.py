@@ -17,7 +17,8 @@ class SampleConfigurationCreator:
                              tidy_frequency,
                              s3_endpoint,
                              s3_secret_name,
-                             secrets_dir):
+                             secrets_dir,
+                             temp_url_expiry_seconds):
         template = "[Logging]\n"
         template = SampleConfigurationCreator.add_element_to_temp_file(template,
                                                                        "LogFolderLocation",
@@ -48,6 +49,9 @@ class SampleConfigurationCreator:
         template = SampleConfigurationCreator.add_element_to_temp_file(template,
                                                                        "SecretsDir",
                                                                        secrets_dir)
+        template = SampleConfigurationCreator.add_element_to_temp_file(template,
+                                                                       "TempUrlExpirySeconds",
+                                                                       temp_url_expiry_seconds)
 
         return SampleConfigurationCreator.write_sample_configuration_file(template)
 
@@ -90,7 +94,8 @@ def test_configuration_parses_with_arguments():
                                                                          "3600",
                                                                          "https://0.0.0.0:0",
                                                                          "some_secret",
-                                                                         "/etc/secrets/")
+                                                                         "/etc/secrets/",
+                                                                         "600")
 
     # Act
     configuration = Configuration(configuration_path)
@@ -108,6 +113,7 @@ def test_configuration_parses_with_arguments():
     assert configuration.s3_secrets_name == "some_secret"
     assert configuration.secrets_dir == "/etc/secrets/"
     assert configuration.is_s3_secure is True
+    assert configuration.temp_url_expiry_seconds == 600
 
     # Clean up
     SampleConfigurationCreator.remove_file(configuration_path)
