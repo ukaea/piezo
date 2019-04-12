@@ -40,6 +40,17 @@ def build_kubernetes_adapter(configuration):
     return adapter
 
 
+def build_storage_adapter(configuration):
+    storage_adapter = BotoAdapter(
+        configuration.access_key,
+        configuration.is_s3_secure,
+        configuration.s3_host,
+        configuration.s3_port,
+        configuration.secret_key
+    )
+    return storage_adapter
+
+
 def build_logger(configuration):
     # Set  up the logger
     log = logging.getLogger("piezo-web-app")
@@ -119,7 +130,7 @@ if __name__ == "__main__":
         os.path.abspath(os.path.join(os.path.dirname(__file__), 'validation_rules.json'))
     KUBERNETES_ADAPTER = build_kubernetes_adapter(CONFIGURATION)
     LOGGER = build_logger(CONFIGURATION)
-    STORAGE_ADAPTER = BotoAdapter(CONFIGURATION, LOGGER)
+    STORAGE_ADAPTER = build_storage_adapter(CONFIGURATION)
     CONTAINER = build_container(CONFIGURATION, KUBERNETES_ADAPTER, LOGGER, STORAGE_ADAPTER, VALIDATION_RULES_PATH)
     APPLICATION = build_app(CONTAINER, use_route_stem=True)
     APPLICATION.listen(CONFIGURATION.app_port)
