@@ -50,6 +50,16 @@ class TestStorageService(TestCase):
         self.mock_storage_adapter.create_bucket.assert_called_once_with('test-bucket')
         self.mock_logger.info.assert_called_once_with('Created new bucket "test-bucket"')
 
+    def test_protocol_route_to_bucket_returns_expected_result(self):
+        # Arrange
+        self.mock_storage_adapter.access_protocol.return_value = 's3a'
+        self.set_bucket_exists()
+        test_service = self.get_test_service()
+        # Act
+        result = test_service.protocol_route_to_bucket()
+        # Assert
+        assert result == 's3a://test-bucket'
+
     def test_get_temp_url_for_each_file_returns_empty_dict_if_no_files(self):
         # Arrange
         self.set_bucket_exists()

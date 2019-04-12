@@ -14,7 +14,6 @@ class BotoAdapter(IStorageAdapter):
                 calling_format=boto.s3.connection.OrdinaryCallingFormat()
             )
 
-    @property
     def access_protocol(self):
         return 's3a'
 

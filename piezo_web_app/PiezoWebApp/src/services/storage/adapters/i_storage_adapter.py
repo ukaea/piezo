@@ -4,7 +4,6 @@ from abc import ABCMeta, abstractmethod
 class IStorageAdapter(metaclass=ABCMeta):
 
     @abstractmethod
-    @property
     def access_protocol(self):
         pass
 
