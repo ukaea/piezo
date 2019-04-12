@@ -40,9 +40,10 @@ def build_kubernetes_adapter(configuration):
     return adapter
 
 
-def build_storage_adapter(configuration):
+def build_storage_adapter(configuration, logger):
     with open(os.path.join(configuration.secrets_dir, 'access_key')) as key_file:
         access_key = key_file.read()
+    logger.info(f'Using storage access key "{access_key}"')
     with open(os.path.join(configuration.secrets_dir, 'secret_key')) as key_file:
         secret_key = key_file.read()
     storage_adapter = BotoAdapter(
@@ -134,7 +135,7 @@ if __name__ == "__main__":
         os.path.abspath(os.path.join(os.path.dirname(__file__), 'validation_rules.json'))
     KUBERNETES_ADAPTER = build_kubernetes_adapter(CONFIGURATION)
     LOGGER = build_logger(CONFIGURATION)
-    STORAGE_ADAPTER = build_storage_adapter(CONFIGURATION)
+    STORAGE_ADAPTER = build_storage_adapter(CONFIGURATION, LOGGER)
     CONTAINER = build_container(CONFIGURATION, KUBERNETES_ADAPTER, LOGGER, STORAGE_ADAPTER, VALIDATION_RULES_PATH)
     APPLICATION = build_app(CONTAINER, use_route_stem=True)
     APPLICATION.listen(CONFIGURATION.app_port)
