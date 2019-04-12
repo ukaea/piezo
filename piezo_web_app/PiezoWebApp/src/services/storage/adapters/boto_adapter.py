@@ -34,6 +34,7 @@ class BotoAdapter(IStorageAdapter):
         return files
 
     def set_contents_from_string(self, bucket_name, file_path, text):
+        bucket = self._get_bucket(bucket_name)
         key = self._get_key(bucket, file_path)
         contents_size = key.set_contents_from_string(text)
         return contents_size
