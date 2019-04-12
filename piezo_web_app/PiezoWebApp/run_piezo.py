@@ -41,12 +41,16 @@ def build_kubernetes_adapter(configuration):
 
 
 def build_storage_adapter(configuration):
+    with open(os.path.join(configuration.secrets_dir, 'access_key')) as key_file:
+        access_key = key_file.read()
+    with open(os.path.join(configuration.secrets_dir, 'secret_key')) as key_file:
+        secret_key = key_file.read()
     storage_adapter = BotoAdapter(
-        configuration.access_key,
+        access_key,
         configuration.is_s3_secure,
         configuration.s3_host,
         configuration.s3_port,
-        configuration.secret_key
+        secret_key
     )
     return storage_adapter
 
