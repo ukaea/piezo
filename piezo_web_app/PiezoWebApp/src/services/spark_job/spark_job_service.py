@@ -265,14 +265,17 @@ class SparkJobService(ISparkJobService):
                 delete_response = self.delete_job(job)
                 if delete_response['status'] == StatusCodes.Okay.value:
                     return TidiedJobStatus(job, status, "YES", None, None)
-                else:
-                    return TidiedJobStatus(job, status, "FAIL", delete_response['message'], delete_response['status'])
-            else:
-                return TidiedJobStatus(job,
-                                       status,
-                                       "FAIL",
-                                       write_logs_response['message'],
-                                       write_logs_response['status'])
-        else:
-            self._logger.debug(f'Not processing job "{job}", current status is "{status}"')
-            return TidiedJobStatus(job, status, "NO", None, None)
+
+                # Job logs written, but could not delete
+                return TidiedJobStatus(job, status, "FAIL", delete_response['message'], delete_response['status'])
+
+            # Could not write job logs
+            return TidiedJobStatus(job,
+                                   status,
+                                   "FAIL",
+                                   write_logs_response['message'],
+                                   write_logs_response['status'])
+
+        # Job is still running or yet to run
+        self._logger.debug(f'Not processing job "{job}", current status is "{status}"')
+        return TidiedJobStatus(job, status, "NO", None, None)
