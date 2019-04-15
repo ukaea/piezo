@@ -23,8 +23,7 @@ class SparkJobServiceGetJobStatusTest(TestSparkJobService):
         response = self.test_service.tidy_jobs()
         # Assert
         self.mock_kubernetes_adapter.read_namespaced_pod_log.assert_called_once_with('job-driver', NAMESPACE)
-        self.mock_storage_adapter.set_contents_from_string.assert_called_once_with('kubernetes',
-                                                                                   'outputs/job/log.txt',
+        self.mock_storage_service.set_contents_from_string.assert_called_once_with('outputs/job/log.txt',
                                                                                    'Log\nMessage')
         self.mock_kubernetes_adapter.delete_namespaced_custom_object.assert_called_once_with(CRD_GROUP,
                                                                                              CRD_VERSION,
@@ -47,7 +46,7 @@ class SparkJobServiceGetJobStatusTest(TestSparkJobService):
         response = self.test_service.tidy_jobs()
         # Assert
         self.mock_kubernetes_adapter.read_namespaced_pod_log.assert_not_called()
-        self.mock_storage_adapter.set_contents_from_string.assert_not_called()
+        self.mock_storage_service.set_contents_from_string.assert_not_called()
         self.mock_kubernetes_adapter.delete_namespaced_custom_object.assert_not_called()
         assert response == {'status': 200,
                             'message': '1 Spark jobs found',
@@ -83,13 +82,12 @@ class SparkJobServiceGetJobStatusTest(TestSparkJobService):
             {"metadata": {"name": "job"}, "status": {"applicationState": {"state": "COMPLETED"}}}
         ]}
         self.mock_kubernetes_adapter.read_namespaced_pod_log.return_value = 'Log\nMessage'
-        self.mock_storage_adapter.set_contents_from_string.side_effect = ApiException(reason='S3 Reason', status=999)
+        self.mock_storage_service.set_contents_from_string.side_effect = ApiException(reason='S3 Reason', status=999)
         # Act
         response = self.test_service.tidy_jobs()
         # Assert
         self.mock_kubernetes_adapter.read_namespaced_pod_log.assert_called_once_with('job-driver', NAMESPACE)
-        self.mock_storage_adapter.set_contents_from_string.assert_called_once_with('kubernetes',
-                                                                                   'outputs/job/log.txt',
+        self.mock_storage_service.set_contents_from_string.assert_called_once_with('outputs/job/log.txt',
                                                                                    'Log\nMessage')
         self.mock_kubernetes_adapter.delete_namespaced_custom_object.assert_not_called()
         assert response == {'status': 200,
@@ -100,7 +98,7 @@ class SparkJobServiceGetJobStatusTest(TestSparkJobService):
                                 'job': {
                                     'job_status': 'COMPLETED',
                                     'error_message': 'Got logs for job "job" but unable to write to '
-                                                     '"outputs/job/log.txt" in bucket "kubernetes": S3 Reason',
+                                                     '"outputs/job/log.txt": S3 Reason',
                                     'error_status_code': 999
                                 }}}
 
@@ -118,8 +116,7 @@ class SparkJobServiceGetJobStatusTest(TestSparkJobService):
         response = self.test_service.tidy_jobs()
         # Assert
         self.mock_kubernetes_adapter.read_namespaced_pod_log.assert_called_once_with('job-driver', NAMESPACE)
-        self.mock_storage_adapter.set_contents_from_string.assert_called_once_with('kubernetes',
-                                                                                   'outputs/job/log.txt',
+        self.mock_storage_service.set_contents_from_string.assert_called_once_with('outputs/job/log.txt',
                                                                                    'Log\nMessage')
         self.mock_kubernetes_adapter.delete_namespaced_custom_object.assert_called_once_with(CRD_GROUP,
                                                                                              CRD_VERSION,

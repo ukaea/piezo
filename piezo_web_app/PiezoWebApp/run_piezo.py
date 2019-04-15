@@ -12,6 +12,7 @@ from PiezoWebApp.src.handlers.get_jobs import GetJobsHandler
 from PiezoWebApp.src.handlers.get_logs import GetLogsHandler
 from PiezoWebApp.src.handlers.heartbeat_handler import HeartbeatHandler
 from PiezoWebApp.src.handlers.job_status import JobStatusHandler
+from PiezoWebApp.src.handlers.output_files_handler import OutputFilesHandler
 from PiezoWebApp.src.handlers.submit_job import SubmitJobHandler
 from PiezoWebApp.src.handlers.tidy_jobs import TidyJobsHandler
 from PiezoWebApp.src.handlers.write_logs_handler import WriteLogsHandler
@@ -21,6 +22,7 @@ from PiezoWebApp.src.services.spark_job.spark_job_service import SparkJobService
 from PiezoWebApp.src.services.spark_job.validation.manifest_populator import ManifestPopulator
 from PiezoWebApp.src.services.spark_job.validation.validation_ruleset import ValidationRuleset
 from PiezoWebApp.src.services.spark_job.validation.validation_service import ValidationService
+from PiezoWebApp.src.services.storage.storage_service import StorageService
 from PiezoWebApp.src.services.storage.adapters.boto_adapter import BotoAdapter
 from PiezoWebApp.src.utils.configurations import Configuration
 from PiezoWebApp.src.utils.route_helper import format_route_specification
@@ -36,6 +38,22 @@ def build_kubernetes_adapter(configuration):
         raise RuntimeError("Invalid running environment specified in config file")
     adapter = KubernetesAdapter(config)
     return adapter
+
+
+def build_storage_adapter(configuration, logger):
+    with open(os.path.join(configuration.secrets_dir, 'access_key')) as key_file:
+        access_key = key_file.read()
+    logger.info(f'Using storage access key "{access_key}"')
+    with open(os.path.join(configuration.secrets_dir, 'secret_key')) as key_file:
+        secret_key = key_file.read()
+    storage_adapter = BotoAdapter(
+        access_key,
+        configuration.is_s3_secure,
+        configuration.s3_host,
+        configuration.s3_port,
+        secret_key
+    )
+    return storage_adapter
 
 
 def build_logger(configuration):
@@ -59,6 +77,7 @@ def build_logger(configuration):
 
 
 def build_container(configuration, k8s_adapter, log, storage_adapter, validation_rules_path):
+    storage_service = StorageService(configuration, log, storage_adapter)
     validation_rules = ValidationRulesetParser().parse(validation_rules_path)
     validation_ruleset = ValidationRuleset(validation_rules)
     validation_service = ValidationService(validation_ruleset)
@@ -69,7 +88,7 @@ def build_container(configuration, k8s_adapter, log, storage_adapter, validation
         log,
         manifest_populator,
         spark_job_namer,
-        storage_adapter,
+        storage_service,
         validation_service
     )
     container = dict(
@@ -90,6 +109,7 @@ def build_app(container, use_route_stem=False):
             (format_route_specification(route_stem + 'getjobs'), GetJobsHandler, container),
             (format_route_specification(route_stem + 'getlogs'), GetLogsHandler, container),
             (format_route_specification(route_stem + 'jobstatus'), JobStatusHandler, container),
+            (format_route_specification(route_stem + 'outputfiles'), OutputFilesHandler, container),
             (format_route_specification(route_stem + 'submitjob'), SubmitJobHandler, container),
             (format_route_specification(route_stem + 'tidyjobs'), TidyJobsHandler, container),
             (format_route_specification(route_stem + 'writelogs'), WriteLogsHandler, container)
@@ -115,7 +135,7 @@ if __name__ == "__main__":
         os.path.abspath(os.path.join(os.path.dirname(__file__), 'validation_rules.json'))
     KUBERNETES_ADAPTER = build_kubernetes_adapter(CONFIGURATION)
     LOGGER = build_logger(CONFIGURATION)
-    STORAGE_ADAPTER = BotoAdapter(CONFIGURATION, LOGGER)
+    STORAGE_ADAPTER = build_storage_adapter(CONFIGURATION, LOGGER)
     CONTAINER = build_container(CONFIGURATION, KUBERNETES_ADAPTER, LOGGER, STORAGE_ADAPTER, VALIDATION_RULES_PATH)
     APPLICATION = build_app(CONTAINER, use_route_stem=True)
     APPLICATION.listen(CONFIGURATION.app_port)

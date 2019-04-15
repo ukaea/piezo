@@ -57,7 +57,6 @@ class TestJobStatusHandler(BaseHandlerTest):
                 "last_submitted": 123455,
                 "terminated": 1234567,
                 "error_messages": ""
-
             }
         })
 

@@ -26,9 +26,11 @@ class Configuration:
 
         # Storage
         self._s3_endpoint = None
+        self._s3_bucket_name = None
         self._s3_secrets_name = None
         self._secrets_dir = None
         self._is_s3_secure = None
+        self._temp_url_expiry_seconds = None
 
         self._parse(self._path_to_configuration_file)
 
@@ -71,6 +73,10 @@ class Configuration:
         return parse_result.port
 
     @property
+    def s3_bucket_name(self):
+        return self._s3_bucket_name
+
+    @property
     def s3_secrets_name(self):
         return self._s3_secrets_name
 
@@ -82,6 +88,10 @@ class Configuration:
     def is_s3_secure(self):
         parse_result = urlparse(self.s3_endpoint)
         return is_scheme_secure(parse_result.scheme)
+
+    @property
+    def temp_url_expiry_seconds(self):
+        return self._temp_url_expiry_seconds
 
     def _parse(self, path):
         config = configparser.ConfigParser()
@@ -102,8 +112,10 @@ class Configuration:
 
         # Storage
         self._s3_endpoint = storage['S3Endpoint']
+        self._s3_bucket_name = storage['S3BucketName']
         self._s3_secrets_name = storage['S3KeysSecret']
         self._secrets_dir = storage['SecretsDir']
+        self._temp_url_expiry_seconds = str2non_negative_int(storage['TempUrlExpirySeconds'])
 
     @staticmethod
     def get_directory(settings, key):

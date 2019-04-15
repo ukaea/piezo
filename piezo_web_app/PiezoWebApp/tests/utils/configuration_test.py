@@ -16,8 +16,10 @@ class SampleConfigurationCreator:
                              k8s_cluster_config_file,
                              tidy_frequency,
                              s3_endpoint,
+                             s3_bucket_name,
                              s3_secret_name,
-                             secrets_dir):
+                             secrets_dir,
+                             temp_url_expiry_seconds):
         template = "[Logging]\n"
         template = SampleConfigurationCreator.add_element_to_temp_file(template,
                                                                        "LogFolderLocation",
@@ -43,11 +45,17 @@ class SampleConfigurationCreator:
                                                                        "S3Endpoint",
                                                                        s3_endpoint)
         template = SampleConfigurationCreator.add_element_to_temp_file(template,
+                                                                       "S3BucketName",
+                                                                       s3_bucket_name)
+        template = SampleConfigurationCreator.add_element_to_temp_file(template,
                                                                        "S3KeysSecret",
                                                                        s3_secret_name)
         template = SampleConfigurationCreator.add_element_to_temp_file(template,
                                                                        "SecretsDir",
                                                                        secrets_dir)
+        template = SampleConfigurationCreator.add_element_to_temp_file(template,
+                                                                       "TempUrlExpirySeconds",
+                                                                       temp_url_expiry_seconds)
 
         return SampleConfigurationCreator.write_sample_configuration_file(template)
 
@@ -89,8 +97,10 @@ def test_configuration_parses_with_arguments():
                                                                          "Some/Path",
                                                                          "3600",
                                                                          "https://0.0.0.0:0",
+                                                                         "test-bucket",
                                                                          "some_secret",
-                                                                         "/etc/secrets/")
+                                                                         "/etc/secrets/",
+                                                                         "600")
 
     # Act
     configuration = Configuration(configuration_path)
@@ -105,9 +115,11 @@ def test_configuration_parses_with_arguments():
     assert configuration.s3_endpoint == "https://0.0.0.0:0"
     assert configuration.s3_host == "0.0.0.0"
     assert configuration.s3_port == 0
+    assert configuration.s3_bucket_name == "test-bucket"
     assert configuration.s3_secrets_name == "some_secret"
     assert configuration.secrets_dir == "/etc/secrets/"
     assert configuration.is_s3_secure is True
+    assert configuration.temp_url_expiry_seconds == 600
 
     # Clean up
     SampleConfigurationCreator.remove_file(configuration_path)

@@ -20,6 +20,10 @@ class ISparkJobService(metaclass=ABCMeta):
         pass
 
     @abstractmethod
+    def get_output_files_temp_urls(self, job_name):
+        pass
+
+    @abstractmethod
     def submit_job(self, body):
         pass
 

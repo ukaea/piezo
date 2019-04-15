@@ -1,4 +1,5 @@
 import asyncio
+from os.path import basename
 
 from kubernetes.client.rest import ApiException
 
@@ -18,13 +19,13 @@ class SparkJobService(ISparkJobService):
                  logger,
                  manifest_populator,
                  spark_job_namer,
-                 storage_adapter,
+                 storage_service,
                  validation_service):
         self._kubernetes_adapter = kubernetes_adapter
         self._logger = logger
         self._manifest_populator = manifest_populator
         self._spark_job_namer = spark_job_namer
-        self._storage_adapter = storage_adapter
+        self._storage_service = storage_service
         self._validation_service = validation_service
 
     def delete_job(self, job_name):
@@ -137,6 +138,19 @@ class SparkJobService(ISparkJobService):
                 'status': exception.status
             }
 
+    def get_output_files_temp_urls(self, job_name):
+        output_dir = self._job_output_dir_path(job_name)
+        temp_urls = self._storage_service.get_temp_url_for_each_file(output_dir)
+        temp_urls = {basename(file_path): temp_url for file_path, temp_url in temp_urls.items()}
+        msg = f'Got temporary URLs for {len(temp_urls)} output files for job "{job_name}"'
+        self._logger.debug(msg)
+        status = StatusCodes.Okay if temp_urls else StatusCodes.Not_found
+        return {
+            'files': temp_urls,
+            'message': msg,
+            'status': status.value
+        }
+
     def submit_job(self, body):
         # Validate the body keys
         validated_body_keys = self._validation_service.validate_request_keys(body)
@@ -196,7 +210,7 @@ class SparkJobService(ISparkJobService):
         dict_of_jobs = api_response['spark_jobs']
         loop = asyncio.get_event_loop()
         summary = loop.run_until_complete(asyncio.gather(*(
-            self.write_and_delete(job, status) for job, status in dict_of_jobs.items())))
+            self._write_and_delete(job, status) for job, status in dict_of_jobs.items())))
         jobs_skipped = {job.job_name: job.status for job in summary if job.tidied == "NO"}
         jobs_tidied = {job.job_name: job.status for job in summary if job.tidied == "YES"}
         jobs_failed_to_process = {
@@ -216,23 +230,25 @@ class SparkJobService(ISparkJobService):
         if api_response['status'] != StatusCodes.Okay.value:
             return api_response
         try:
-            bucket_name = 'kubernetes'
-            file_name = f'outputs/{job_name}/log.txt'
-            self._storage_adapter.set_contents_from_string(bucket_name, file_name, api_response['message'])
-            msg = f'Logs written to "{file_name}" in bucket "{bucket_name}"'
+            file_name = f'{self._job_output_dir_path(job_name)}log.txt'
+            self._storage_service.set_contents_from_string(file_name, api_response['message'])
+            msg = f'Logs written to "{file_name}"'
             self._logger.debug(msg)
             return {
                 'message': msg,
                 'status': StatusCodes.Okay.value
             }
         except ApiException as exception:
-            message = f'Got logs for job "{job_name}" but unable to write to "{file_name}" ' \
-                f'in bucket "{bucket_name}": {exception.reason}'
+            message = f'Got logs for job "{job_name}" but unable to write to "{file_name}": {exception.reason}'
             self._logger.error(message)
             return {
                 'status': exception.status,
                 'message': message
             }
+
+    @staticmethod
+    def _job_output_dir_path(job_name):
+        return f'outputs/{job_name}/'
 
     @staticmethod
     def _retrieve_status(item):
@@ -241,7 +257,7 @@ class SparkJobService(ISparkJobService):
         except KeyError:
             return 'UNKNOWN'
 
-    async def write_and_delete(self, job, status):
+    async def _write_and_delete(self, job, status):
         if status in ["COMPLETED", "FAILED"]:
             write_logs_response = self.write_logs_to_file(job)
             if write_logs_response['status'] == StatusCodes.Okay.value:
