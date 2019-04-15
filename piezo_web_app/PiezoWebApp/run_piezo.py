@@ -17,7 +17,7 @@ from PiezoWebApp.src.handlers.submit_job import SubmitJobHandler
 from PiezoWebApp.src.handlers.tidy_jobs import TidyJobsHandler
 from PiezoWebApp.src.handlers.write_logs_handler import WriteLogsHandler
 from PiezoWebApp.src.services.kubernetes.kubernetes_adapter import KubernetesAdapter
-from PiezoWebApp.src.services.spark_job.spark_job_namer import SparkJobNamer
+from PiezoWebApp.src.services.spark_job.spark_job_customiser import SparkJobCustomiser
 from PiezoWebApp.src.services.spark_job.spark_job_service import SparkJobService
 from PiezoWebApp.src.services.spark_job.validation.manifest_populator import ManifestPopulator
 from PiezoWebApp.src.services.spark_job.validation.validation_ruleset import ValidationRuleset
@@ -82,12 +82,12 @@ def build_container(configuration, k8s_adapter, log, storage_adapter, validation
     validation_ruleset = ValidationRuleset(validation_rules)
     validation_service = ValidationService(validation_ruleset)
     manifest_populator = ManifestPopulator(configuration, validation_ruleset)
-    spark_job_namer = SparkJobNamer(k8s_adapter)
+    spark_job_customiser = SparkJobCustomiser(k8s_adapter)
     spark_job_service = SparkJobService(
         k8s_adapter,
         log,
         manifest_populator,
-        spark_job_namer,
+        spark_job_customiser,
         storage_service,
         validation_service
     )

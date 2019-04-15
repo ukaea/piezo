@@ -2,14 +2,14 @@ import uuid
 
 from kubernetes.client.rest import ApiException
 
-from PiezoWebApp.src.services.spark_job.i_spark_job_namer import ISparkJobNamer
+from PiezoWebApp.src.services.spark_job.i_spark_job_customiser import ISparkJobCustomiser
 from PiezoWebApp.src.services.spark_job.spark_job_constants import CRD_GROUP
 from PiezoWebApp.src.services.spark_job.spark_job_constants import CRD_PLURAL
 from PiezoWebApp.src.services.spark_job.spark_job_constants import CRD_VERSION
 from PiezoWebApp.src.services.spark_job.spark_job_constants import NAMESPACE
 
 
-class SparkJobNamer(ISparkJobNamer):
+class SparkJobCustomiser(ISparkJobCustomiser):
     def __init__(self, kubernetes_adapter):
         self._kubernetes_adapter = kubernetes_adapter
         self._max_attempts = 10
