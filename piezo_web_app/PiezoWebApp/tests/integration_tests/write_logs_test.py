@@ -24,6 +24,7 @@ class TestWriteLogsToFileIntegration(BaseIntegrationTest):
         # Arrange
         body = {'job_name': 'test-job'}
         self.mock_k8s_adapter.read_namespaced_pod_log.return_value = 'Log\nFile\nContent'
+        self.mock_storage_adapter.set_contents_from_string.return_value = 12345
         # Act
         response_body, response_code = yield self.send_request(body)
         # Assert
@@ -33,7 +34,7 @@ class TestWriteLogsToFileIntegration(BaseIntegrationTest):
         assert response_code == 200
         self.assertDictEqual(response_body, {
             'status': 'success',
-            'data': {'message': 'Logs written to "outputs/test-job/log.txt" in bucket "kubernetes"'}
+            'data': {'message': 'Logs written to "outputs/test-job/log.txt"'}
         })
 
     @gen_test

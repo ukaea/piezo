@@ -4,7 +4,7 @@ from PiezoWebApp.tests.services.spark_job.spark_job_service_test import TestSpar
 class SparkJobServiceGetOutputFilesTempUrlsTest(TestSparkJobService):
     def test_get_output_files_temp_urls_returns_single_file_temp_url(self):
         # Arrange
-        self.mock_storage_adapter.get_temp_url_for_each_file.return_value = {
+        self.mock_storage_service.get_temp_url_for_each_file.return_value = {
             'outputs/test-job-abc12/log.txt': 'http://log.txt.temp.url'
         }
         # Act
@@ -16,14 +16,13 @@ class SparkJobServiceGetOutputFilesTempUrlsTest(TestSparkJobService):
             'files': {'log.txt': 'http://log.txt.temp.url'}
         })
         self.mock_logger.debug.assert_called_once_with('Got temporary URLs for 1 output files for job "test-job-abc12"')
-        self.mock_storage_adapter.get_temp_url_for_each_file.assert_called_once_with(
-            'kubernetes',
+        self.mock_storage_service.get_temp_url_for_each_file.assert_called_once_with(
             'outputs/test-job-abc12/'
         )
 
     def test_get_output_files_temp_urls_returns_empty_dictionary_when_no_files(self):
         # Arrange
-        self.mock_storage_adapter.get_temp_url_for_each_file.return_value = {}
+        self.mock_storage_service.get_temp_url_for_each_file.return_value = {}
         # Act
         result = self.test_service.get_output_files_temp_urls('test-job-abc12')
         # Assert
@@ -33,14 +32,13 @@ class SparkJobServiceGetOutputFilesTempUrlsTest(TestSparkJobService):
             'files': {}
         })
         self.mock_logger.debug.assert_called_once_with('Got temporary URLs for 0 output files for job "test-job-abc12"')
-        self.mock_storage_adapter.get_temp_url_for_each_file.assert_called_once_with(
-            'kubernetes',
+        self.mock_storage_service.get_temp_url_for_each_file.assert_called_once_with(
             'outputs/test-job-abc12/'
         )
 
     def test_get_output_files_temp_urls_returns_multiple_files_temp_urls(self):
         # Arrange
-        self.mock_storage_adapter.get_temp_url_for_each_file.return_value = {
+        self.mock_storage_service.get_temp_url_for_each_file.return_value = {
             'outputs/test-job-abc12/log.txt': 'http://log.txt.temp.url',
             'outputs/test-job-abc12/output1.csv': 'http://output1.csv.temp.url',
             'outputs/test-job-abc12/output2.csv': 'http://output2.csv.temp.url'
@@ -58,7 +56,6 @@ class SparkJobServiceGetOutputFilesTempUrlsTest(TestSparkJobService):
             }
         })
         self.mock_logger.debug.assert_called_once_with('Got temporary URLs for 3 output files for job "test-job-abc12"')
-        self.mock_storage_adapter.get_temp_url_for_each_file.assert_called_once_with(
-            'kubernetes',
+        self.mock_storage_service.get_temp_url_for_each_file.assert_called_once_with(
             'outputs/test-job-abc12/'
         )

@@ -16,6 +16,7 @@ class SampleConfigurationCreator:
                              k8s_cluster_config_file,
                              tidy_frequency,
                              s3_endpoint,
+                             s3_bucket_name,
                              s3_secret_name,
                              secrets_dir,
                              temp_url_expiry_seconds):
@@ -43,6 +44,9 @@ class SampleConfigurationCreator:
         template = SampleConfigurationCreator.add_element_to_temp_file(template,
                                                                        "S3Endpoint",
                                                                        s3_endpoint)
+        template = SampleConfigurationCreator.add_element_to_temp_file(template,
+                                                                       "S3BucketName",
+                                                                       s3_bucket_name)
         template = SampleConfigurationCreator.add_element_to_temp_file(template,
                                                                        "S3KeysSecret",
                                                                        s3_secret_name)
@@ -93,6 +97,7 @@ def test_configuration_parses_with_arguments():
                                                                          "Some/Path",
                                                                          "3600",
                                                                          "https://0.0.0.0:0",
+                                                                         "test-bucket",
                                                                          "some_secret",
                                                                          "/etc/secrets/",
                                                                          "600")
@@ -110,6 +115,7 @@ def test_configuration_parses_with_arguments():
     assert configuration.s3_endpoint == "https://0.0.0.0:0"
     assert configuration.s3_host == "0.0.0.0"
     assert configuration.s3_port == 0
+    assert configuration.s3_bucket_name == "test-bucket"
     assert configuration.s3_secrets_name == "some_secret"
     assert configuration.secrets_dir == "/etc/secrets/"
     assert configuration.is_s3_secure is True
