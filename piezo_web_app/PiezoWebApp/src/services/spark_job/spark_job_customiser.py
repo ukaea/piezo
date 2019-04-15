@@ -25,6 +25,14 @@ class SparkJobCustomiser(ISparkJobCustomiser):
             raise RuntimeError(f'{counter} attempts to find a unique job name all failed')
         return trial_job_name
 
+    @staticmethod
+    def set_output_dir_as_first_argument(job_name, storage_service, validated_body_values):
+        output_dir = f'{storage_service.protocol_route_to_bucket()}/outputs/{job_name}/'
+        arguments = validated_body_values.validated_value['arguments'] if 'arguments' in validated_body_values.validated_value else []
+        arguments.insert(0, output_dir)
+        validated_body_values.validated_value['arguments'] = arguments
+        return validated_body_values
+
     def _does_job_exist(self, job_name):
         try:
             self._kubernetes_adapter.get_namespaced_custom_object(

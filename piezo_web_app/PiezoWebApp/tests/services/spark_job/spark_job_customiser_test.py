@@ -4,8 +4,10 @@ from kubernetes.client.rest import ApiException
 import mock
 import pytest
 
+from PiezoWebApp.src.models.spark_job_validation_result import ValidationResult
 from PiezoWebApp.src.services.kubernetes.i_kubernetes_adapter import IKubernetesAdapter
 from PiezoWebApp.src.services.spark_job.spark_job_customiser import SparkJobCustomiser
+from PiezoWebApp.src.services.storage.i_storage_service import IStorageService
 
 
 class TestSparkJobCustomiser(TestCase):
@@ -14,6 +16,40 @@ class TestSparkJobCustomiser(TestCase):
     def setup(self):
         self.mock_kubernetes_adapter = mock.create_autospec(IKubernetesAdapter)
         self.test_customiser = SparkJobCustomiser(self.mock_kubernetes_adapter)
+
+    def test_set_output_dir_as_first_argument_adds_dir_if_no_other_arguments(self):
+        # Arrange
+        mock_storage_service = mock.create_autospec(IStorageService)
+        mock_storage_service.protocol_route_to_bucket.return_value = 's3a://test-bucket'
+        validated_body_values = ValidationResult(True, None, {'other': 'True', 'another': 12})
+        # Act
+        result = self.test_service.set_output_dir_as_first_argument(
+            'example-job', mock_storage_service, validated_body_values
+        )
+        # Assert
+        self.assertDictEqual(result.validated_value, {
+            'other': 'True',
+            'another': 12,
+            'arguments': ['s3a://test-bucket/outputs/example-job/']
+        })
+
+    def test_set_output_dir_as_first_argument_prepends_dir_to_other_arguments(self):
+        # Arrange
+        mock_storage_service = mock.create_autospec(IStorageService)
+        mock_storage_service.protocol_route_to_bucket.return_value = 's3a://test-bucket'
+        validated_body_values = ValidationResult(
+            True, None, {'other': 'True', 'another': 12, 'arguments': ['1st', '2nd']}
+        )
+        # Act
+        result = self.test_service.set_output_dir_as_first_argument(
+            'example-job', mock_storage_service, validated_body_values
+        )
+        # Assert
+        self.assertDictEqual(result.validated_value, {
+            'other': 'True',
+            'another': 12,
+            'arguments': ['s3a://test-bucket/outputs/example-job/', '1st', '2nd']
+        })
 
     def test_rename_job_tags_names_with_uuid(self):
         # Arrange
