@@ -18,13 +18,13 @@ class SparkJobService(ISparkJobService):
                  kubernetes_adapter,
                  logger,
                  manifest_populator,
-                 spark_job_namer,
+                 spark_job_customiser,
                  storage_service,
                  validation_service):
         self._kubernetes_adapter = kubernetes_adapter
         self._logger = logger
         self._manifest_populator = manifest_populator
-        self._spark_job_namer = spark_job_namer
+        self._spark_job_customiser = spark_job_customiser
         self._storage_service = storage_service
         self._validation_service = validation_service
 
@@ -169,9 +169,14 @@ class SparkJobService(ISparkJobService):
             }
 
         # Make the job name unique
-        job_name = self._spark_job_namer.rename_job(body['name'])
+        job_name = self._spark_job_customiser.rename_job(body['name'])
         validated_body_values.validated_value['name'] = job_name
         self._logger.debug(f'Renamed job "{body["name"]}" to "{job_name}"')
+
+        # Make the output directory the first argument
+        validated_body_values = self._spark_job_customiser.set_output_dir_as_first_argument(
+            job_name, self._storage_service, validated_body_values
+        )
 
         # Populate the manifest
         body = self._manifest_populator.build_manifest(validated_body_values.validated_value)

@@ -23,7 +23,7 @@ class TestSparkJobCustomiser(TestCase):
         mock_storage_service.protocol_route_to_bucket.return_value = 's3a://test-bucket'
         validated_body_values = ValidationResult(True, None, {'other': 'True', 'another': 12})
         # Act
-        result = self.test_service.set_output_dir_as_first_argument(
+        result = self.test_customiser.set_output_dir_as_first_argument(
             'example-job', mock_storage_service, validated_body_values
         )
         # Assert
@@ -41,7 +41,7 @@ class TestSparkJobCustomiser(TestCase):
             True, None, {'other': 'True', 'another': 12, 'arguments': ['1st', '2nd']}
         )
         # Act
-        result = self.test_service.set_output_dir_as_first_argument(
+        result = self.test_customiser.set_output_dir_as_first_argument(
             'example-job', mock_storage_service, validated_body_values
         )
         # Assert
