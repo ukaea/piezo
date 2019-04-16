@@ -19,12 +19,14 @@ class SparkJobService(ISparkJobService):
                  logger,
                  manifest_populator,
                  spark_job_namer,
+                 spark_ui_service,
                  storage_service,
                  validation_service):
         self._kubernetes_adapter = kubernetes_adapter
         self._logger = logger
         self._manifest_populator = manifest_populator
         self._spark_job_namer = spark_job_namer
+        self._spark_ui_service = spark_ui_service
         self._storage_service = storage_service
         self._validation_service = validation_service
 
@@ -39,7 +41,11 @@ class SparkJobService(ISparkJobService):
                 job_name,
                 body
             )
-
+            proxy_name = job_name + '-ui-proxy'
+            ingress_name = proxy_name + '-ingress'
+            self._kubernetes_adapter.delete_namespaced_deployment(proxy_name, NAMESPACE, body)
+            self._kubernetes_adapter.delete_namespaced_service(proxy_name, NAMESPACE, body)
+            self._kubernetes_adapter.delete_namespaced_ingress(ingress_name, NAMESPACE, body)
             msg = f'"{job_name}" deleted' if api_response['status'] == "Success"\
                 else f'Trying to delete job "{job_name}" resulted in status: {api_response["status"]}'
             self._logger.debug(msg)
@@ -186,12 +192,13 @@ class SparkJobService(ISparkJobService):
             )
 
             # Expose the spark ui
-            self._kubernetes_adapter.expose_spark_ui(NAMESPACE, job_name)
+            ui_url = self._expose_spark_ui(job_name)
+
             result = {
                 'status': StatusCodes.Okay.value,
                 'message': 'Job driver created successfully',
                 'job_name': job_name,
-                'spark-ui': f'http://host-172-16-113-146.nubes.stfc.ac.uk:31924/proxy:{job_name}-ui-svc:4040'
+                'spark-ui': ui_url
             }
             return result
         except ApiException as exception:
@@ -275,3 +282,13 @@ class SparkJobService(ISparkJobService):
         else:
             self._logger.debug(f'Not processing job "{job}", current status is "{status}"')
             return TidiedJobStatus(job, status, "NO", None, None)
+
+    def _expose_spark_ui(self, job_name):
+        proxy_body = self._spark_ui_service.create_ui_proxy_body(job_name, NAMESPACE)
+        proxy_svc_body = self._spark_ui_service.create_ui_proxy_svc_body(job_name, NAMESPACE)
+        proxy_ingress_body = self._spark_ui_service.create_ui_proxy_ingress_body(job_name)
+        self._kubernetes_adapter.create_namespaced_deployment(NAMESPACE, proxy_body)
+        self._kubernetes_adapter.create_namespaced_service(NAMESPACE, proxy_svc_body)
+        self._kubernetes_adapter.create_namespaced_ingress(NAMESPACE, proxy_ingress_body)
+        url = self._spark_ui_service.create_ui_url(job_name)
+        return url

@@ -21,6 +21,7 @@ class Configuration:
         # Application
         self._app_port = None
         self._run_environment = None
+        self._k8s_url = None
         self._k8s_cluster_config_file = None
         self._tidy_frequency = None
 
@@ -49,6 +50,10 @@ class Configuration:
     @property
     def run_environment(self):
         return self._run_environment
+
+    @property
+    def k8s_url(self):
+        return self._k8s_url
 
     @property
     def k8s_cluster_config_file(self):
@@ -107,6 +112,7 @@ class Configuration:
         # Application
         self._app_port = str2non_negative_int(application['ApplicationPort'])
         self._run_environment = application['RunEnvironment']
+        self._k8s_url = application['K8sUrl']
         self._k8s_cluster_config_file = application['K8sClusterConfigFile']
         self._tidy_frequency = str2non_negative_int(application['TidyFrequency'])
 

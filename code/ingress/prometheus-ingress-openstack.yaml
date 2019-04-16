@@ -20,7 +20,7 @@ kind: Ingress
 metadata:
   annotations:
     kubernetes.io/ingress.class: nginx
-    kubernetes.io/rewrite-target: /
+    # kubernetes.io/rewrite-target: /
   name: grafana-ingress
 spec:
   rules:
@@ -30,4 +30,4 @@ spec:
           - backend:
               serviceName: piezo-monitor-grafana
               servicePort: service
-            path: /grafana/
+            path: /

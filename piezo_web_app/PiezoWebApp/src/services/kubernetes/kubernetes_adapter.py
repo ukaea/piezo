@@ -9,10 +9,33 @@ class KubernetesAdapter(IKubernetesAdapter):
         self._core_connection = kubernetes.client.CoreV1Api(api_client)
         self._custom_connection = kubernetes.client.CustomObjectsApi(api_client)
         self._extension_connection = kubernetes.client.ExtensionsV1beta1Api(api_client)
+        self._v1_connection = kubernetes.client.AppsV1Api(api_client)
+
+    # pylint: disable=too-many-arguments
+    def create_namespaced_custom_object(self, group, version, namespace, plural, body):
+        return self._custom_connection.create_namespaced_custom_object(group, version, namespace, plural, body)
+
+    def create_namespaced_deployment(self, namespace, body):
+        return self._extension_connection.create_namespaced_deployment(namespace, body)
+
+    def create_namespaced_service(self, namespace, body):
+        return self._core_connection.create_namespaced_service(namespace, body)
+
+    def create_namespaced_ingress(self, namespace, body):
+        return self._extension_connection.create_namespaced_ingress(namespace, body)
 
     # pylint: disable=too-many-arguments
     def delete_namespaced_custom_object(self, group, version, namespace, plural, name, body):
         return self._custom_connection.delete_namespaced_custom_object(group, version, namespace, plural, name, body)
+
+    def delete_namespaced_deployment(self, name, namespace, body):
+        return self._v1_connection.delete_namespaced_deployment(name, namespace, body)
+
+    def delete_namespaced_service(self, name, namespace, body):
+        return self._core_connection.delete_namespaced_service(name, namespace, body)
+
+    def delete_namespaced_ingress(self, name, namespace, body):
+        return self._extension_connection.delete_namespaced_ingress(name, namespace, body)
 
     # pylint: disable=too-many-arguments
     def delete_options(self,
@@ -31,68 +54,11 @@ class KubernetesAdapter(IKubernetesAdapter):
                 'preconditions': pre_conditions,
                 'propagation_policy': propagation_policy}
 
-    def read_namespaced_pod_log(self, driver_name, namespace):
-        return self._core_connection.read_namespaced_pod_log(driver_name, namespace)
-
-    # pylint: disable=too-many-arguments
-    def create_namespaced_custom_object(self, group, version, namespace, plural, body):
-        return self._custom_connection.create_namespaced_custom_object(group, version, namespace, plural, body)
-
     def get_namespaced_custom_object(self, group, version, namespace, plural, name):
         return self._custom_connection.get_namespaced_custom_object(group, version, namespace, plural, name)
 
+    def read_namespaced_pod_log(self, driver_name, namespace):
+        return self._core_connection.read_namespaced_pod_log(driver_name, namespace)
+
     def list_namespaced_custom_object(self, group, version, namespace, plural, **kwargs):
         return self._custom_connection.list_namespaced_custom_object(group, version, namespace, plural, **kwargs)
-
-    def expose_spark_ui(self, namespace, job_name):
-        # spark ui proxy deployment
-        proxy_name = job_name + '-ui-proxy'
-        deployment_metadata = kubernetes.client.V1ObjectMeta(labels={'name': proxy_name},
-                                                             name=proxy_name,
-                                                             namespace=namespace)
-        template_metadata = kubernetes.client.V1ObjectMeta(labels={'name': proxy_name})
-        port = kubernetes.client.V1ContainerPort(container_port=80)
-        resources = kubernetes.client.V1ResourceRequirements(requests={'cpu': '500m'})
-        http_get = kubernetes.client.V1HTTPGetAction(path='/', port=80)
-        probe = kubernetes.client.V1Probe(http_get=http_get, initial_delay_seconds=120, timeout_seconds=5)
-        container = kubernetes.client.V1Container(name=proxy_name,
-                                                  image='networkaispark/spark-ui-proxy:1.0.0',
-                                                  ports=[port],
-                                                  resources=resources,
-                                                  args=[f'{job_name}-ui-svc:4040', '80'],
-                                                  liveness_probe=probe)
-        template_spec = kubernetes.client.V1PodSpec(containers=[container])
-        deployment_template = kubernetes.client.V1PodTemplateSpec(metadata=template_metadata,
-                                                                  spec=template_spec)
-        deployment_spec = kubernetes.client.ExtensionsV1beta1DeploymentSpec(replicas=1, template=deployment_template)
-        deployment_body = kubernetes.client.ExtensionsV1beta1Deployment(api_version='extensions/v1beta1',
-                                                                        kind='Deployment',
-                                                                        metadata=deployment_metadata,
-                                                                        spec=deployment_spec)
-        self._extension_connection.create_namespaced_deployment(namespace, deployment_body)
-
-        # spark ui proxy service
-        service_port = kubernetes.client.V1ServicePort(port=80, target_port=80)
-        service_spec = kubernetes.client.V1ServiceSpec(ports=[service_port],
-                                                       selector={'name': proxy_name},
-                                                       type='NodePort')
-        service_body = kubernetes.client.V1Service(api_version='v1',
-                                                   kind='Service',
-                                                   metadata=deployment_metadata,
-                                                   spec=service_spec)
-        self._core_connection.create_namespaced_service(namespace=namespace, body=service_body)
-
-        # spark ui proxy ingress
-        ingress_name = f'{proxy_name}-ingress'
-        path = f'/'
-        #path = f'/{job_name}/'
-        metadata = kubernetes.client.V1ObjectMeta(annotations={'kubernetes.io/ingress.class': 'nginx'}, name=ingress_name)
-        #metadata = kubernetes.client.V1ObjectMeta(annotations={'kubernetes.io/ingress.class': 'nginx', 'nginx.ingress.kubernetes.io/rewrite-target': f'/'}, name=ingress_name)
-        backend = kubernetes.client.V1beta1IngressBackend(service_name=proxy_name, service_port=80)
-        ingress_path = kubernetes.client.V1beta1HTTPIngressPath(backend=backend, path=path)
-        http = kubernetes.client.V1beta1HTTPIngressRuleValue(paths=[ingress_path])
-        rules = kubernetes.client.V1beta1IngressRule(host=f'host-172-16-113-146.nubes.stfc.ac.uk', http=http)
-        spec = kubernetes.client.V1beta1IngressSpec(backend=backend, rules=[rules])
-        ingress_body = kubernetes.client.V1beta1Ingress(api_version='extensions/v1beta1', kind='Ingress', metadata=metadata, spec=spec)
-        self._extension_connection.create_namespaced_ingress(namespace, ingress_body)
-
