@@ -42,9 +42,9 @@ class TestSparkUiService:
         # Assert
         assert body.metadata.name == "test-job-ui-proxy"
         assert body.metadata.namespace == "default"
-        assert body.metadata.labels == {'name': 'test-job-ui-proxy'}
+        assert body.metadata.labels == {'name': 'test-job-ui-proxy', 'release': 'piezo'}
         assert body.spec.replicas == 1
-        assert body.spec.template.metadata.labels == {'name': 'test-job-ui-proxy'}
+        assert body.spec.template.metadata.labels == {'name': 'test-job-ui-proxy', 'release': 'piezo'}
         assert body.spec.template.spec.containers == [expected_container]
 
     def test_create_ui_svc_body_generates_correct_body(self):
@@ -58,7 +58,7 @@ class TestSparkUiService:
         assert body.kind == 'Service'
         assert body.metadata.name == 'test-job-ui-proxy'
         assert body.metadata.namespace == 'default'
-        assert body.metadata.labels == {'name': 'test-job-ui-proxy'}
+        assert body.metadata.labels == {'name': 'test-job-ui-proxy', 'release': 'piezo'}
         assert body.spec.type == 'NodePort'
         assert body.spec.selector == {'name': 'test-job-ui-proxy'}
         assert body.spec.ports == [kubernetes.client.V1ServicePort(port=80, target_port=80)]

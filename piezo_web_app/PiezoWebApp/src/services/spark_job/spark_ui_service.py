@@ -9,10 +9,10 @@ class SparkUiService(ISparkUiService):
     @staticmethod
     def create_ui_proxy_body(job_name, namespace):
         proxy_name = f'{job_name}-ui-proxy'
-        deployment_metadata = kubernetes.client.V1ObjectMeta(labels={'name': proxy_name},
+        deployment_metadata = kubernetes.client.V1ObjectMeta(labels={'name': proxy_name, 'release': 'piezo'},
                                                              name=proxy_name,
                                                              namespace=namespace)
-        deployment_template_metadata = kubernetes.client.V1ObjectMeta(labels={'name': proxy_name})
+        deployment_template_metadata = kubernetes.client.V1ObjectMeta(labels={'name': proxy_name, 'release': 'piezo'})
         port = kubernetes.client.V1ContainerPort(container_port=80)
         resources = kubernetes.client.V1ResourceRequirements(requests={'cpu': '500m'})
         http_get = kubernetes.client.V1HTTPGetAction(path='/', port=80)
@@ -36,7 +36,7 @@ class SparkUiService(ISparkUiService):
     def create_ui_proxy_svc_body(job_name, namespace):
         proxy_name = f'{job_name}-ui-proxy'
         service_port = kubernetes.client.V1ServicePort(port=80, target_port=80)
-        service_metadata = kubernetes.client.V1ObjectMeta(labels={'name': proxy_name},
+        service_metadata = kubernetes.client.V1ObjectMeta(labels={'name': proxy_name, 'release': 'piezo'},
                                                           name=proxy_name,
                                                           namespace=namespace)
         service_spec = kubernetes.client.V1ServiceSpec(ports=[service_port],
@@ -52,7 +52,8 @@ class SparkUiService(ISparkUiService):
         ingress_name = f'{service_name}-ingress'
         path = f'/'
         metadata = kubernetes.client.V1ObjectMeta(annotations={'kubernetes.io/ingress.class': 'nginx'},
-                                                  name=ingress_name)
+                                                  name=ingress_name,
+                                                  labels={'name': service_name, 'release': 'piezo'})
         backend = kubernetes.client.V1beta1IngressBackend(service_name=service_name, service_port=80)
         ingress_path = kubernetes.client.V1beta1HTTPIngressPath(backend=backend, path=path)
         http = kubernetes.client.V1beta1HTTPIngressRuleValue(paths=[ingress_path])
