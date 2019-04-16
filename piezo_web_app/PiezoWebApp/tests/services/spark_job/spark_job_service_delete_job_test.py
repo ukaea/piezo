@@ -55,8 +55,8 @@ class SparkJobServiceDeleteJobTest(TestSparkJobService):
         # Act
         self.test_service.delete_job('test-spark-job')
         # Assert
-        self.mock_logger.error.assert_called_once_with('Trying to delete all spark ui components resulted in exception:'
-                                                       ' (Failed to delete proxy)\nReason: None\n')
+        self.mock_logger.error.assert_called_once_with('Trying to spark ui proxy resulted in exception: '
+                                                       '(Failed to delete proxy)\nReason: None\n')
 
     def test_delete_job_logs_and_returns_api_exception_reason(self):
         # Arrange
