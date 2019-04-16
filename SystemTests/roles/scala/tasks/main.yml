@@ -1,0 +1,14 @@
+---
+- name: Add sbt yum repo
+  yum_repository:
+    name: sbt
+    baseurl: https://sbt.bintray.com/rpm
+    gpgcheck: false
+    repo_gpgcheck: false
+
+- name: Install Java & SBT
+  yum:
+    name:
+      - java-1.8.0-openjdk
+      - sbt
+    state: present
