@@ -13,6 +13,7 @@ class SampleConfigurationCreator:
                              logging_level,
                              app_port,
                              run_environment,
+                             k8s_url,
                              k8s_cluster_config_file,
                              tidy_frequency,
                              s3_endpoint,
@@ -34,6 +35,9 @@ class SampleConfigurationCreator:
         template = SampleConfigurationCreator.add_element_to_temp_file(template,
                                                                        "RunEnvironment",
                                                                        run_environment)
+        template = SampleConfigurationCreator.add_element_to_temp_file(template,
+                                                                       "K8sUrl",
+                                                                       k8s_url)
         template = SampleConfigurationCreator.add_element_to_temp_file(template,
                                                                        "K8sClusterConfigFile",
                                                                        k8s_cluster_config_file)
@@ -94,6 +98,7 @@ def test_configuration_parses_with_arguments():
                                                                          "INFO",
                                                                          "8888",
                                                                          "SYSTEM",
+                                                                         "https://1.1.1.1:1"
                                                                          "Some/Path",
                                                                          "3600",
                                                                          "https://0.0.0.0:0",
@@ -110,6 +115,7 @@ def test_configuration_parses_with_arguments():
     assert configuration.logging_level == "INFO"
     assert configuration.app_port == 8888
     assert configuration.run_environment == "SYSTEM"
+    assert configuration.k8s_url == "https://1.1.1.1:1"
     assert configuration.k8s_cluster_config_file == "Some/Path"
     assert configuration.tidy_frequency == 3600
     assert configuration.s3_endpoint == "https://0.0.0.0:0"
