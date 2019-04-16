@@ -1,0 +1,5 @@
+---
+- name: Clone Apache Spark repo
+    repo: https://github.com/apache/spark
+    clone: true
+    dest: ~/apache_spark/
