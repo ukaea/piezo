@@ -70,7 +70,8 @@ class SparkJobServiceSubmitJobTest(TestSparkJobService):
         self.test_service.submit_job(body)
         # Assert
         self.mock_spark_ui_service.create_ui_proxy_body.assert_called_once_with('test-spark-job-abcd1234', NAMESPACE)
-        self.mock_spark_ui_service.create_ui_proxy_svc_body.assert_called_once_with('test-spark-job-abcd1234', NAMESPACE)
+        self.mock_spark_ui_service.create_ui_proxy_svc_body.assert_called_once_with('test-spark-job-abcd1234',
+                                                                                    NAMESPACE)
         self.mock_spark_ui_service.create_ui_proxy_ingress_body.assert_called_once_with('test-spark-job-abcd1234')
         self.mock_kubernetes_adapter.create_namespaced_deployment.assert_called_once_with(NAMESPACE, {'proxy': 'body'})
         self.mock_kubernetes_adapter.create_namespaced_service.assert_called_once_with(NAMESPACE, {'svc': 'body'})
