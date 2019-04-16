@@ -1,8 +1,8 @@
+from PiezoWebApp.src.services.spark_job.i_spark_ui_service import ISparkUiService
 import kubernetes
 
 
-class SparkUiService:
-
+class SparkUiService(ISparkUiService):
     def __init__(self, configuration):
         self._k8s_url = configuration.k8s_url
 
@@ -52,7 +52,8 @@ class SparkUiService:
         service_name = f'{job_name}-ui-proxy'
         ingress_name = f'{service_name}-ingress'
         path = f'/'
-        metadata = kubernetes.client.V1ObjectMeta(annotations={'kubernetes.io/ingress.class': 'nginx'}, name=ingress_name)
+        metadata = kubernetes.client.V1ObjectMeta(annotations={'kubernetes.io/ingress.class': 'nginx'},
+                                                  name=ingress_name)
         backend = kubernetes.client.V1beta1IngressBackend(service_name=service_name, service_port=80)
         ingress_path = kubernetes.client.V1beta1HTTPIngressPath(backend=backend, path=path)
         http = kubernetes.client.V1beta1HTTPIngressRuleValue(paths=[ingress_path])
