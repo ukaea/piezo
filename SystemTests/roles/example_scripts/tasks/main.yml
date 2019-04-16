@@ -1,5 +1,42 @@
 ---
 - name: Clone Apache Spark repo
+  git:
     repo: https://github.com/apache/spark
     clone: true
-    dest: ~/apache_spark/
+    dest: /home/robot/apache_spark/
+    force: true
+
+- name: Replace index in SparkPi.scala
+  replace:
+    path: /home/robot/apache_spark/examples/src/main/scala/org/apache/spark/examples/SparkPi.scala
+    regexp: 'if \(args\.length \> 0\) args\(0\)'
+    replace: 'if (args.length > 1) args(1)'
+    backup: yes
+
+- name: Replace fourth index in GroupByTest.scala
+  replace:
+    path: /home/robot/apache_spark/examples/src/main/scala/org/apache/spark/examples/GroupByTest.scala
+    regexp: 'if \(args\.length \> 3\) args\(3\)'
+    replace: 'if (args.length > 4) args(4)'
+    backup: yes
+
+- name: Replace third index in GroupByTest.scala
+  replace:
+    path: /home/robot/apache_spark/examples/src/main/scala/org/apache/spark/examples/GroupByTest.scala
+    regexp: 'if \(args\.length \> 2\) args\(2\)'
+    replace: 'if (args.length > 3) args(3)'
+    backup: yes
+
+- name: Replace second index in GroupByTest.scala
+  replace:
+    path: /home/robot/apache_spark/examples/src/main/scala/org/apache/spark/examples/GroupByTest.scala
+    regexp: 'if \(args\.length \> 1\) args\(1\)'
+    replace: 'if (args.length > 2) args(2)'
+    backup: yes
+
+- name: Replace first index in GroupByTest.scala
+  replace:
+    path: /home/robot/apache_spark/examples/src/main/scala/org/apache/spark/examples/GroupByTest.scala
+    regexp: 'if \(args\.length \> 0\) args\(0\)'
+    replace: 'if (args.length > 1) args(1)'
+    backup: yes
