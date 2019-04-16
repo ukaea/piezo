@@ -66,7 +66,7 @@ class TestSparkUiService:
     def test_create_ui_ingress_body_generates_correct_body(self):
         # Arrange
         job_name = 'test-job'
-        expected_rule = kubernetes.client.V1beta1IngressRule(host='0.0.0.0:0',
+        expected_rule = kubernetes.client.V1beta1IngressRule(host='0.0.0.0',
                                                              http=kubernetes.client.V1beta1HTTPIngressRuleValue(
                                                                  paths=[
                                                                     kubernetes.client.V1beta1HTTPIngressPath(

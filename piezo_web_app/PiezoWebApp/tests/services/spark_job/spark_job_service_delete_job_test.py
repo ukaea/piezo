@@ -43,10 +43,8 @@ class SparkJobServiceDeleteJobTest(TestSparkJobService):
                                                                                        NAMESPACE,
                                                                                        {"api_version": "version",
                                                                                         "other_values": "values"})
-        self.mock_kubernetes_adapter.delete_namespaced_ingress.assert_called_once_with('test-spark-job-ui-proxy-ingress',
-                                                                                       NAMESPACE,
-                                                                                       {"api_version": "version",
-                                                                                        "other_values": "values"})
+        self.mock_kubernetes_adapter.delete_namespaced_ingress.assert_called_once_with(
+            'test-spark-job-ui-proxy-ingress', NAMESPACE, {"api_version": "version", "other_values": "values"})
 
     def test_delete_job_logs_any_ui_services_that_are_not_deleted(self):
         # Arrange
