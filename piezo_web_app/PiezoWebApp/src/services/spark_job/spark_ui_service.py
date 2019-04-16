@@ -12,7 +12,7 @@ class SparkUiService(ISparkUiService):
         deployment_metadata = kubernetes.client.V1ObjectMeta(labels={'name': proxy_name},
                                                              name=proxy_name,
                                                              namespace=namespace)
-        template_metadata = kubernetes.client.V1ObjectMeta(labels={'name': proxy_name})
+        deployment_template_metadata = kubernetes.client.V1ObjectMeta(labels={'name': proxy_name})
         port = kubernetes.client.V1ContainerPort(container_port=80)
         resources = kubernetes.client.V1ResourceRequirements(requests={'cpu': '500m'})
         http_get = kubernetes.client.V1HTTPGetAction(path='/', port=80)
@@ -24,7 +24,7 @@ class SparkUiService(ISparkUiService):
                                                   args=[f'{job_name}-ui-svc:4040', '80'],
                                                   liveness_probe=probe)
         template_spec = kubernetes.client.V1PodSpec(containers=[container])
-        deployment_template = kubernetes.client.V1PodTemplateSpec(metadata=template_metadata,
+        deployment_template = kubernetes.client.V1PodTemplateSpec(metadata=deployment_template_metadata,
                                                                   spec=template_spec)
         deployment_spec = kubernetes.client.ExtensionsV1beta1DeploymentSpec(replicas=1, template=deployment_template)
         return kubernetes.client.ExtensionsV1beta1Deployment(api_version='extensions/v1beta1',
@@ -47,8 +47,7 @@ class SparkUiService(ISparkUiService):
                                            metadata=service_metadata,
                                            spec=service_spec)
 
-    @staticmethod
-    def create_ui_proxy_ingress_body(job_name):
+    def create_ui_proxy_ingress_body(self, job_name):
         service_name = f'{job_name}-ui-proxy'
         ingress_name = f'{service_name}-ingress'
         path = f'/'
@@ -57,7 +56,8 @@ class SparkUiService(ISparkUiService):
         backend = kubernetes.client.V1beta1IngressBackend(service_name=service_name, service_port=80)
         ingress_path = kubernetes.client.V1beta1HTTPIngressPath(backend=backend, path=path)
         http = kubernetes.client.V1beta1HTTPIngressRuleValue(paths=[ingress_path])
-        rules = kubernetes.client.V1beta1IngressRule(host='host-172-16-113-146.nubes.stfc.ac.uk', http=http)
+        host = self._k8s_url.split("//")[1]
+        rules = kubernetes.client.V1beta1IngressRule(host=host, http=http)
         spec = kubernetes.client.V1beta1IngressSpec(backend=backend, rules=[rules])
         return kubernetes.client.V1beta1Ingress(api_version='extensions/v1beta1',
                                                 kind='Ingress',
