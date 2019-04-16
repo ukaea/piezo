@@ -98,7 +98,7 @@ def test_configuration_parses_with_arguments():
                                                                          "INFO",
                                                                          "8888",
                                                                          "SYSTEM",
-                                                                         "https://1.1.1.1:1"
+                                                                         "https://1.1.1.1:1",
                                                                          "Some/Path",
                                                                          "3600",
                                                                          "https://0.0.0.0:0",
