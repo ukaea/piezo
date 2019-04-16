@@ -57,6 +57,7 @@ class SparkUiService(ISparkUiService):
         ingress_path = kubernetes.client.V1beta1HTTPIngressPath(backend=backend, path=path)
         http = kubernetes.client.V1beta1HTTPIngressRuleValue(paths=[ingress_path])
         host = self._k8s_url.split("//")[1]
+        host = host.split(':')[0]
         rules = kubernetes.client.V1beta1IngressRule(host=host, http=http)
         spec = kubernetes.client.V1beta1IngressSpec(backend=backend, rules=[rules])
         return kubernetes.client.V1beta1Ingress(api_version='extensions/v1beta1',

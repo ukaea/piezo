@@ -66,8 +66,9 @@ class SparkJobServiceSubmitJobTest(TestSparkJobService):
         self.mock_spark_ui_service.create_ui_proxy_body.return_value = {'proxy': 'body'}
         self.mock_spark_ui_service.create_ui_proxy_svc_body.return_value = {'svc': 'body'}
         self.mock_spark_ui_service.create_ui_proxy_ingress_body.return_value = {'ingress': 'body'}
+        self.mock_spark_ui_service.create_ui_url.return_value = "some.url"
         # Act
-        self.test_service.submit_job(body)
+        response = self.test_service.submit_job(body)
         # Assert
         self.mock_spark_ui_service.create_ui_proxy_body.assert_called_once_with('test-spark-job-abcd1234', NAMESPACE)
         self.mock_spark_ui_service.create_ui_proxy_svc_body.assert_called_once_with('test-spark-job-abcd1234',
@@ -77,6 +78,27 @@ class SparkJobServiceSubmitJobTest(TestSparkJobService):
         self.mock_kubernetes_adapter.create_namespaced_service.assert_called_once_with(NAMESPACE, {'svc': 'body'})
         self.mock_kubernetes_adapter.create_namespaced_ingress.assert_called_once_with(NAMESPACE, {'ingress': 'body'})
         self.mock_spark_ui_service.create_ui_url.assert_called_once_with('test-spark-job-abcd1234')
+        assert response['spark-ui'] == 'some.url'
+
+    def test_submit_job_returns_ui_url_as_unavailable_if_failure_in_setup(self):
+        # Arrange
+        body = {
+            'name': 'test-spark-job',
+            'language': 'example-language'
+        }
+        self.mock_validation_service.validate_request_keys.return_value = ValidationResult(True, "", None)
+        self.mock_validation_service.validate_request_values.return_value = ValidationResult(True, "", body)
+        self.mock_spark_job_namer.rename_job.return_value = 'test-spark-job-abcd1234'
+        self.mock_spark_ui_service.create_ui_proxy_body.return_value = {'proxy': 'body'}
+        self.mock_spark_ui_service.create_ui_proxy_svc_body.return_value = {'svc': 'body'}
+        self.mock_spark_ui_service.create_ui_proxy_ingress_body.return_value = {'ingress': 'body'}
+        self.mock_kubernetes_adapter.create_namespaced_deployment.side_effect = ApiException('Failure for proxy')
+        self.mock_spark_ui_service.create_ui_url.return_value = "some.url"
+        # Act
+        response = self.test_service.submit_job(body)
+        # Assert)
+        self.mock_spark_ui_service.create_ui_url.assert_not_called()
+        assert response['spark-ui'] == 'Unavailable'
 
     def test_submit_job_returns_invalid_body_keys(self):
         # Arrange
