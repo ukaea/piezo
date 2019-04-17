@@ -9,9 +9,6 @@ Resource          s3methods.robot
 
 ###############################################################################
 *** Test Cases ***
-Grafana Returns Ok Response
-    ${response}=  Get Request From Route   /
-    Confirm Ok Response  ${response}
 
 Prometheus Returns Ok Response
     ${response}=  Get Request From Route   /prometheus/graph

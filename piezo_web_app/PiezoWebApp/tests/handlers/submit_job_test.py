@@ -70,7 +70,7 @@ class TestSubmitJobHandler(BaseHandlerTest):
             'status': StatusCodes.Okay.value,
             'message': 'Job driver created successfully',
             'driver_name': 'test-spark-job-driver',
-            'spark-ui': 'some.url'
+            'spark_ui': 'some.url'
         }
         # Act
         response_body, response_code = yield self.send_request(body)
@@ -102,7 +102,7 @@ class TestSubmitJobHandler(BaseHandlerTest):
             'status': StatusCodes.Okay.value,
             'message': 'Job driver created successfully',
             'driver_name': 'test-spark-job-driver',
-            'spark-ui': 'some.url'
+            'spark_ui': 'some.url'
         }
         # Act
         response_body, response_code = yield self.send_request(body)
@@ -124,7 +124,7 @@ class TestSubmitJobHandler(BaseHandlerTest):
             'status': StatusCodes.Okay.value,
             'message': 'Job driver created successfully',
             'driver_name': 'test-spark-job-driver',
-            'spark-ui': 'some.url'
+            'spark_ui': 'some.url'
         }
         # Act
         yield self.assert_request_returns_400(body)
@@ -144,7 +144,7 @@ class TestSubmitJobHandler(BaseHandlerTest):
             'status': StatusCodes.Okay.value,
             'message': 'Job driver created successfully',
             'driver_name': 'test-spark-job-driver',
-            'spark-ui': 'some.url'
+            'spark_ui': 'some.url'
         }
         # Act
         yield self.assert_request_returns_400(body)
@@ -165,7 +165,7 @@ class TestSubmitJobHandler(BaseHandlerTest):
             'status': StatusCodes.Okay.value,
             'message': 'Job driver created successfully',
             'driver_name': 'test-spark-job-driver',
-            'spark-ui': 'some.url'
+            'spark_ui': 'some.url'
         }
         # Act
         response_body, response_code = yield self.send_request(body)
@@ -187,7 +187,7 @@ class TestSubmitJobHandler(BaseHandlerTest):
             'status': StatusCodes.Okay.value,
             'message': 'Job driver created successfully',
             'driver_name': 'test-spark-job-driver',
-            'spark-ui': 'some.url'
+            'spark_ui': 'some.url'
         }
         # Act
         response_body, response_code = yield self.send_request(body)
