@@ -51,7 +51,7 @@ class SparkJobServiceSubmitJobTest(TestSparkJobService):
             'status': StatusCodes.Okay.value,
             'message': 'Job driver created successfully',
             'job_name': 'test-spark-job-abcd1234',
-            'spark-ui': 'some_url'
+            'spark_ui': 'some_url'
         })
 
     def test_submit_job_calls_kubernetes_correctly_to_expose_ui(self):
