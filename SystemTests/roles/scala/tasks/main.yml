@@ -10,6 +10,6 @@
 - name: Install Java & SBT
   yum:
     name:
-      - java-1.8.0-openjdk
+      - java-11-openjdk-devel
       - sbt
     state: present
