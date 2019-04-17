@@ -294,7 +294,7 @@ Output Files Provides Temporary URLs
     ${response}=    Submit Wordcount On Minio Job   wordcount-ui-job
     Confirm Ok Response  ${response}
     ${spark_ui}=    Get Response Spark UI   ${response}
-    Sleep   5 seconds
+    Sleep   10 seconds
     Create Session    spark_ui    ${spark_ui}
     ${ui_response}=   Get Request    spark_ui
     Confirm Ok Response   ${ui_response}
