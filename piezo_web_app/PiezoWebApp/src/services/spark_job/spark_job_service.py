@@ -47,7 +47,7 @@ class SparkJobService(ISparkJobService):
             ui_clean_up_errors = self._delete_spark_ui_components(job_name, body)
             return {
                 'message': msg,
-                'status': StatusCodes.Okay.value
+                'status': StatusCodes.Okay.value,
                 'error_message': ui_clean_up_errors
             }
         except ApiException as exception:
