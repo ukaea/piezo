@@ -84,7 +84,7 @@ class TestSubmitJobHandler(BaseHandlerTest):
         assert response_body['status'] == 'success'
         assert response_body['data']['message'] == 'Job driver created successfully'
         assert response_body['data']['driver_name'] == 'test-spark-job-driver'
-        assert response_body['data']['spark-ui'] == 'some.url'
+        assert response_body['data']['spark_ui'] == 'some.url'
 
     @gen_test
     def test_post_accepts_optional_inputs(self):

@@ -78,7 +78,7 @@ class SparkJobServiceSubmitJobTest(TestSparkJobService):
         self.mock_kubernetes_adapter.create_namespaced_service.assert_called_once_with(NAMESPACE, {'svc': 'body'})
         self.mock_kubernetes_adapter.create_namespaced_ingress.assert_called_once_with(NAMESPACE, {'ingress': 'body'})
         self.mock_spark_ui_service.create_ui_url.assert_called_once_with('test-spark-job-abcd1234')
-        assert response['spark-ui'] == 'some.url'
+        assert response['spark_ui'] == 'some.url'
 
     def test_submit_job_returns_ui_url_as_unavailable_if_failure_in_setup(self):
         # Arrange
@@ -98,7 +98,7 @@ class SparkJobServiceSubmitJobTest(TestSparkJobService):
         response = self.test_service.submit_job(body)
         # Assert)
         self.mock_spark_ui_service.create_ui_url.assert_not_called()
-        assert response['spark-ui'] == 'Unavailable'
+        assert response['spark_ui'] == 'Unavailable'
 
     def test_submit_job_returns_invalid_body_keys(self):
         # Arrange
