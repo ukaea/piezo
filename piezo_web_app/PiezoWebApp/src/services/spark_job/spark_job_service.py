@@ -194,7 +194,7 @@ class SparkJobService(ISparkJobService):
                 'status': StatusCodes.Okay.value,
                 'message': 'Job driver created successfully',
                 'job_name': job_name,
-                'spark-ui': ui_url
+                'spark_ui': ui_url
             }
             return result
         except ApiException as exception:
