@@ -44,10 +44,11 @@ class SparkJobService(ISparkJobService):
             msg = f'"{job_name}" deleted' if api_response['status'] == "Success" \
                 else f'Trying to delete job "{job_name}" resulted in status: {api_response["status"]}'
             self._logger.debug(msg)
-            self._delete_spark_ui_components(job_name, body)
+            ui_clean_up_errors = self._delete_spark_ui_components(job_name, body)
             return {
                 'message': msg,
                 'status': StatusCodes.Okay.value
+                'error_message': ui_clean_up_errors
             }
         except ApiException as exception:
             message = f'Kubernetes error when trying to delete job "{job_name}": {exception.reason}'
@@ -296,18 +297,23 @@ class SparkJobService(ISparkJobService):
     def _delete_spark_ui_components(self, job_name, body):
         proxy_name = job_name + '-ui-proxy'
         ingress_name = proxy_name + '-ingress'
+        msg = ""
         try:
             self._kubernetes_adapter.delete_namespaced_deployment(proxy_name, NAMESPACE, body)
             self._logger.debug("UI proxy deployment deleted")
         except ApiException as exception:
             self._logger.error(f'Trying to spark ui proxy resulted in exception: {exception}')
+            msg += 'Failed to delete spark ui proxy, please contact an administrator.\n'
         try:
             self._kubernetes_adapter.delete_namespaced_service(proxy_name, NAMESPACE, body)
             self._logger.debug("UI proxy service deleted")
         except ApiException as exception:
             self._logger.error(f'Trying to delete spark ui service resulted in exception: {exception}')
+            msg += 'Failed to delete spark ui proxy service, please contact an administrator.\n'
         try:
             self._kubernetes_adapter.delete_namespaced_ingress(ingress_name, NAMESPACE, body)
             self._logger.debug("UI proxy ingress rules deleted")
         except ApiException as exception:
             self._logger.error(f'Trying to delete spark ui ingress resulted in exception: {exception}')
+            msg += 'Failed to delete spark ui ingress, please contact an administrator.\n'
+        return msg
