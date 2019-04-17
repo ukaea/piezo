@@ -292,3 +292,12 @@ Output Files Provides Temporary URLs
     ${log_file}=    Download From Temporary URL   ${output_files["log.txt"]}
     ${line_count}=    Get Line Count    ${log_file}
     Should Be True   ${line_count} > 0
+
+  Spark UI Is Accessable While A Spark Job Is Running
+    ${response}=    Submit Wordcount On Minio Job   wordcount-ui-job
+    Confirm Ok Response  ${response}
+    ${spark_ui}=    Get Response Spark UI   ${response}
+    Sleep   5 seconds
+    Create Session    spark_ui    ${spark_ui}
+    ${ui_response}=   Get Request    spark_ui
+    Confirm Ok Response   ${ui_response}
