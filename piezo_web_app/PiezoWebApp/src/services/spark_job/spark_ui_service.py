@@ -4,26 +4,40 @@ from PiezoWebApp.src.services.spark_job.i_spark_ui_service import ISparkUiServic
 import kubernetes
 
 
+### ONLY CHANGE CONSTANTS IF YOU KNOW WHAT YOU ARE DOING
+UI_PORT = '4040'  # Port that the UI is exposed from the UI service (set by the spark operator)
+RELEASE_LABEL = 'piezo'  # Identifier label to allow for easy clean up
+PROXY_IMAGE = 'networkaispark/spark-ui-proxy:1.0.0'  # Docker image for spark ui proxy
+PROXY_RESOURCES = {'cpu': '500m'}  # Resources limits to allocate to each proxy pod
+PROBE_DELAY = 120   # Seconds before first check if proxy is running. Shuts down if not
+PROBE_TIMEOUT = 5   # Seconds after check if proxy is running times out
+HTTP_INGRESS_PORT = 80  # Default port for an ingress on http
+HTTPS_INGRESS_PORT = 443  # Default port for an ingress on https
+
+
 class SparkUiService(ISparkUiService):
     def __init__(self, configuration):
         self._k8s_url = configuration.k8s_url
+        self._proxy_port = HTTPS_INGRESS_PORT if urlparse(self._k8s_url).scheme == 'https' else HTTP_INGRESS_PORT
 
-    @staticmethod
-    def create_ui_proxy_body(job_name, namespace):
+    def create_ui_proxy_body(self, job_name, namespace):
         proxy_name = f'{job_name}-ui-proxy'
-        deployment_metadata = kubernetes.client.V1ObjectMeta(labels={'name': proxy_name, 'release': 'piezo'},
+        deployment_metadata = kubernetes.client.V1ObjectMeta(labels={'name': proxy_name, 'release': f'{RELEASE_LABEL}'},
                                                              name=proxy_name,
                                                              namespace=namespace)
-        deployment_template_metadata = kubernetes.client.V1ObjectMeta(labels={'name': proxy_name, 'release': 'piezo'})
-        port = kubernetes.client.V1ContainerPort(container_port=80)
-        resources = kubernetes.client.V1ResourceRequirements(requests={'cpu': '500m'})
-        http_get = kubernetes.client.V1HTTPGetAction(path='/', port=80)
-        probe = kubernetes.client.V1Probe(http_get=http_get, initial_delay_seconds=120, timeout_seconds=5)
+        deployment_template_metadata = kubernetes.client.V1ObjectMeta(labels={'name': proxy_name,
+                                                                              'release': f'{RELEASE_LABEL}'})
+        port = kubernetes.client.V1ContainerPort(container_port=self._proxy_port)
+        resources = kubernetes.client.V1ResourceRequirements(requests=PROXY_RESOURCES)
+        http_get = kubernetes.client.V1HTTPGetAction(path='/', port=self._proxy_port)
+        probe = kubernetes.client.V1Probe(http_get=http_get,
+                                          initial_delay_seconds=PROBE_DELAY,
+                                          timeout_seconds=PROBE_TIMEOUT)
         container = kubernetes.client.V1Container(name=proxy_name,
-                                                  image='networkaispark/spark-ui-proxy:1.0.0',
+                                                  image=PROXY_IMAGE,
                                                   ports=[port],
                                                   resources=resources,
-                                                  args=[f'{job_name}-ui-svc:4040', '80'],
+                                                  args=[f'{job_name}-ui-svc:{UI_PORT}', str(self._proxy_port)],
                                                   liveness_probe=probe)
         template_spec = kubernetes.client.V1PodSpec(containers=[container])
         deployment_template = kubernetes.client.V1PodTemplateSpec(metadata=deployment_template_metadata,
@@ -34,11 +48,10 @@ class SparkUiService(ISparkUiService):
                                                              metadata=deployment_metadata,
                                                              spec=deployment_spec)
 
-    @staticmethod
-    def create_ui_proxy_svc_body(job_name, namespace):
+    def create_ui_proxy_svc_body(self, job_name, namespace):
         proxy_name = f'{job_name}-ui-proxy'
-        service_port = kubernetes.client.V1ServicePort(port=80, target_port=80)
-        service_metadata = kubernetes.client.V1ObjectMeta(labels={'name': proxy_name, 'release': 'piezo'},
+        service_port = kubernetes.client.V1ServicePort(port=self._proxy_port, target_port=self._proxy_port)
+        service_metadata = kubernetes.client.V1ObjectMeta(labels={'name': proxy_name, 'release': f'{RELEASE_LABEL}'},
                                                           name=proxy_name,
                                                           namespace=namespace)
         service_spec = kubernetes.client.V1ServiceSpec(ports=[service_port],
@@ -55,8 +68,8 @@ class SparkUiService(ISparkUiService):
         path = f'/'
         metadata = kubernetes.client.V1ObjectMeta(annotations={'kubernetes.io/ingress.class': 'nginx'},
                                                   name=ingress_name,
-                                                  labels={'name': service_name, 'release': 'piezo'})
-        backend = kubernetes.client.V1beta1IngressBackend(service_name=service_name, service_port=80)
+                                                  labels={'name': service_name, 'release': f'{RELEASE_LABEL}'})
+        backend = kubernetes.client.V1beta1IngressBackend(service_name=service_name, service_port=self._proxy_port)
         ingress_path = kubernetes.client.V1beta1HTTPIngressPath(backend=backend, path=path)
         http = kubernetes.client.V1beta1HTTPIngressRuleValue(paths=[ingress_path])
         host = urlparse(self._k8s_url).hostname
@@ -68,5 +81,5 @@ class SparkUiService(ISparkUiService):
                                                 spec=spec)
 
     def create_ui_url(self, job_name):
-        url = self._k8s_url + f'/proxy:{job_name}-ui-svc:4040'
+        url = self._k8s_url + f'/proxy:{job_name}-ui-svc:{UI_PORT}'
         return url
