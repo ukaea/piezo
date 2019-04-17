@@ -1,3 +1,5 @@
+from urllib.parse import urlparse
+
 from PiezoWebApp.src.services.spark_job.i_spark_ui_service import ISparkUiService
 import kubernetes
 
@@ -57,8 +59,7 @@ class SparkUiService(ISparkUiService):
         backend = kubernetes.client.V1beta1IngressBackend(service_name=service_name, service_port=80)
         ingress_path = kubernetes.client.V1beta1HTTPIngressPath(backend=backend, path=path)
         http = kubernetes.client.V1beta1HTTPIngressRuleValue(paths=[ingress_path])
-        host_with_port = self._k8s_url.split("//")[-1]
-        host = host_with_port.split(':')[0]
+        host = urlparse(self._k8s_url).hostname
         rules = kubernetes.client.V1beta1IngressRule(host=host, http=http)
         spec = kubernetes.client.V1beta1IngressSpec(backend=backend, rules=[rules])
         return kubernetes.client.V1beta1Ingress(api_version='extensions/v1beta1',
