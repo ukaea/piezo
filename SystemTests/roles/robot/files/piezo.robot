@@ -110,7 +110,7 @@ Arguments Have Been Read And Appear In Logs
     Should Be True      ${finished}
     ${logresponse}=  Get Logs For Spark Job    ${job_name}
     ${joblog}=  Get Response Data Message   ${logresponse}
-    Should Be One Line Containing String   ${joblog}   First argument is kubernetes/outputs/{$job_name}
+    Should Be One Line Containing String   ${joblog}   First argument is s3a://kubernetes/outputs/{$job_name}/
     Should Be One Line Containing String   ${joblog}   Second argument is A
     Should Be One Line Containing String   ${joblog}   Third argument is B
     Should Be One Line Containing String   ${joblog}   Fourth argument is C
@@ -148,8 +148,6 @@ Status Of Job Immediately After Submission is Unknown
     ${created}=     Get From Dictionary    ${data}   created
     Should Match Regexp   ${created}   [0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z
 
-
-
 Status Of Job Contains All Information
     ${job_name}=     Set Variable       spark-pi
     ${response}=    Submit SparkPi Job    ${job_name}
@@ -171,8 +169,8 @@ Job Can Use Data And Code On S3 And Write Back Results
     Directory Should Not Exist In S3 Bucket   kubernetes    outputs/${job_name}
     ${response}=    Submit Wordcount On Minio Job   ${job_name}
     Confirm Ok Response  ${response}
-    ${new_job_name}=    Get Response Job Name   ${response}
-    ${finished}=    Wait For Spark Job To Finish        ${new_job_name}     15 seconds
+    ${job_name}=    Get Response Job Name   ${response}
+    ${finished}=    Wait For Spark Job To Finish        ${job_name}     15 seconds
     Should Be True    ${finished}
     Directory Should Exist In S3 Bucket   kubernetes    outputs/${job_name}
     Directory Should Not Be Empty In S3 bucket  kubernetes    outputs/${job_name}
