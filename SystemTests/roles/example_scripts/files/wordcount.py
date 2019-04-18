@@ -15,6 +15,12 @@
 # limitations under the License.
 #
 
+# 
+# File copied from https://github.com/apache/spark/blob/master/examples/src/main/python/wordcount.py
+# 
+# Modified to change the order of input arguments
+# 
+
 from __future__ import print_function
 
 import sys
