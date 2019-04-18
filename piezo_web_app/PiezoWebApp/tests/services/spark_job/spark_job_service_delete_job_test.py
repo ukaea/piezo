@@ -17,7 +17,9 @@ class SparkJobServiceDeleteJobTest(TestSparkJobService):
         # Act
         result = self.test_service.delete_job('test-spark-job')
         # Assert
-        self.assertDictEqual(result, {'message': '"test-spark-job" deleted', 'status': 200, 'error_message': ''})
+        self.assertDictEqual(result, {'message': '"test-spark-job" deleted\nSpark ui deleted successfully for job '
+                                                 '"test-spark-job"',
+                                      'status': 200})
         self.mock_kubernetes_adapter.delete_namespaced_custom_object.assert_called_once_with(
             CRD_GROUP,
             CRD_VERSION,
@@ -45,7 +47,7 @@ class SparkJobServiceDeleteJobTest(TestSparkJobService):
                                                                                         "other_values": "values"})
         self.mock_kubernetes_adapter.delete_namespaced_ingress.assert_called_once_with(
             'test-spark-job-ui-proxy-ingress', NAMESPACE, {"api_version": "version", "other_values": "values"})
-        assert response['error_message'] == ''
+        assert response['message'] == '"test-spark-job" deleted\nSpark ui deleted successfully for job "test-spark-job"'
 
     def test_delete_job_logs_any_ui_services_that_are_not_deleted_nad_returns_message_to_user(self):
         # Arrange
@@ -58,7 +60,8 @@ class SparkJobServiceDeleteJobTest(TestSparkJobService):
         # Assert
         self.mock_logger.error.assert_called_once_with('Trying to spark ui proxy resulted in exception: '
                                                        '(Failed to delete proxy)\nReason: None\n')
-        assert response['error_message'] == 'Failed to delete spark ui proxy, please contact an administrator.\n'
+        assert response['message'] == '"test-spark-job" deleted\nError deleting spark ui for job "test-spark-job",' \
+                                      ' please contact an administrator'
 
     def test_delete_job_logs_and_returns_api_exception_reason(self):
         # Arrange

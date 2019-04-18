@@ -52,7 +52,7 @@ class DeleteJobIntegrationTest(BaseIntegrationTest):
         self.assertDictEqual(response_body, {
             'status': 'success',
             'data': {
-                'message': '"test-spark-job" deleted'
+                'message': '"test-spark-job" deleted\nSpark ui deleted successfully for job "test-spark-job"'
             }
         })
 
@@ -70,7 +70,7 @@ class DeleteJobIntegrationTest(BaseIntegrationTest):
         self.assertDictEqual(response_body, {
             'status': 'success',
             'data': {
-                'message': '"test-spark-job" deleted'
+                'message': '"test-spark-job" deleted\nSpark ui deleted successfully for job "test-spark-job"',
             }
         })
         self.mock_k8s_adapter.delete_namespaced_deployment.assert_called_once_with(
@@ -97,7 +97,8 @@ class DeleteJobIntegrationTest(BaseIntegrationTest):
         self.assertDictEqual(response_body, {
             'status': 'success',
             'data': {
-                'message': '"test-spark-job" deleted'
+                'message': '"test-spark-job" deleted\nError deleting spark ui for job "test-spark-job", please '
+                           'contact an administrator',
             }})
         self.mock_logger.error.assert_any_call('Trying to spark ui proxy resulted in exception: '
                                                '(Failed to delete proxy)\nReason: None\n')
