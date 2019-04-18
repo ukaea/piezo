@@ -34,9 +34,9 @@ if __name__ == "__main__":
         print("Usage: wordcount <file>", file=sys.stderr)
         sys.exit(-1)
 
-	output_dir = sys.argv[1]
-	input_file = sys.argv[2]
-		
+    output_dir = sys.argv[1]
+    input_file = sys.argv[2]
+
     spark = SparkSession\
         .builder\
         .appName("PythonWordCount")\
@@ -46,14 +46,12 @@ if __name__ == "__main__":
     counts = lines.flatMap(lambda x: x.split(' ')) \
                   .map(lambda x: (x, 1)) \
                   .reduceByKey(add)
-    
-    
+
     counts.saveAsTextFile(output_dir)
 
     output = counts.collect()
     
     for (word, count) in output:
         print("%s: %i\n" % (word, count))
-        
     
     spark.stop()
