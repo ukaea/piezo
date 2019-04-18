@@ -70,7 +70,8 @@ class TestSparkUiService:
                                                              http=kubernetes.client.V1beta1HTTPIngressRuleValue(
                                                                  paths=[
                                                                      kubernetes.client.V1beta1HTTPIngressPath(
-                                                                         backend=kubernetes.client.V1beta1IngressBackend(
+                                                                         backend=
+                                                                         kubernetes.client.V1beta1IngressBackend(
                                                                              service_name='test-job-ui-proxy',
                                                                              service_port=80),
                                                                          path='/')
