@@ -4,7 +4,7 @@ from PiezoWebApp.src.services.spark_job.i_spark_ui_service import ISparkUiServic
 import kubernetes
 
 
-### ONLY CHANGE CONSTANTS IF YOU KNOW WHAT YOU ARE DOING
+# ONLY CHANGE CONSTANTS IF YOU KNOW WHAT YOU ARE DOING
 UI_PORT = '4040'  # Port that the UI is exposed from the UI service (set by the spark operator)
 RELEASE_LABEL = 'piezo'  # Identifier label to allow for easy clean up
 PROXY_IMAGE = 'networkaispark/spark-ui-proxy:1.0.0'  # Docker image for spark ui proxy
