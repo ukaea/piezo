@@ -31,10 +31,6 @@ from pyspark.sql import SparkSession
 
 
 if __name__ == "__main__":
-    """
-        Usage: pi [partitions]
-    """
-
     output_dir = sys.argv[1]
     partitions = int(sys.argv[2]) if len(sys.argv) > 2 else 2
     
