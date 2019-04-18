@@ -1,7 +1,8 @@
 from urllib.parse import urlparse
 
-from PiezoWebApp.src.services.spark_job.i_spark_ui_service import ISparkUiService
 import kubernetes
+
+from PiezoWebApp.src.services.spark_job.i_spark_ui_service import ISparkUiService
 
 
 # ONLY CHANGE CONSTANTS IF YOU KNOW WHAT YOU ARE DOING

@@ -69,11 +69,11 @@ class TestSparkUiService:
         expected_rule = kubernetes.client.V1beta1IngressRule(host='0.0.0.0',
                                                              http=kubernetes.client.V1beta1HTTPIngressRuleValue(
                                                                  paths=[
-                                                                    kubernetes.client.V1beta1HTTPIngressPath(
-                                                                        backend=kubernetes.client.V1beta1IngressBackend(
-                                                                            service_name='test-job-ui-proxy',
-                                                                            service_port=80),
-                                                                        path='/')
+                                                                     kubernetes.client.V1beta1HTTPIngressPath(
+                                                                         backend=kubernetes.client.V1beta1IngressBackend(
+                                                                             service_name='test-job-ui-proxy',
+                                                                             service_port=80),
+                                                                         path='/')
                                                                  ]))
         # Act
         body = self.test_ui_service.create_ui_proxy_ingress_body(job_name)
