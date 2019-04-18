@@ -3,6 +3,7 @@
 Documentation     A test suite with for the Piezo system.
 Library           Collections
 Library           String
+Resource          general_methods.robot
 Resource          k8s_methods.robot
 Resource          requests_helpers.robot
 Resource          s3methods.robot
@@ -41,15 +42,10 @@ Submitting Incorrect Argument Keys Are Caught In Same Error
     ${response}=    Post Request With Json Body   /piezo/submitjob    ${submitbody}
     Confirm Bad Input Response    ${response}
     ${error}=   Get Response Data     ${response}
-    ${name_line}=    Get Lines Containing String   ${error}   Missing required input \"name\"
-    ${path_line}=    Get Lines Containing String   ${error}   Missing required input \"path_to_main_app_file\"
-    ${lang_line}=    Get Lines Containing String   ${error}   Unsupported language \"test\"
-    ${num_name_lines}=    Get Line Count    ${name_line}
-    ${num_path_lines}=    Get Line Count    ${path_line}
-    ${num_lang_lines}=    Get Line Count    ${lang_line}
-    Should Be Equal As Integers   ${num_name_lines}   1
-    Should Be Equal As Integers   ${num_path_lines}   1
-    Should Be Equal As Integers   ${num_lang_lines}   1
+    Should Be One Line Containing String   ${error}   Missing required input \"name\"
+    Should Be One Line Containing String   ${error}   Missing required input \"name\"
+    Should Be One Line Containing String   ${error}   Missing required input \"path_to_main_app_file\"
+    Should Be One Line Containing String   ${error}   Unsupported language \"test\"
 
 Submitting Multiple Incorrect Argument Values Are Caught In Same error
     ${submitbody}=    Create Dictionary    name=test-job    language=Scala    executors=15    executor_memory=200m      driver_cores=5      main_class=org.apache.spark.examples.SparkPi    path_to_main_app_file=local:///opt/spark/examples/jars/spark-examples_2.11-2.4.0.jar    label=systemTest
@@ -85,11 +81,11 @@ Submit Job With 30 Character Name Fails
     ${error}=   Get Response Data     ${response}
     Should Be Equal As Strings    ${error}    The following errors were found:\n\"name\" input must obey naming convention: see https://github.com/ukaea/piezo/wiki/WebAppUserGuide#submit-a-job\n
 
-Submit GroupByTest Spark Job With Arguments Returns Ok Response
-    ${response}=    Submit SparkGroupByTest Job With Arguments   spark-group-by-test
+Submit Input Args Job With Arguments Returns Ok Response
+    ${response}=    Submit InputArgs Job With Arguments   input-args-test
     Confirm Ok Response  ${response}
     ${job_name}=    Get Response Job Name   ${response}
-    Should Match Regexp   ${job_name}   spark-group-by-test-[a-z0-9]{5}
+    Should Match Regexp   ${job_name}   input-args-test-[a-z0-9]{5}
     ${message}=   Get Response Data Message   ${response}
     Should Be Equal As Strings    ${message}    Job driver created successfully
 
@@ -106,20 +102,18 @@ Can Get Logs Of Submitted Spark Job
     Should Be Equal As Integers   ${num_pi_lines}   1
 
 Arguments Have Been Read And Appear In Logs
-    ${job_name}=  Set Variable  spark-group-by-test
-    ${response}=    Submit SparkGroupByTest Job With Arguments   ${job_name}
+    ${job_name}=  Set Variable  input-args-test
+    ${response}=    Submit InputArgs Job With Arguments   ${job_name}
     ${job_name}=    Get Response Job Name   ${response}
     Confirm Ok Response  ${response}
     ${finished}=    Wait For Spark Job To Finish        ${job_name}     5 seconds
     Should Be True      ${finished}
     ${logresponse}=  Get Logs For Spark Job    ${job_name}
     ${joblog}=  Get Response Data Message   ${logresponse}
-    ${arg_1_lines}=    Get Lines Containing String   ${joblog}   Adding task set 0.0 with 10 tasks
-    ${arg_4_lines}=    Get Lines Containing String   ${joblog}   Adding task set 2.0 with 3 tasks
-    ${num_arg_1_lines}=    Get Line Count    ${arg_1_lines}
-    ${num_arg_4_lines}=    Get Line Count    ${arg_4_lines}
-    Should Be Equal As Integers   ${num_arg_1_lines}   1
-    Should Be Equal As Integers   ${num_arg_4_lines}   1
+    Should Be One Line Containing String   ${joblog}   First argument is kubernetes/outputs/{$job_name}
+    Should Be One Line Containing String   ${joblog}   Second argument is A
+    Should Be One Line Containing String   ${joblog}   Third argument is B
+    Should Be One Line Containing String   ${joblog}   Fourth argument is C
 
 Can Delete Submitted Spark Job
     ${job_name}=    Set Variable        spark-pi
