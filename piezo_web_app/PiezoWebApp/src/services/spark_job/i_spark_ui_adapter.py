@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractmethod
 
 
-class ISparkUiService(metaclass=ABCMeta):
+class ISparkUiAdapter(metaclass=ABCMeta):
     @staticmethod
     def create_ui_proxy_body(job_name, namespace):
         pass

@@ -44,7 +44,7 @@ class SparkJobService(ISparkJobService):
             msg = f'"{job_name}" deleted' if api_response['status'] == "Success" \
                 else f'Trying to delete job "{job_name}" resulted in status: {api_response["status"]}'
             self._logger.debug(msg)
-            ui_clean_up_status = self._delete_spark_ui_components(job_name, body)
+            ui_clean_up_status = self._spark_ui_service.delete_spark_ui_components(job_name, body)
             msg += "\n" + ui_clean_up_status
             return {
                 'message': msg,
@@ -189,7 +189,7 @@ class SparkJobService(ISparkJobService):
             )
 
             # Expose the spark ui
-            ui_url = self._expose_spark_ui(job_name)
+            ui_url = self._spark_ui_service.expose_spark_ui(job_name)
 
             result = {
                 'status': StatusCodes.Okay.value,
@@ -279,43 +279,3 @@ class SparkJobService(ISparkJobService):
         else:
             self._logger.debug(f'Not processing job "{job}", current status is "{status}"')
             return TidiedJobStatus(job, status, "NO", None, None)
-
-    def _expose_spark_ui(self, job_name):
-        proxy_body = self._spark_ui_service.create_ui_proxy_body(job_name, NAMESPACE)
-        proxy_svc_body = self._spark_ui_service.create_ui_proxy_svc_body(job_name, NAMESPACE)
-        proxy_ingress_body = self._spark_ui_service.create_ui_proxy_ingress_body(job_name)
-        try:
-            self._kubernetes_adapter.create_namespaced_deployment(NAMESPACE, proxy_body)
-            self._kubernetes_adapter.create_namespaced_service(NAMESPACE, proxy_svc_body)
-            self._kubernetes_adapter.create_namespaced_ingress(NAMESPACE, proxy_ingress_body)
-            url = self._spark_ui_service.create_ui_url(job_name)
-        except ApiException as exception:
-            self._logger.error(f'Setting up spark ui failed due to error: {exception}')
-            return "Unavailable"
-        return url
-
-    def _delete_spark_ui_components(self, job_name, body):
-        proxy_name = job_name + '-ui-proxy'
-        ingress_name = proxy_name + '-ingress'
-        error = False
-        try:
-            self._kubernetes_adapter.delete_namespaced_deployment(proxy_name, NAMESPACE, body)
-            self._logger.debug("UI proxy deployment deleted")
-        except ApiException as exception:
-            self._logger.error(f'Trying to spark ui proxy resulted in exception: {exception}')
-            error = True
-        try:
-            self._kubernetes_adapter.delete_namespaced_service(proxy_name, NAMESPACE, body)
-            self._logger.debug("UI proxy service deleted")
-        except ApiException as exception:
-            self._logger.error(f'Trying to delete spark ui service resulted in exception: {exception}')
-            error = True
-        try:
-            self._kubernetes_adapter.delete_namespaced_ingress(ingress_name, NAMESPACE, body)
-            self._logger.debug("UI proxy ingress rules deleted")
-        except ApiException as exception:
-            self._logger.error(f'Trying to delete spark ui ingress resulted in exception: {exception}')
-            error = True
-        msg = f'Spark ui deleted successfully for job "{job_name}"' if error is False \
-            else f'Error deleting spark ui for job "{job_name}", please contact an administrator'
-        return msg

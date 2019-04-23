@@ -2,7 +2,7 @@ import kubernetes
 import mock
 import pytest
 
-from PiezoWebApp.src.services.spark_job.spark_ui_service import SparkUiService
+from PiezoWebApp.src.services.spark_job.spark_ui_adapter import SparkUiAdapter
 from PiezoWebApp.src.utils.configurations import Configuration
 
 
@@ -12,7 +12,7 @@ class TestSparkUiService:
         mock_configuration = mock.create_autospec(Configuration)
         mock_configuration.k8s_url = 'http://0.0.0.0:0'
         mock_configuration.is_k8s_secure = False
-        self.test_ui_service = SparkUiService(configuration=mock_configuration)
+        self.test_ui_service = SparkUiAdapter(configuration=mock_configuration)
 
     def test_create_ui_url_returns_url_for_proxy(self):
         # Arrange
@@ -159,7 +159,7 @@ class TestSparkUiService:
         secure_mock_configuration = mock.create_autospec(Configuration)
         secure_mock_configuration.k8s_url = 'https://1.1.1.1:1'
         secure_mock_configuration.is_k8s_secure = True
-        self.test_ui_service = SparkUiService(configuration=secure_mock_configuration)
+        self.test_ui_service = SparkUiAdapter(configuration=secure_mock_configuration)
         job_name = 'test-job'
         expected_rule = kubernetes.client.V1beta1IngressRule(
             host='1.1.1.1',
@@ -183,7 +183,7 @@ class TestSparkUiService:
         secure_mock_configuration = mock.create_autospec(Configuration)
         secure_mock_configuration.k8s_url = 'https://1.1.1.1:1'
         secure_mock_configuration.is_k8s_secure = True
-        self.test_ui_service = SparkUiService(configuration=secure_mock_configuration)
+        self.test_ui_service = SparkUiAdapter(configuration=secure_mock_configuration)
         job_name = "test_job"
         namespace = "default"
         # Act

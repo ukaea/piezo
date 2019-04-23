@@ -6,7 +6,7 @@ import pytest
 
 from PiezoWebApp.src.services.kubernetes.i_kubernetes_adapter import IKubernetesAdapter
 from PiezoWebApp.src.services.spark_job.i_spark_job_namer import ISparkJobNamer
-from PiezoWebApp.src.services.spark_job.i_spark_ui_service import ISparkUiService
+from PiezoWebApp.src.services.spark_job.i_spark_ui_adapter import ISparkUiService
 from PiezoWebApp.src.services.spark_job.spark_job_service import SparkJobService
 from PiezoWebApp.src.services.spark_job.validation.i_manifest_populator import IManifestPopulator
 from PiezoWebApp.src.services.spark_job.validation.i_validation_service import IValidationService
