@@ -31,7 +31,7 @@ class SparkUiService:
             self._kubernetes_adapter.delete_namespaced_deployment(proxy_name, NAMESPACE, body)
             self._logger.debug("UI proxy deployment deleted")
         except ApiException as exception:
-            self._logger.error(f'Trying to spark ui proxy resulted in exception: {exception}')
+            self._logger.error(f'Trying to delete spark ui proxy resulted in exception: {exception}')
             error = True
         try:
             self._kubernetes_adapter.delete_namespaced_service(proxy_name, NAMESPACE, body)

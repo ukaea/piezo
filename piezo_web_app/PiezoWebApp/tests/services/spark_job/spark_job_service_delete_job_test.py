@@ -14,6 +14,8 @@ class SparkJobServiceDeleteJobTest(TestSparkJobService):
         k8s_response = {'status': 'Success'}
         self.mock_kubernetes_adapter.delete_options.return_value = {"api_version": "version", "other_values": "values"}
         self.mock_kubernetes_adapter.delete_namespaced_custom_object.return_value = k8s_response
+        self.mock_spark_ui_service.delete_spark_ui_components.return_value = 'Spark ui deleted successfully for job ' \
+                                                                             '"test-spark-job"'
         # Act
         result = self.test_service.delete_job('test-spark-job')
         # Assert
@@ -34,32 +36,27 @@ class SparkJobServiceDeleteJobTest(TestSparkJobService):
         k8s_response = {'status': 'Success'}
         self.mock_kubernetes_adapter.delete_options.return_value = {"api_version": "version", "other_values": "values"}
         self.mock_kubernetes_adapter.delete_namespaced_custom_object.return_value = k8s_response
+        self.mock_spark_ui_service.delete_spark_ui_components.return_value = 'Spark ui deleted successfully for job' \
+                                                                             ' "test-spark-job"'
         # Act
         response = self.test_service.delete_job('test-spark-job')
         # Assert
-        self.mock_kubernetes_adapter.delete_namespaced_deployment.assert_called_once_with('test-spark-job-ui-proxy',
-                                                                                          NAMESPACE,
-                                                                                          {"api_version": "version",
-                                                                                           "other_values": "values"})
-        self.mock_kubernetes_adapter.delete_namespaced_service.assert_called_once_with('test-spark-job-ui-proxy',
-                                                                                       NAMESPACE,
-                                                                                       {"api_version": "version",
-                                                                                        "other_values": "values"})
-        self.mock_kubernetes_adapter.delete_namespaced_ingress.assert_called_once_with(
-            'test-spark-job-ui-proxy-ingress', NAMESPACE, {"api_version": "version", "other_values": "values"})
+        self.mock_spark_ui_service.delete_spark_ui_components.assert_called_once_with('test-spark-job',
+                                                                                      {"api_version": "version",
+                                                                                       "other_values": "values"})
         assert response['message'] == '"test-spark-job" deleted\nSpark ui deleted successfully for job "test-spark-job"'
 
-    def test_delete_job_logs_any_ui_services_that_are_not_deleted_nad_returns_message_to_user(self):
+    def test_delete_job_logs_any_ui_services_that_are_not_deleted_and_returns_message_to_user(self):
         # Arrange
         k8s_response = {'status': 'Success'}
         self.mock_kubernetes_adapter.delete_options.return_value = {"api_version": "version", "other_values": "values"}
         self.mock_kubernetes_adapter.delete_namespaced_custom_object.return_value = k8s_response
-        self.mock_kubernetes_adapter.delete_namespaced_deployment.side_effect = ApiException('Failed to delete proxy')
+        self.mock_spark_ui_service.delete_spark_ui_components.return_value = 'Error deleting spark ui for job ' \
+                                                                             '"test-spark-job", please contact ' \
+                                                                             'an administrator'
         # Act
         response = self.test_service.delete_job('test-spark-job')
         # Assert
-        self.mock_logger.error.assert_called_once_with('Trying to spark ui proxy resulted in exception: '
-                                                       '(Failed to delete proxy)\nReason: None\n')
         assert response['message'] == '"test-spark-job" deleted\nError deleting spark ui for job "test-spark-job",' \
                                       ' please contact an administrator'
 
