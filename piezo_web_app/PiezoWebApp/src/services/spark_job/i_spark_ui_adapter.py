@@ -14,6 +14,6 @@ class ISparkUiAdapter(metaclass=ABCMeta):
     def create_ui_proxy_ingress_body(job_name):
         pass
 
-    @abstractmethod
-    def create_ui_url(self, job_name):
+    @staticmethod
+    def create_ui_url(job_name):
         pass

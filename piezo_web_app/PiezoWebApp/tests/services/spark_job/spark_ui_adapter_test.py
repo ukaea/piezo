@@ -6,7 +6,7 @@ from PiezoWebApp.src.services.spark_job.spark_ui_adapter import SparkUiAdapter
 from PiezoWebApp.src.utils.configurations import Configuration
 
 
-class TestSparkUiService:
+class TestSparkUiAdapter:
     @pytest.fixture(autouse=True)
     def setup(self):
         mock_configuration = mock.create_autospec(Configuration)
