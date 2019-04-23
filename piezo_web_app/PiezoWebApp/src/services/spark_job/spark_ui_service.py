@@ -24,8 +24,8 @@ class SparkUiService:
         return url
 
     def delete_spark_ui_components(self, job_name, body):
-        proxy_name = job_name + '-ui-proxy'
-        ingress_name = proxy_name + '-ingress'
+        proxy_name = f'{job_name}-ui-proxy'
+        ingress_name = f'{proxy_name}-ingress'
         error = False
         try:
             self._kubernetes_adapter.delete_namespaced_deployment(proxy_name, NAMESPACE, body)
