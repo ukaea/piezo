@@ -113,9 +113,9 @@ class TestTidyJobsIntegration(BaseIntegrationTest):
         assert response_code == 200
         self.mock_logger.debug.assert_any_call('Not processing job "job1", current status is "RUNNING"')
         self.mock_logger.debug.assert_any_call('Logs written to "outputs/job2/log.txt"')
-        self.mock_logger.debug.assert_any_call('Trying to delete job "job2" resulted in status: 200\n')
+        self.mock_logger.debug.assert_any_call('Trying to delete job "job2" resulted in status: 200')
         self.mock_logger.debug.assert_any_call('Logs written to "outputs/job3/log.txt"')
-        self.mock_logger.debug.assert_any_call('Trying to delete job "job3" resulted in status: 200\n')
+        self.mock_logger.debug.assert_any_call('Trying to delete job "job3" resulted in status: 200')
         self.assertDictEqual(response_body, {
             'status': 'success',
             'data': {

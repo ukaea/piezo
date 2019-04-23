@@ -41,11 +41,11 @@ class SparkJobService(ISparkJobService):
                 job_name,
                 body
             )
-            msg = f'"{job_name}" deleted\n' if api_response['status'] == "Success" \
-                else f'Trying to delete job "{job_name}" resulted in status: {api_response["status"]}\n'
+            msg = f'"{job_name}" deleted' if api_response['status'] == "Success" \
+                else f'Trying to delete job "{job_name}" resulted in status: {api_response["status"]}'
             self._logger.debug(msg)
             ui_clean_up_status = self._delete_spark_ui_components(job_name, body)
-            msg += ui_clean_up_status
+            msg += "\n" + ui_clean_up_status
             return {
                 'message': msg,
                 'status': StatusCodes.Okay.value
