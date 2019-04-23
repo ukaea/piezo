@@ -129,7 +129,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             'data': {
                 'message': 'Job driver created successfully',
                 'job_name': 'test-python-job-abcd1',
-                'spark_ui': 'http://0.0.0.0:1/proxy:test-python-job-abcd1-ui-svc:4040'
+                'spark_ui': 'http://1.1.1.1:1/proxy:test-python-job-abcd1-ui-svc:4040'
             }
         })
 
@@ -231,7 +231,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             'data': {
                 'message': 'Job driver created successfully',
                 'job_name': 'test-scala-job-abcd1',
-                'spark_ui': 'http://0.0.0.0:1/proxy:test-scala-job-abcd1-ui-svc:4040'
+                'spark_ui': 'http://1.1.1.1:1/proxy:test-scala-job-abcd1-ui-svc:4040'
             }
         })
 
@@ -361,7 +361,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             'data': {
                 'message': 'Job driver created successfully',
                 'job_name': 'test-python-job-abcd1',
-                'spark_ui': 'http://0.0.0.0:1/proxy:test-python-job-abcd1-ui-svc:4040'
+                'spark_ui': 'http://1.1.1.1:1/proxy:test-python-job-abcd1-ui-svc:4040'
             }
         })
 
