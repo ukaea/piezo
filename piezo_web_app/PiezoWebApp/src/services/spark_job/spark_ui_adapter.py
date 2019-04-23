@@ -84,5 +84,3 @@ class SparkUiAdapter(ISparkUiAdapter):
     def create_ui_url(self, job_name):
         url = self._k8s_url + f'/proxy:{job_name}-ui-svc:{UI_PORT}'
         return url
-
-

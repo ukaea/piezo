@@ -4,6 +4,7 @@ from PiezoWebApp.src.utils.route_helper import format_route_specification
 from PiezoWebApp.src.utils.route_helper import is_scheme_secure
 from PiezoWebApp.src.utils.route_helper import is_valid_k8s_scheme_https
 
+
 def test_format_route_specification_returns_flexible_route_for_appropriate_name():
     # Arrange
     name = "test"
