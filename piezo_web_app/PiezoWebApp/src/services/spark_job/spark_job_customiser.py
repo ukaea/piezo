@@ -10,8 +10,9 @@ from PiezoWebApp.src.services.spark_job.spark_job_constants import NAMESPACE
 
 
 class SparkJobCustomiser(ISparkJobCustomiser):
-    def __init__(self, kubernetes_adapter):
+    def __init__(self, kubernetes_adapter, logger):
         self._kubernetes_adapter = kubernetes_adapter
+        self._logger = logger
         self._max_attempts = 10
 
     def rename_job(self, base_name):
@@ -25,9 +26,9 @@ class SparkJobCustomiser(ISparkJobCustomiser):
             raise RuntimeError(f'{counter} attempts to find a unique job name all failed')
         return trial_job_name
 
-    @staticmethod
-    def set_output_dir_as_first_argument(job_name, storage_service, validated_body_values):
+    def set_output_dir_as_first_argument(self, job_name, storage_service, validated_body_values):
         output_dir = f'{storage_service.protocol_route_to_bucket()}/outputs/{job_name}/'
+        self._logger.debug(f'Setting first argument for job "{job_name}" to be "{output_dir}"')
         arguments = validated_body_values.validated_value['arguments'] if \
             'arguments' in validated_body_values.validated_value \
             else []

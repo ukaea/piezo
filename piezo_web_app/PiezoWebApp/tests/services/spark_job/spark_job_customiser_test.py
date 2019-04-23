@@ -1,3 +1,4 @@
+import logging
 from unittest import TestCase
 
 from kubernetes.client.rest import ApiException
@@ -15,7 +16,8 @@ class TestSparkJobCustomiser(TestCase):
     @pytest.fixture(autouse=True)
     def setup(self):
         self.mock_kubernetes_adapter = mock.create_autospec(IKubernetesAdapter)
-        self.test_customiser = SparkJobCustomiser(self.mock_kubernetes_adapter)
+        self.mock_logger = mock.create_autospec(logging.Logger)
+        self.test_customiser = SparkJobCustomiser(self.mock_kubernetes_adapter, self.mock_logger)
 
     def test_set_output_dir_as_first_argument_adds_dir_if_no_other_arguments(self):
         # Arrange
@@ -27,6 +29,8 @@ class TestSparkJobCustomiser(TestCase):
             'example-job', mock_storage_service, validated_body_values
         )
         # Assert
+        self.mock_logger.debug.assert_called_once_with(
+            'Setting first argument for job "example-job" to be "s3a://test-bucket/outputs/example-job/"')
         self.assertDictEqual(result.validated_value, {
             'other': 'True',
             'another': 12,
@@ -45,6 +49,8 @@ class TestSparkJobCustomiser(TestCase):
             'example-job', mock_storage_service, validated_body_values
         )
         # Assert
+        self.mock_logger.debug.assert_called_once_with(
+            'Setting first argument for job "example-job" to be "s3a://test-bucket/outputs/example-job/"')
         self.assertDictEqual(result.validated_value, {
             'other': 'True',
             'another': 12,

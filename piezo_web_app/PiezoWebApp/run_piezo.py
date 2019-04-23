@@ -82,7 +82,7 @@ def build_container(configuration, k8s_adapter, log, storage_adapter, validation
     validation_ruleset = ValidationRuleset(validation_rules)
     validation_service = ValidationService(validation_ruleset)
     manifest_populator = ManifestPopulator(configuration, validation_ruleset)
-    spark_job_customiser = SparkJobCustomiser(k8s_adapter)
+    spark_job_customiser = SparkJobCustomiser(k8s_adapter, log)
     spark_job_service = SparkJobService(
         k8s_adapter,
         log,
