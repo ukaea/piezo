@@ -166,7 +166,6 @@ Status Of Job Contains All Information
 
 Job Can Use Data And Code On S3 And Write Back Results
     ${job_name}=    Set Variable      wordcount
-    Directory Should Not Exist In S3 Bucket   kubernetes    outputs/${job_name}
     ${response}=    Submit Wordcount On Minio Job   ${job_name}
     Confirm Ok Response  ${response}
     ${job_name}=    Get Response Job Name   ${response}
