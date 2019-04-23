@@ -100,7 +100,7 @@ class DeleteJobIntegrationTest(BaseIntegrationTest):
                 'message': '"test-spark-job" deleted\nError deleting spark ui for job "test-spark-job", please '
                            'contact an administrator',
             }})
-        self.mock_logger.error.assert_any_call('Trying to spark ui proxy resulted in exception: '
+        self.mock_logger.error.assert_any_call('Trying to delete spark ui proxy resulted in exception: '
                                                '(Failed to delete proxy)\nReason: None\n')
         self.mock_logger.error.assert_any_call('Trying to delete spark ui service resulted in exception: '
                                                '(Failed to delete service)\nReason: None\n')
