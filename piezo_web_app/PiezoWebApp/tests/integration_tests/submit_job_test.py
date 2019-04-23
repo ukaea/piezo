@@ -236,7 +236,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
         })
 
     @gen_test
-    def test_spark_ui_is_returned_as_unknown_and_errors_logged_when_initialisation_fails(self):
+    def test_spark_ui_is_returned_as_unavailable_and_errors_logged_when_initialisation_fails(self):
         # Arrange
         body = {
             'name': 'test-scala-job',
