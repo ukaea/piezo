@@ -3,6 +3,7 @@ import configparser
 from urllib.parse import urlparse
 
 from PiezoWebApp.src.utils.route_helper import is_scheme_secure
+from PiezoWebApp.src.utils.route_helper import is_valid_k8s_scheme_https
 from PiezoWebApp.src.utils.str_helper import str2non_negative_int
 
 
@@ -93,6 +94,11 @@ class Configuration:
     def is_s3_secure(self):
         parse_result = urlparse(self.s3_endpoint)
         return is_scheme_secure(parse_result.scheme)
+
+    @property
+    def is_k8s_secure(self):
+        parse_result = urlparse(self.k8s_url)
+        return is_valid_k8s_scheme_https(parse_result.scheme)
 
     @property
     def temp_url_expiry_seconds(self):

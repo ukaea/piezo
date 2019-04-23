@@ -19,7 +19,7 @@ HTTPS_INGRESS_PORT = 443  # Default port for an ingress on https
 class SparkUiService(ISparkUiService):
     def __init__(self, configuration):
         self._k8s_url = configuration.k8s_url
-        self._proxy_port = HTTPS_INGRESS_PORT if urlparse(self._k8s_url).scheme == 'https' else HTTP_INGRESS_PORT
+        self._proxy_port = HTTPS_INGRESS_PORT if configuration.is_k8s_secure else HTTP_INGRESS_PORT
 
     def create_ui_proxy_body(self, job_name, namespace):
         proxy_name = f'{job_name}-ui-proxy'
