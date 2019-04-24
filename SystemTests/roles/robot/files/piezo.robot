@@ -79,10 +79,10 @@ Submit Job With 30 Character Name Fails
     Should Be Equal As Strings    ${error}    The following errors were found:\n\"name\" input must obey naming convention: see https://github.com/ukaea/piezo/wiki/WebAppUserGuide#submit-a-job\n
 
 Can Run Python3 Jobs
-    ${response}=    Submit SparkPi Python3 Job    spark-pi
+    ${response}=    Submit SparkPi Python3 Job    spark-pi-py3
     Confirm Ok Response  ${response}
     ${job_name}=    Get Response Job Name   ${response}
-    Should Match Regexp   ${job_name}   spark-pi-[a-z0-9]{5}
+    Should Match Regexp   ${job_name}   spark-pi-py3-[a-z0-9]{5}
     ${message}=   Get Response Data Message   ${response}
     Should Be Equal As Strings    ${message}    Job driver created successfully
     ${finished}=    Wait For Spark Job To Finish        ${job_name}     5 seconds
