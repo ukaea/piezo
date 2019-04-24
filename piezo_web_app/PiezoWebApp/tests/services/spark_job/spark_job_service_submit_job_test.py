@@ -62,7 +62,7 @@ class SparkJobServiceSubmitJobTest(TestSparkJobService):
         }
         self.mock_validation_service.validate_request_keys.return_value = ValidationResult(True, "", None)
         self.mock_validation_service.validate_request_values.return_value = ValidationResult(True, "", body)
-        self.mock_spark_job_namer.rename_job.return_value = 'test-spark-job-abcd1234'
+        self.mock_spark_job_customiser.rename_job.return_value = 'test-spark-job-abcd1234'
         self.mock_spark_ui_service.expose_spark_ui.return_value = "some.url"
         # Act
         response = self.test_service.submit_job(body)
@@ -78,7 +78,7 @@ class SparkJobServiceSubmitJobTest(TestSparkJobService):
         }
         self.mock_validation_service.validate_request_keys.return_value = ValidationResult(True, "", None)
         self.mock_validation_service.validate_request_values.return_value = ValidationResult(True, "", body)
-        self.mock_spark_job_namer.rename_job.return_value = 'test-spark-job-abcd1234'
+        self.mock_spark_job_customiser.rename_job.return_value = 'test-spark-job-abcd1234'
         self.mock_spark_ui_service.expose_spark_ui.return_value = "Unavailable"
         # Act
         response = self.test_service.submit_job(body)
