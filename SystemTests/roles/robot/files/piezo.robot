@@ -107,7 +107,7 @@ Arguments Have Been Read And Appear In Logs
     Should Be True      ${finished}
     ${logresponse}=  Get Logs For Spark Job    ${job_name}
     ${joblog}=  Get Response Data Message   ${logresponse}
-    Should Be One Line Containing String   ${joblog}   First argument is s3a://kubernetes/outputs/{$job_name}/
+    Should Be One Line Containing String   ${joblog}   First argument is s3a://kubernetes/outputs/${job_name}/
     Should Be One Line Containing String   ${joblog}   Second argument is A
     Should Be One Line Containing String   ${joblog}   Third argument is B
     Should Be One Line Containing String   ${joblog}   Fourth argument is C
