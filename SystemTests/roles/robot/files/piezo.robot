@@ -289,3 +289,13 @@ Spark UI Is Accessable While A Spark Job Is Running
     Create Session    spark_ui    ${spark_ui}
     ${ui_response}=   Get Request    spark_ui   /
     Confirm Ok Response   ${ui_response}
+
+Can Run Python3 Jobs
+    ${response}=    Submit SparkPi Python3 Job    spark-pi
+    Confirm Ok Response  ${response}
+    ${job_name}=    Get Response Job Name   ${response}
+    Should Match Regexp   ${job_name}   spark-pi-[a-z0-9]{5}
+    ${message}=   Get Response Data Message   ${response}
+    Should Be Equal As Strings    ${message}    Job driver created successfully
+    ${finished}=    Wait For Spark Job To Finish        ${job_name}     5 seconds
+    Should Be True      ${finished}
