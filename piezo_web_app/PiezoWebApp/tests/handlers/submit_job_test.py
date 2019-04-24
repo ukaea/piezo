@@ -69,7 +69,8 @@ class TestSubmitJobHandler(BaseHandlerTest):
         self.mock_spark_job_service.submit_job.return_value = {
             'status': StatusCodes.Okay.value,
             'message': 'Job driver created successfully',
-            'driver_name': 'test-spark-job-driver'
+            'driver_name': 'test-spark-job-driver',
+            'spark_ui': 'some.url'
         }
         # Act
         response_body, response_code = yield self.send_request(body)
@@ -83,6 +84,7 @@ class TestSubmitJobHandler(BaseHandlerTest):
         assert response_body['status'] == 'success'
         assert response_body['data']['message'] == 'Job driver created successfully'
         assert response_body['data']['driver_name'] == 'test-spark-job-driver'
+        assert response_body['data']['spark_ui'] == 'some.url'
 
     @gen_test
     def test_post_accepts_optional_inputs(self):
@@ -99,7 +101,8 @@ class TestSubmitJobHandler(BaseHandlerTest):
         self.mock_spark_job_service.submit_job.return_value = {
             'status': StatusCodes.Okay.value,
             'message': 'Job driver created successfully',
-            'driver_name': 'test-spark-job-driver'
+            'driver_name': 'test-spark-job-driver',
+            'spark_ui': 'some.url'
         }
         # Act
         response_body, response_code = yield self.send_request(body)
@@ -120,7 +123,8 @@ class TestSubmitJobHandler(BaseHandlerTest):
         self.mock_spark_job_service.submit_job.return_value = {
             'status': StatusCodes.Okay.value,
             'message': 'Job driver created successfully',
-            'driver_name': 'test-spark-job-driver'
+            'driver_name': 'test-spark-job-driver',
+            'spark_ui': 'some.url'
         }
         # Act
         yield self.assert_request_returns_400(body)
@@ -139,7 +143,8 @@ class TestSubmitJobHandler(BaseHandlerTest):
         self.mock_spark_job_service.submit_job.return_value = {
             'status': StatusCodes.Okay.value,
             'message': 'Job driver created successfully',
-            'driver_name': 'test-spark-job-driver'
+            'driver_name': 'test-spark-job-driver',
+            'spark_ui': 'some.url'
         }
         # Act
         yield self.assert_request_returns_400(body)
@@ -159,7 +164,8 @@ class TestSubmitJobHandler(BaseHandlerTest):
         self.mock_spark_job_service.submit_job.return_value = {
             'status': StatusCodes.Okay.value,
             'message': 'Job driver created successfully',
-            'driver_name': 'test-spark-job-driver'
+            'driver_name': 'test-spark-job-driver',
+            'spark_ui': 'some.url'
         }
         # Act
         response_body, response_code = yield self.send_request(body)
@@ -180,7 +186,8 @@ class TestSubmitJobHandler(BaseHandlerTest):
         self.mock_spark_job_service.submit_job.return_value = {
             'status': StatusCodes.Okay.value,
             'message': 'Job driver created successfully',
-            'driver_name': 'test-spark-job-driver'
+            'driver_name': 'test-spark-job-driver',
+            'spark_ui': 'some.url'
         }
         # Act
         response_body, response_code = yield self.send_request(body)

@@ -19,12 +19,14 @@ class SparkJobService(ISparkJobService):
                  logger,
                  manifest_populator,
                  spark_job_customiser,
+                 spark_ui_service,
                  storage_service,
                  validation_service):
         self._kubernetes_adapter = kubernetes_adapter
         self._logger = logger
         self._manifest_populator = manifest_populator
         self._spark_job_customiser = spark_job_customiser
+        self._spark_ui_service = spark_ui_service
         self._storage_service = storage_service
         self._validation_service = validation_service
 
@@ -39,10 +41,11 @@ class SparkJobService(ISparkJobService):
                 job_name,
                 body
             )
-
-            msg = f'"{job_name}" deleted' if api_response['status'] == "Success"\
+            msg = f'"{job_name}" deleted' if api_response['status'] == "Success" \
                 else f'Trying to delete job "{job_name}" resulted in status: {api_response["status"]}'
             self._logger.debug(msg)
+            ui_clean_up_status = self._spark_ui_service.delete_spark_ui_components(job_name, body)
+            msg += "\n" + ui_clean_up_status
             return {
                 'message': msg,
                 'status': StatusCodes.Okay.value
@@ -189,10 +192,15 @@ class SparkJobService(ISparkJobService):
                 CRD_PLURAL,
                 body
             )
+
+            # Expose the spark ui
+            ui_url = self._spark_ui_service.expose_spark_ui(job_name)
+
             result = {
                 'status': StatusCodes.Okay.value,
                 'message': 'Job driver created successfully',
-                'job_name': job_name
+                'job_name': job_name,
+                'spark_ui': ui_url
             }
             return result
         except ApiException as exception:

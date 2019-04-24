@@ -36,6 +36,7 @@ class SparkJobServiceSubmitJobTest(TestSparkJobService):
                 'language': 'example-language'
             }
         }
+        self.mock_spark_ui_service.expose_spark_ui.return_value = 'some_url'
         # Act
         result = self.test_service.submit_job(body)
         # Assert
@@ -49,8 +50,40 @@ class SparkJobServiceSubmitJobTest(TestSparkJobService):
         self.assertDictEqual(result, {
             'status': StatusCodes.Okay.value,
             'message': 'Job driver created successfully',
-            'job_name': 'test-spark-job-abcd1234'
+            'job_name': 'test-spark-job-abcd1234',
+            'spark_ui': 'some_url'
         })
+
+    def test_submit_job_calls_spark_ui_service_correctly_to_expose_ui(self):
+        # Arrange
+        body = {
+            'name': 'test-spark-job',
+            'language': 'example-language'
+        }
+        self.mock_validation_service.validate_request_keys.return_value = ValidationResult(True, "", None)
+        self.mock_validation_service.validate_request_values.return_value = ValidationResult(True, "", body)
+        self.mock_spark_job_namer.rename_job.return_value = 'test-spark-job-abcd1234'
+        self.mock_spark_ui_service.expose_spark_ui.return_value = "some.url"
+        # Act
+        response = self.test_service.submit_job(body)
+        # Assert
+        self.mock_spark_ui_service.expose_spark_ui.assert_called_once_with('test-spark-job-abcd1234')
+        assert response['spark_ui'] == 'some.url'
+
+    def test_submit_job_returns_ui_url_as_unavailable_if_failure_in_setup(self):
+        # Arrange
+        body = {
+            'name': 'test-spark-job',
+            'language': 'example-language'
+        }
+        self.mock_validation_service.validate_request_keys.return_value = ValidationResult(True, "", None)
+        self.mock_validation_service.validate_request_values.return_value = ValidationResult(True, "", body)
+        self.mock_spark_job_namer.rename_job.return_value = 'test-spark-job-abcd1234'
+        self.mock_spark_ui_service.expose_spark_ui.return_value = "Unavailable"
+        # Act
+        response = self.test_service.submit_job(body)
+        # Assert)
+        assert response['spark_ui'] == 'Unavailable'
 
     def test_submit_job_returns_invalid_body_keys(self):
         # Arrange

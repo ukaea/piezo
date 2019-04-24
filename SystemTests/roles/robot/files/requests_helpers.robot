@@ -48,6 +48,10 @@ Get Response Job Name
   [Arguments]   ${response}
   [return]    ${response.json()["data"]["job_name"]}
 
+Get Response Spark UI
+  [Arguments]   ${response}
+  [return]    ${response.json()["data"]["spark_ui"]}
+
 Json Header
   ${header}=  Create Dictionary   Content-Type=application/json
   [return]    ${header}
