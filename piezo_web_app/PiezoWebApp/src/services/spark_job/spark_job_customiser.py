@@ -2,16 +2,17 @@ import uuid
 
 from kubernetes.client.rest import ApiException
 
-from PiezoWebApp.src.services.spark_job.i_spark_job_namer import ISparkJobNamer
+from PiezoWebApp.src.services.spark_job.i_spark_job_customiser import ISparkJobCustomiser
 from PiezoWebApp.src.services.spark_job.spark_job_constants import CRD_GROUP
 from PiezoWebApp.src.services.spark_job.spark_job_constants import CRD_PLURAL
 from PiezoWebApp.src.services.spark_job.spark_job_constants import CRD_VERSION
 from PiezoWebApp.src.services.spark_job.spark_job_constants import NAMESPACE
 
 
-class SparkJobNamer(ISparkJobNamer):
-    def __init__(self, kubernetes_adapter):
+class SparkJobCustomiser(ISparkJobCustomiser):
+    def __init__(self, kubernetes_adapter, logger):
         self._kubernetes_adapter = kubernetes_adapter
+        self._logger = logger
         self._max_attempts = 10
 
     def rename_job(self, base_name):
@@ -24,6 +25,16 @@ class SparkJobNamer(ISparkJobNamer):
         if counter >= self._max_attempts:
             raise RuntimeError(f'{counter} attempts to find a unique job name all failed')
         return trial_job_name
+
+    def set_output_dir_as_first_argument(self, job_name, storage_service, validated_body_values):
+        output_dir = f'{storage_service.protocol_route_to_bucket()}/outputs/{job_name}/'
+        self._logger.debug(f'Setting first argument for job "{job_name}" to be "{output_dir}"')
+        arguments = validated_body_values.validated_value['arguments'] if \
+            'arguments' in validated_body_values.validated_value \
+            else []
+        arguments.insert(0, output_dir)
+        validated_body_values.validated_value['arguments'] = arguments
+        return validated_body_values
 
     def _does_job_exist(self, job_name):
         try:

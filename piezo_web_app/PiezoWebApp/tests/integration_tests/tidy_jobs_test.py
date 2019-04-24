@@ -97,8 +97,8 @@ class TestTidyJobsIntegration(BaseIntegrationTest):
                                                                               CRD_PLURAL,
                                                                               'job2',
                                                                               {
-                                                                                "api_version": "version",
-                                                                                "other_values": "values"
+                                                                                  "api_version": "version",
+                                                                                  "other_values": "values"
                                                                               })
         self.mock_k8s_adapter.delete_namespaced_custom_object.assert_any_call(CRD_GROUP,
                                                                               CRD_VERSION,
@@ -106,8 +106,8 @@ class TestTidyJobsIntegration(BaseIntegrationTest):
                                                                               CRD_PLURAL,
                                                                               'job3',
                                                                               {
-                                                                                "api_version": "version",
-                                                                                "other_values": "values"
+                                                                                  "api_version": "version",
+                                                                                  "other_values": "values"
                                                                               })
         assert self.mock_k8s_adapter.delete_namespaced_custom_object.call_count == 2
         assert response_code == 200

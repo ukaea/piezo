@@ -44,6 +44,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
         self.mock_k8s_adapter.get_namespaced_custom_object.side_effect = ApiException(status=999)
         kubernetes_response = {'metadata': {'name': 'test-python-job'}}
         self.mock_k8s_adapter.create_namespaced_custom_object.return_value = kubernetes_response
+        self.mock_storage_adapter.access_protocol.return_value = 's3a'
         # Act
         with patch('uuid.uuid4', return_value='abcd1234-ef56-gh78-ij90'):
             response_body, response_code = yield self.send_request(body)
@@ -73,7 +74,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                 'restartPolicy': {'type': 'Never'},
                 'hadoopConf': {
                     'fs.s3a.endpoint': 'http://0.0.0.0:0'},
-                'arguments': ['1000'],
+                'arguments': ['s3a://kubernetes/outputs/test-python-job-abcd1/', '1000'],
                 'volumes': [
                     {
                         'name': 'secret',
@@ -146,6 +147,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
         self.mock_k8s_adapter.get_namespaced_custom_object.side_effect = ApiException(status=999)
         kubernetes_response = {'metadata': {'name': 'test_scala_job'}}
         self.mock_k8s_adapter.create_namespaced_custom_object.return_value = kubernetes_response
+        self.mock_storage_adapter.access_protocol.return_value = 's3a'
         # Act
         with patch('uuid.uuid4', return_value='abcd1234-ef56-gh78-ij90'):
             response_body, response_code = yield self.send_request(body)
@@ -175,7 +177,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                 'restartPolicy': {'type': 'Never'},
                 'hadoopConf': {
                     'fs.s3a.endpoint': 'http://0.0.0.0:0'},
-                'arguments': ['1000'],
+                'arguments': ['s3a://kubernetes/outputs/test-scala-job-abcd1/', '1000'],
                 'volumes': [
                     {
                         'name': 'secret',
@@ -274,6 +276,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
         self.mock_k8s_adapter.get_namespaced_custom_object.side_effect = ApiException(status=999)
         kubernetes_response = {'metadata': {'name': 'test-python-job'}}
         self.mock_k8s_adapter.create_namespaced_custom_object.return_value = kubernetes_response
+        self.mock_storage_adapter.access_protocol.return_value = 's3a'
         # Act
         with patch('uuid.uuid4', return_value='abcd1234-ef56-gh78-ij90'):
             response_body, response_code = yield self.send_request(body)
@@ -345,7 +348,8 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                     "prometheus": {
                         "jmxExporterJar": "/prometheus/jmx_prometheus_javaagent-0.3.1.jar",
                         "port": 8090}
-                }
+                },
+                "arguments": ["s3a://kubernetes/outputs/test-python-job-abcd1/"]
             }
         }
         assert self.mock_k8s_adapter.create_namespaced_custom_object.call_count == 1

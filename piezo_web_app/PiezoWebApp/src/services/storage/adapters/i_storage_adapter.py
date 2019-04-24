@@ -4,6 +4,10 @@ from abc import ABCMeta, abstractmethod
 class IStorageAdapter(metaclass=ABCMeta):
 
     @abstractmethod
+    def access_protocol(self):
+        pass
+
+    @abstractmethod
     def create_bucket(self, bucket_name):
         pass
 

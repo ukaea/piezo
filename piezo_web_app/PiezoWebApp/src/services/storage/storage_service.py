@@ -10,6 +10,9 @@ class StorageService(IStorageService):
 
         self._set_up_bucket(self._bucket_name)
 
+    def protocol_route_to_bucket(self):
+        return f'{self._storage_adapter.access_protocol()}://{self._bucket_name}'
+
     def get_temp_url_for_each_file(self, file_prefix):
         files = self._storage_adapter.get_all_files(self._bucket_name, file_prefix)
         urls = {

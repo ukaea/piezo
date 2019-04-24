@@ -14,6 +14,9 @@ class BotoAdapter(IStorageAdapter):
                 calling_format=boto.s3.connection.OrdinaryCallingFormat()
             )
 
+    def access_protocol(self):
+        return 's3a'
+
     def create_bucket(self, bucket_name):
         self._s3_client.create_bucket(bucket_name, location="")
 
