@@ -77,6 +77,12 @@ Submit SparkPi Job
     ${response}=    Post Request With Json Body   /piezo/submitjob    ${submitbody}
     [return]  ${response}
 
+Submit SparkPi Job
+    [Arguments]   ${job_name}
+    ${submitbody}=    Create Dictionary   name=${job_name}   language=Python   python_version=3    path_to_main_app_file=s3a://kubernetes/inputs/pi.py    label=systemTest
+    ${response}=    Post Request With Json Body   /piezo/submitjob    ${submitbody}
+    [return]  ${response}
+
 Submit SparkPi Job With Label
     [Arguments]   ${job_name}   ${label}
     ${submitbody}=    Create Dictionary   name=${job_name}   language=Python   python_version=2    path_to_main_app_file=s3a://kubernetes/inputs/pi.py    label=${label}
