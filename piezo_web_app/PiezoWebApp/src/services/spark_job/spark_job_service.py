@@ -18,14 +18,14 @@ class SparkJobService(ISparkJobService):
                  kubernetes_adapter,
                  logger,
                  manifest_populator,
-                 spark_job_namer,
+                 spark_job_customiser,
                  spark_ui_service,
                  storage_service,
                  validation_service):
         self._kubernetes_adapter = kubernetes_adapter
         self._logger = logger
         self._manifest_populator = manifest_populator
-        self._spark_job_namer = spark_job_namer
+        self._spark_job_customiser = spark_job_customiser
         self._spark_ui_service = spark_ui_service
         self._storage_service = storage_service
         self._validation_service = validation_service
@@ -172,9 +172,14 @@ class SparkJobService(ISparkJobService):
             }
 
         # Make the job name unique
-        job_name = self._spark_job_namer.rename_job(body['name'])
+        job_name = self._spark_job_customiser.rename_job(body['name'])
         validated_body_values.validated_value['name'] = job_name
         self._logger.debug(f'Renamed job "{body["name"]}" to "{job_name}"')
+
+        # Make the output directory the first argument
+        validated_body_values = self._spark_job_customiser.set_output_dir_as_first_argument(
+            job_name, self._storage_service, validated_body_values
+        )
 
         # Populate the manifest
         body = self._manifest_populator.build_manifest(validated_body_values.validated_value)
@@ -268,14 +273,17 @@ class SparkJobService(ISparkJobService):
                 delete_response = self.delete_job(job)
                 if delete_response['status'] == StatusCodes.Okay.value:
                     return TidiedJobStatus(job, status, "YES", None, None)
-                else:
-                    return TidiedJobStatus(job, status, "FAIL", delete_response['message'], delete_response['status'])
-            else:
-                return TidiedJobStatus(job,
-                                       status,
-                                       "FAIL",
-                                       write_logs_response['message'],
-                                       write_logs_response['status'])
-        else:
-            self._logger.debug(f'Not processing job "{job}", current status is "{status}"')
-            return TidiedJobStatus(job, status, "NO", None, None)
+
+                # Job logs written, but could not delete
+                return TidiedJobStatus(job, status, "FAIL", delete_response['message'], delete_response['status'])
+
+            # Could not write job logs
+            return TidiedJobStatus(job,
+                                   status,
+                                   "FAIL",
+                                   write_logs_response['message'],
+                                   write_logs_response['status'])
+
+        # Job is still running or yet to run
+        self._logger.debug(f'Not processing job "{job}", current status is "{status}"')
+        return TidiedJobStatus(job, status, "NO", None, None)

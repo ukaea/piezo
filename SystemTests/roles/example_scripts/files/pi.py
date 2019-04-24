@@ -15,36 +15,38 @@
 # limitations under the License.
 #
 
+# 
+# File copied from https://github.com/apache/spark/blob/master/examples/src/main/python/pi.py
+# 
+# Modified to change the order of input arguments
+# 
+
 from __future__ import print_function
 
 import sys
+from random import random
 from operator import add
 
 from pyspark.sql import SparkSession
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        print("Usage: wordcount <file>", file=sys.stderr)
-        sys.exit(-1)
-
+    output_dir = sys.argv[1]
+    partitions = int(sys.argv[2]) if len(sys.argv) > 2 else 2
+    
     spark = SparkSession\
         .builder\
-        .appName("PythonWordCount")\
+        .appName("PythonPi")\
         .getOrCreate()
 
-    lines = spark.read.text(sys.argv[1]).rdd.map(lambda r: r[0])
-    counts = lines.flatMap(lambda x: x.split(' ')) \
-                  .map(lambda x: (x, 1)) \
-                  .reduceByKey(add)
-    
-    
-    counts.saveAsTextFile(sys.argv[2])
+    n = 100000 * partitions
 
-    output = counts.collect()
-    
-    for (word, count) in output:
-        print("%s: %i\n" % (word, count))
-        
-    
+    def f(_):
+        x = random() * 2 - 1
+        y = random() * 2 - 1
+        return 1 if x ** 2 + y ** 2 <= 1 else 0
+
+    count = spark.sparkContext.parallelize(range(1, n + 1), partitions).map(f).reduce(add)
+    print("Pi is roughly %f" % (4.0 * count / n))
+
     spark.stop()
