@@ -19,3 +19,13 @@ def is_scheme_secure(scheme):
     if scheme.lower() == 'ftp':
         return False
     raise ValueError(f'"{scheme}" not recognised as a valid scheme')
+
+
+def is_valid_k8s_scheme_https(scheme):
+    if not isinstance(scheme, str):
+        raise ValueError(f'"{scheme}" not recognised as a valid scheme')
+    if scheme.lower() == 'https':
+        return True
+    if scheme.lower() == 'http':
+        return False
+    raise ValueError(f'"{scheme}" not recognised as a valid scheme')

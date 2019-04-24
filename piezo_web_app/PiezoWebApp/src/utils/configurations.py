@@ -3,6 +3,7 @@ import configparser
 from urllib.parse import urlparse
 
 from PiezoWebApp.src.utils.route_helper import is_scheme_secure
+from PiezoWebApp.src.utils.route_helper import is_valid_k8s_scheme_https
 from PiezoWebApp.src.utils.str_helper import str2non_negative_int
 
 
@@ -21,6 +22,7 @@ class Configuration:
         # Application
         self._app_port = None
         self._run_environment = None
+        self._k8s_url = None
         self._k8s_cluster_config_file = None
         self._tidy_frequency = None
 
@@ -49,6 +51,10 @@ class Configuration:
     @property
     def run_environment(self):
         return self._run_environment
+
+    @property
+    def k8s_url(self):
+        return self._k8s_url
 
     @property
     def k8s_cluster_config_file(self):
@@ -90,6 +96,11 @@ class Configuration:
         return is_scheme_secure(parse_result.scheme)
 
     @property
+    def is_k8s_secure(self):
+        parse_result = urlparse(self.k8s_url)
+        return is_valid_k8s_scheme_https(parse_result.scheme)
+
+    @property
     def temp_url_expiry_seconds(self):
         return self._temp_url_expiry_seconds
 
@@ -107,6 +118,7 @@ class Configuration:
         # Application
         self._app_port = str2non_negative_int(application['ApplicationPort'])
         self._run_environment = application['RunEnvironment']
+        self._k8s_url = application['K8sUrl']
         self._k8s_cluster_config_file = application['K8sClusterConfigFile']
         self._tidy_frequency = str2non_negative_int(application['TidyFrequency'])
 
