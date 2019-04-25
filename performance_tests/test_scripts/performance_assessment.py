@@ -1,7 +1,14 @@
 import dateutil.parser
 import re
 
+import helper_methods
 import web_api_interaction
+
+
+def average_time_for(list_of_job_timings, stage_name):
+    timings = [job_timing[stage_name] for job_timing in list_of_job_timings]
+    avg_timing = helper_methods.average_timedelta(timings)
+    return avg_timing
 
 
 def get_job_timings(base_url, job_name):

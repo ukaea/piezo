@@ -30,6 +30,12 @@ def is_job_finished(base_url, job_name):
     return job_status == 'COMPLETED'
 
 
+def is_system_clean(base_url):
+    tidy_jobs(base_url)
+    jobs = get_jobs(base_url)
+    return not jobs
+
+
 def submit_job(base_url, k8s_script):
     json_body = {
         'name': k8s_script,
@@ -42,3 +48,8 @@ def submit_job(base_url, k8s_script):
     response = requests.request('POST', url, json=json_body)
     job_name = dict(response.json())['data']['job_name']
     return job_name
+
+
+def tidy_jobs(base_url):
+    url = f'{base_url}/tidyjobs'
+    requests.request('POST', url, json={})
