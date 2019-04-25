@@ -1,6 +1,6 @@
 ---
 - name: Join Kubernetes cluster
   vars:
-    kubeadm_token: "{{ lookup('file', '/home/vagrant/code/join_token') }}"
+    kubeadm_token: "{{ lookup('file', '/home/vagrant/Kubernetes/join_token') }}"
   command: kubeadm join --discovery-token-unsafe-skip-ca-verification --token={{ kubeadm_token }} 172.28.128.10:6443
   become: true
