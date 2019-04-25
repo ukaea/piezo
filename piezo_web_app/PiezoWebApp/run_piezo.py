@@ -135,9 +135,12 @@ def background_tidy(logger, tidy_frequency):
 if __name__ == "__main__":
     CONFIGURATION_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), 'configuration.ini'))
     CONFIGURATION = Configuration(CONFIGURATION_PATH)
-    VALIDATION_RULES_PATH = "/etc/configs/validation_rules.json" \
-        if CONFIGURATION.run_environment == "K8S" else \
-        os.path.abspath(os.path.join(os.path.dirname(__file__), 'validation_rules.json'))
+    if os.path.isfile("/etc/configs/validation_rules.json"):
+        VALIDATION_RULES_PATH = "/etc/configs/validation_rules.json"
+    elif os.path.isfile(os.path.abspath(os.path.join(os.path.dirname(__file__), 'validation_rules.json'))):
+        VALIDATION_RULES_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), 'validation_rules.json'))
+    else:
+        raise FileExistsError("No validation rules file found")
     KUBERNETES_ADAPTER = build_kubernetes_adapter(CONFIGURATION)
     LOGGER = build_logger(CONFIGURATION)
     STORAGE_ADAPTER = build_storage_adapter(CONFIGURATION, LOGGER)
