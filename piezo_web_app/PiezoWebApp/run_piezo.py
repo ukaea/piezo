@@ -134,8 +134,8 @@ def background_tidy(logger, tidy_frequency):
 
 if __name__ == "__main__":
     if os.path.isfile("/etc/configs/configuration.ini"):
-        CONFIGURATION_PATH = "/etc/configs/configuration.ini"
-        VALIDATION_RULES_PATH = "/etc/configs/validation_rules.json"
+        CONFIGURATION_PATH = "/etc/configuration/configuration.ini"
+        VALIDATION_RULES_PATH = "/etc/validation/validation_rules.json"
         RUN_ENVIRONMENT = "K8S"
     elif os.path.isfile(os.path.abspath(os.path.join(os.path.dirname(__file__), 'configuration.ini'))):
         CONFIGURATION_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), 'configuration.ini'))
