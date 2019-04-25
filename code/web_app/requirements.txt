@@ -1,4 +1,0 @@
-tornado
-requests
-kubernetes
-pprint

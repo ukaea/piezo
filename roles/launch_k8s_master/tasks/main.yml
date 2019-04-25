@@ -31,7 +31,7 @@
   register: kubeadm_token
 
 - name: save token
-  copy: content="{{  kubeadm_token.stdout  }}" dest="/home/vagrant/code/join_token"
+  copy: content="{{  kubeadm_token.stdout  }}" dest="/vagrant/Kubernetes/join_token"
 
 - name: Apply weave
   shell: kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
