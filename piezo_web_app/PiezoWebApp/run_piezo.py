@@ -31,10 +31,10 @@ from PiezoWebApp.src.utils.route_helper import format_route_specification
 from PiezoWebApp.src.utils.validation_ruleset_parser import ValidationRulesetParser
 
 
-def build_kubernetes_adapter(configuration):
-    if configuration.run_environment == "SYSTEM":
+def build_kubernetes_adapter(configuration, run_environment):
+    if run_environment == "SYSTEM":
         config = kubernetes.config.load_kube_config(config_file=configuration.k8s_cluster_config_file)
-    elif configuration.run_environment == "K8S":
+    elif run_environment == "K8S":
         config = kubernetes.config.load_incluster_config()
     else:
         raise RuntimeError("Invalid running environment specified in config file")
@@ -133,12 +133,18 @@ def background_tidy(logger, tidy_frequency):
 
 
 if __name__ == "__main__":
-    CONFIGURATION_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), 'configuration.ini'))
+    if os.path.isfile("/etc/configuration/configuration.ini"):
+        CONFIGURATION_PATH = "/etc/configuration/configuration.ini"
+        VALIDATION_RULES_PATH = "/etc/validation/validation_rules.json"
+        RUN_ENVIRONMENT = "K8S"
+    elif os.path.isfile(os.path.abspath(os.path.join(os.path.dirname(__file__), 'configuration.ini'))):
+        CONFIGURATION_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), 'configuration.ini'))
+        VALIDATION_RULES_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), 'validation_rules.json'))
+        RUN_ENVIRONMENT = "SYSTEM"
+    else:
+        raise FileExistsError("No configuration file found")
     CONFIGURATION = Configuration(CONFIGURATION_PATH)
-    VALIDATION_RULES_PATH = "/etc/configs/validation_rules.json" \
-        if CONFIGURATION.run_environment == "K8S" else \
-        os.path.abspath(os.path.join(os.path.dirname(__file__), 'validation_rules.json'))
-    KUBERNETES_ADAPTER = build_kubernetes_adapter(CONFIGURATION)
+    KUBERNETES_ADAPTER = build_kubernetes_adapter(CONFIGURATION, RUN_ENVIRONMENT)
     LOGGER = build_logger(CONFIGURATION)
     STORAGE_ADAPTER = build_storage_adapter(CONFIGURATION, LOGGER)
     CONTAINER = build_container(CONFIGURATION, KUBERNETES_ADAPTER, LOGGER, STORAGE_ADAPTER, VALIDATION_RULES_PATH)
