@@ -133,7 +133,7 @@ def background_tidy(logger, tidy_frequency):
 
 
 if __name__ == "__main__":
-    if os.path.isfile("/etc/configs/configuration.ini"):
+    if os.path.isfile("/etc/configuration/configuration.ini"):
         CONFIGURATION_PATH = "/etc/configuration/configuration.ini"
         VALIDATION_RULES_PATH = "/etc/validation/validation_rules.json"
         RUN_ENVIRONMENT = "K8S"
