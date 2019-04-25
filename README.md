@@ -1,3 +1,3 @@
 # Piezo
-A tool to run spark jobs on Kubernetes
+A tool to run Spark jobs on Kubernetes
 
