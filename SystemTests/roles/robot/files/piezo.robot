@@ -169,6 +169,7 @@ Status Of Job Contains All Information
     Dictionary Should Contain Key   ${data}   submission_attempts
     Dictionary Should Contain Key   ${data}   last_submitted
     Dictionary Should Contain Key   ${data}   terminated
+    Dictionary Should Contain Key   ${data}   spark_ui
     Dictionary Should Contain Key   ${data}   error_messages
 
 Job Can Use Data And Code On S3 And Write Back Results
@@ -291,11 +292,22 @@ Output Files Provides Temporary URLs
     ${line_count}=    Get Line Count    ${log_file}
     Should Be True   ${line_count} > 0
 
-Spark UI Is Accessable While A Spark Job Is Running
+Spark UI From Submission Is Accessible While A Spark Job Is Running
     ${response}=    Submit Wordcount On Minio Job   wordcount-ui-job
     Confirm Ok Response  ${response}
     ${spark_ui}=    Get Response Spark UI   ${response}
     Sleep   20 seconds
+    Create Session    spark_ui    ${spark_ui}
+    ${ui_response}=   Get Request    spark_ui   /
+    Confirm Ok Response   ${ui_response}
+
+Spark UI From Status Is Accessible While A Spark Job Is Running
+    ${response}=    Submit Wordcount On Minio Job   wordcount-ui-job
+    Confirm Ok Response  ${response}
+    ${job_name}=    Get Response Job Name   ${response}
+    Sleep   20 seconds
+    ${response}=  Get Status Of Spark Job    ${job_name}
+    ${spark_ui}=    Get Response Spark UI   ${response}
     Create Session    spark_ui    ${spark_ui}
     ${ui_response}=   Get Request    spark_ui   /
     Confirm Ok Response   ${ui_response}
