@@ -5,7 +5,7 @@ import performance_assessment
 import web_api_interaction
 
 
-def single_system_load_test(base_url, num_jobs):
+def single_system_load_test(base_url, num_jobs, **kwargs):
     if not web_api_interaction.is_system_clean(base_url):
         raise RuntimeError("Jobs currently running on the system")
 
@@ -34,18 +34,37 @@ def single_system_load_test(base_url, num_jobs):
     return finished_job_timings
 
 
-def run_system_load_tests(base_url, job_numbers):
+def run_system_load_tests(base_url, job_numbers, job_options):
     timings = []
+    fixed_options = {
+        "image_pull_policy": ["Always", "IfNotPresent"]
+    }
+
+    user_options = {
+        "driver_cores": [0.1, 1],
+        "driver_memory": ["512m", "2048m"],
+        "executors": [1, 10],
+        "executor_cores": [1, 4],
+        "executor_memory": ["512m", "4096m"]
+    }
+
     for num_jobs in job_numbers:
-        timings.append(single_system_load_test(base_url, num_jobs))
+        for job_option in job_options:
+            timings.append(single_system_load_test(base_url, num_jobs, **job_option.user_args))
+
+    job_options_headers = list(job_options[0].user_args)
+    headers = ['num_jobs'] + job_options_headers + ['k8s_queue_avg', 'spark_spinup_avg', 'job_run_avg', 'spark_spindown_avg']
+
     with open('system_load_test_results.csv', 'w', newline='') as csvfile:
         csvwriter = csv.writer(csvfile, delimiter=',')
-        csvwriter.writerow(['num_jobs', 'k8s_queue_avg', 'spark_spinup_avg', 'job_run_avg', 'spark_spindown_avg'])
+        csvwriter.writerow(headers)
         for i in range(len(job_numbers)):
-            csvwriter.writerow([
-                job_numbers[i],
-                performance_assessment.average_time_for(timings[i], 'k8s_queue_time'),
-                performance_assessment.average_time_for(timings[i], 'spark_spinup_time'),
-                performance_assessment.average_time_for(timings[i], 'job_run_time'),
-                performance_assessment.average_time_for(timings[i], 'spark_spindown_time')
-            ])
+            for j in range(len(job_options)):
+                user_args = job_options[j].user_args
+                job_results = [job_numbers[i]] + [user_args[arg_name] for arg_name in job_options_headers] + [
+                    performance_assessment.average_time_for(timings[i], 'k8s_queue_time'),
+                    performance_assessment.average_time_for(timings[i], 'spark_spinup_time'),
+                    performance_assessment.average_time_for(timings[i], 'job_run_time'),
+                    performance_assessment.average_time_for(timings[i], 'spark_spindown_time')
+                ]
+                csvwriter.writerow(job_results)
