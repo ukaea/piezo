@@ -12,7 +12,6 @@ class SampleConfigurationCreator:
     def create_configuration(log_folder_loc,
                              logging_level,
                              app_port,
-                             run_environment,
                              k8s_url,
                              k8s_cluster_config_file,
                              tidy_frequency,
@@ -32,9 +31,6 @@ class SampleConfigurationCreator:
         template = SampleConfigurationCreator.add_element_to_temp_file(template,
                                                                        "ApplicationPort",
                                                                        app_port)
-        template = SampleConfigurationCreator.add_element_to_temp_file(template,
-                                                                       "RunEnvironment",
-                                                                       run_environment)
         template = SampleConfigurationCreator.add_element_to_temp_file(template,
                                                                        "K8sUrl",
                                                                        k8s_url)
@@ -97,7 +93,6 @@ def test_configuration_parses_with_arguments():
     configuration_path = SampleConfigurationCreator.create_configuration(current,
                                                                          "INFO",
                                                                          "8888",
-                                                                         "SYSTEM",
                                                                          "https://1.1.1.1:1",
                                                                          "Some/Path",
                                                                          "3600",
@@ -114,7 +109,6 @@ def test_configuration_parses_with_arguments():
     assert configuration.log_folder_location == current
     assert configuration.logging_level == "INFO"
     assert configuration.app_port == 8888
-    assert configuration.run_environment == "SYSTEM"
     assert configuration.k8s_url == "https://1.1.1.1:1"
     assert configuration.k8s_cluster_config_file == "Some/Path"
     assert configuration.tidy_frequency == 3600
