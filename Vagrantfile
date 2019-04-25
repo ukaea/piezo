@@ -27,7 +27,6 @@ Vagrant.configure("2") do |config|
     control.vm.box = "gugek/scientific-linux-7"
     control.vm.box_version = "7.2.0"
 
-    control.vm.synced_folder "code", "/home/vagrant/code"
     control.vm.network :private_network, ip: "172.28.128.10"
     control.vm.hostname = "master-k8s"
 
@@ -45,7 +44,6 @@ Vagrant.configure("2") do |config|
     worker1.vm.box = "gugek/scientific-linux-7"
     worker1.vm.box_version = "7.2.0"
 
-    worker1.vm.synced_folder "code", "/home/vagrant/code"
     worker1.vm.network :private_network, ip: "172.28.128.11"
     worker1.vm.hostname = "node1-k8s"
 
@@ -63,7 +61,6 @@ Vagrant.configure("2") do |config|
     worker2.vm.box = "gugek/scientific-linux-7"
     worker2.vm.box_version = "7.2.0"
 
-    worker2.vm.synced_folder "code", "/home/vagrant/code"
     worker2.vm.network :private_network, ip: "172.28.128.12"
     worker2.vm.hostname = "node2-k8s"
 
