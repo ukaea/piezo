@@ -60,6 +60,7 @@ class TestJobStatusIntegration(BaseIntegrationTest):
                 "created": 12345,
                 "submission_attempts": 1,
                 "last_submitted": 123456,
+                "spark_ui": "http://1.1.1.1:1/proxy:test-spark-job-ui-svc:4040",
                 "terminated": 1234567,
                 "error_messages": ''
             }})
@@ -93,6 +94,7 @@ class TestJobStatusIntegration(BaseIntegrationTest):
                 "created": "UNKNOWN",
                 "submission_attempts": "UNKNOWN",
                 "last_submitted": "UNKNOWN",
+                "spark_ui": "http://1.1.1.1:1/proxy:test-spark-job-ui-svc:4040",
                 "terminated": "UNKNOWN",
                 "error_messages": "UNKNOWN"
             }
