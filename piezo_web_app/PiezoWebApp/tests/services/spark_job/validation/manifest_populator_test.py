@@ -74,7 +74,13 @@ class TestTemplatePopulator(unittest.TestCase):
                 "imagePullPolicy": "Always",
                 "mainApplicationFile": "/path/to/file",
                 "sparkVersion": "2.4.0",
-                "restartPolicy": {"type": "Never"},
+                "restartPolicy": {
+                    "type": "Never",
+                    'onFailureRetries': 3,
+                    "onFailureRetryInterval": 10,
+                    "onSubmissionFailureRetries": 5,
+                    "onSubmissionFailureRetryInterval": 20
+                },
                 "hadoopConf": {"fs.s3a.endpoint": "0.0.0.0"},
                 "arguments": ["1000", "100"],
                 "volumes": [
@@ -149,7 +155,13 @@ class TestTemplatePopulator(unittest.TestCase):
                 "mainApplicationFile": "/path/to/file",
                 "mainClass": "testClass",
                 "sparkVersion": "2.4.0",
-                "restartPolicy": {"type": "Never"},
+                "restartPolicy": {
+                    "type": "Never",
+                    'onFailureRetries': 3,
+                    "onFailureRetryInterval": 10,
+                    "onSubmissionFailureRetries": 5,
+                    "onSubmissionFailureRetryInterval": 20
+                },
                 "hadoopConf": {"fs.s3a.endpoint": "0.0.0.0"},
                 "arguments": ["1000", "100"],
                 "volumes": [
@@ -218,7 +230,13 @@ class TestTemplatePopulator(unittest.TestCase):
                 "imagePullPolicy": "Always",
                 "mainApplicationFile": None,
                 "sparkVersion": "2.4.0",
-                "restartPolicy": {"type": "Never"},
+                "restartPolicy": {
+                    "type": "Never",
+                    'onFailureRetries': 3,
+                    "onFailureRetryInterval": 10,
+                    "onSubmissionFailureRetries": 5,
+                    "onSubmissionFailureRetryInterval": 20
+                },
                 "hadoopConf": {"fs.s3a.endpoint": "0.0.0.0"},
                 "volumes": [
                     {

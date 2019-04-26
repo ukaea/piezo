@@ -71,7 +71,13 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                 'imagePullPolicy': 'Always',
                 'mainApplicationFile': '/path_to/file',
                 'sparkVersion': '2.4.0',
-                'restartPolicy': {'type': 'Never'},
+                'restartPolicy': {
+                    'type': 'Never',
+                    'onFailureRetries': 3,
+                    'onFailureRetryInterval': 10,
+                    'onSubmissionFailureRetries': 5,
+                    'onSubmissionFailureRetryInterval': 20
+                },
                 'hadoopConf': {
                     'fs.s3a.endpoint': 'http://0.0.0.0:0'},
                 'arguments': ['s3a://kubernetes/outputs/test-python-job-abcd1/', '1000'],
@@ -174,7 +180,13 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                 'imagePullPolicy': 'Always',
                 'mainApplicationFile': '/path_to/file',
                 'sparkVersion': '2.4.0',
-                'restartPolicy': {'type': 'Never'},
+                'restartPolicy': {
+                    'type': 'Never',
+                    'onFailureRetries': 3,
+                    'onFailureRetryInterval': 10,
+                    'onSubmissionFailureRetries': 5,
+                    'onSubmissionFailureRetryInterval': 20
+                },
                 'hadoopConf': {
                     'fs.s3a.endpoint': 'http://0.0.0.0:0'},
                 'arguments': ['s3a://kubernetes/outputs/test-scala-job-abcd1/', '1000'],
@@ -306,7 +318,13 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                 'imagePullPolicy': 'Always',
                 'mainApplicationFile': '/path_to/file',
                 'sparkVersion': '2.4.0',
-                'restartPolicy': {'type': 'Never'},
+                'restartPolicy': {
+                    'type': 'Never',
+                    'onFailureRetries': 3,
+                    'onFailureRetryInterval': 10,
+                    'onSubmissionFailureRetries': 5,
+                    'onSubmissionFailureRetryInterval': 20
+                },
                 "hadoopConf": {
                     "fs.s3a.endpoint": "http://0.0.0.0:0"},
                 'volumes': [

@@ -57,7 +57,12 @@ class ManifestPopulator(IManifestPopulator):
                     "mainApplicationFile": self._spec_main_app_file,
                     "sparkVersion": self._spec_spark_version,
                     "restartPolicy": {
-                        "type": self._spec_restart_policy_type},
+                        "type": self._spec_restart_policy_type,
+                        "onFailureRetries": 3,
+                        "onFailureRetryInterval": 10,
+                        "onSubmissionFailureRetries": 5,
+                        "onSubmissionFailureRetryInterval": 20
+                    },
                     "hadoopConf": {
                         "fs.s3a.endpoint": self._s3_endpoint},
                     "volumes": [
