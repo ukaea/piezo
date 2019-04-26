@@ -7,7 +7,6 @@ from PiezoWebApp.src.handlers.schema.schema_helpers import create_object_schema_
 class SubmitJobHandler(BaseHandler):
     @schema.validate(
         # See https://github.com/ukaea/piezo/wiki/WebAppUserGuide#submit-a-job for input schema
-        
         output_schema=create_object_schema_with_string_properties(
             ['job_name', 'message', 'spark_ui'], required=['message']),
         output_example={
