@@ -9,6 +9,10 @@ class SparkUiService:
         self._spark_ui_adapter = spark_ui_adapter
         self._logger = logger
 
+    def get_spark_ui_url(self, job_name):
+        url = self._spark_ui_adapter.create_ui_url(job_name)
+        return url
+
     def expose_spark_ui(self, job_name):
         proxy_body = self._spark_ui_adapter.create_ui_proxy_body(job_name, NAMESPACE)
         proxy_svc_body = self._spark_ui_adapter.create_ui_proxy_svc_body(job_name, NAMESPACE)

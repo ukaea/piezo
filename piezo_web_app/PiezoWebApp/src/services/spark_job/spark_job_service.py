@@ -68,6 +68,10 @@ class SparkJobService(ISparkJobService):
                 job_name
             )
             status = SparkJobStatus(api_response)
+
+            # Get the spark ui
+            ui_url = self._spark_ui_service.get_spark_ui_url(job_name)
+
             return {
                 'message': f'Job status for "{job_name}"',
                 'job_status': status.status,
@@ -75,6 +79,7 @@ class SparkJobService(ISparkJobService):
                 'submission_attempts': status.submission_attempts,
                 'last_submitted': status.last_submitted,
                 'terminated': status.terminated_time,
+                'spark_ui': ui_url,
                 'error_messages': status.err_msg,
                 'status': StatusCodes.Okay.value
             }
