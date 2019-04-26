@@ -6,12 +6,8 @@ from PiezoWebApp.src.handlers.schema.schema_helpers import create_object_schema_
 # pylint: disable=abstract-method
 class SubmitJobHandler(BaseHandler):
     @schema.validate(
-        input_example={
-            'name': 'example-job-name',  # to be replaced by list of arguments we will allow the user to configure
-            'language': 'Python',
-            'path_to_main_app_file': '/path/to/main.file'
-
-        },
+        # See https://github.com/ukaea/piezo/wiki/WebAppUserGuide#submit-a-job for input schema
+        
         output_schema=create_object_schema_with_string_properties(
             ['job_name', 'message', 'spark_ui'], required=['message']),
         output_example={
