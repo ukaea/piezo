@@ -47,6 +47,7 @@ json_body
 	"python_version":"2",
 	"path_to_main_app_file":"s3a://kubernetes/inputs/pi.py",
 	"label":"test",
+	"spark_ui": "true",
 	"arguments": ["100000"]
 }
 ```
