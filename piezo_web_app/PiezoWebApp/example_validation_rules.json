@@ -37,7 +37,27 @@
   {
     "input_name": "restart_policy",
     "classification": "Fixed",
-    "default": "Never"
+    "default": "OnFailure"
+  },
+  {
+    "input_name": "on_failure_retries",
+    "classification": "Fixed",
+    "default": 3
+  },
+  {
+    "input_name": "on_failure_retry_interval",
+    "classification": "Fixed",
+    "default": 10
+  },
+  {
+    "input_name": "on_submission_failure_retries",
+    "classification": "Fixed",
+    "default": 5
+  },
+  {
+    "input_name": "on_submission_failure_retry_interval",
+    "classification": "Fixed",
+    "default": 20
   },
   {
     "input_name": "service_account",

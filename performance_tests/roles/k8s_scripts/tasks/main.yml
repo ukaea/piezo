@@ -1,0 +1,10 @@
+---
+- name: Copy test script file
+  copy:
+    src: "{{ item }}"
+    dest: /opt/minio/data/kubernetes/performance-test-inputs/
+    owner: minio
+    group: minio
+    mode: 0777
+  with_fileglob:
+    - ./files/*
