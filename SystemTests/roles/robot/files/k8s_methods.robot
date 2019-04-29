@@ -105,6 +105,13 @@ Submit Wordcount On Minio Job
     ${response}=    Post Request With Json Body   /piezo/submitjob    ${submitbody}
     [return]  ${response}
 
+Submit Wordcount On Minio Job With Spark UI
+    [Arguments]   ${job_name}
+    ${arguments}=   Create List   s3a://kubernetes/inputs/big.txt
+    ${submitbody}=    Create Dictionary   name=${job_name}   language=Python   python_version=2    path_to_main_app_file=s3a://kubernetes/inputs/wordcount.py     label=systemTest      arguments=${arguments}    executors=4   spark_ui=true
+    ${response}=    Post Request With Json Body   /piezo/submitjob    ${submitbody}
+    [return]  ${response}
+
 Tidy jobs
     ${headers}=   Json Header
     Create Session    k8s   ${K8S_ENDPOINT}
