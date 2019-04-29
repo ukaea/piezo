@@ -1,0 +1,7 @@
+apiVersion: scheduling.k8s.io/v1beta1
+kind: PriorityClass
+metadata:
+  name: piezo-essential
+value: 1000000
+globalDefault: false
+description: "This priority class should be used for pods essential to the services of the Piezo web app"

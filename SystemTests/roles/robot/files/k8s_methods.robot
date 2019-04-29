@@ -6,7 +6,9 @@ Resource          requests_helpers.robot
 
 ###############################################################################
 *** Variables ***
-${K8S_ENDPOINT}     http://host-172-16-113-146.nubes.stfc.ac.uk:31924
+${K8S_ENDPOINT}     http://host-172-16-113-146.nubes.stfc.ac.uk:31856
+${JOB_FINISH_CHECK_STEPS}   180
+${JOB_FINISH_CHECK_INTERVAL}    1 seconds
 
 ###############################################################################
 *** Keywords ***
@@ -112,8 +114,8 @@ Tidy jobs
 
 Wait For Spark Job To Finish
     [Arguments]    ${job_name}    ${step_size}
-    :For    ${i}    IN RANGE   0    24
-    \   Sleep     ${step_size}
+    :For    ${i}    IN RANGE   0    ${JOB_FINISH_CHECK_STEPS}
+    \   Sleep     ${JOB_FINISH_CHECK_INTERVAL}
     \   ${response}=   Get Status Of Spark Job   ${job_name}
     \   ${message}=  Get Response Job Status     ${response}
     \   ${finished}=    Set Variable If     '${message}'=='COMPLETED'   ${True}     ${False}

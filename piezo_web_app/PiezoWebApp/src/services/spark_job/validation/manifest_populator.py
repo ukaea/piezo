@@ -20,6 +20,13 @@ class ManifestPopulator(IManifestPopulator):
         self._spec_main_class = self._validation_rules.get_default_value_for_key("main_class")
         self._spec_spark_version = self._validation_rules.get_default_value_for_key("spark_version")
         self._spec_restart_policy_type = self._validation_rules.get_default_value_for_key("restart_policy")
+        self._spec_restart_failure_retries = self._validation_rules.get_default_value_for_key("on_failure_retries")
+        self._spec_restart_failure_retry_interval = \
+            self._validation_rules.get_default_value_for_key("on_failure_retry_interval")
+        self._spec_restart_submission_failure_retries = \
+            self._validation_rules.get_default_value_for_key("on_submission_failure_retries")
+        self._spec_restart_submission_failure_retry_interval = \
+            self._validation_rules.get_default_value_for_key("on_submission_failure_retry_interval")
         self._spec_driver_cores = self._validation_rules.get_default_value_for_key("driver_cores")
         self._spec_driver_memory = self._validation_rules.get_default_value_for_key("driver_memory")
         self._spec_driver_label_version = self._validation_rules.get_default_value_for_key("spark_version")
@@ -57,7 +64,12 @@ class ManifestPopulator(IManifestPopulator):
                     "mainApplicationFile": self._spec_main_app_file,
                     "sparkVersion": self._spec_spark_version,
                     "restartPolicy": {
-                        "type": self._spec_restart_policy_type},
+                        "type": self._spec_restart_policy_type,
+                        "onFailureRetries": self._spec_restart_failure_retries,
+                        "onFailureRetryInterval": self._spec_restart_failure_retry_interval,
+                        "onSubmissionFailureRetries": self._spec_restart_submission_failure_retries,
+                        "onSubmissionFailureRetryInterval": self._spec_restart_submission_failure_retry_interval
+                    },
                     "hadoopConf": {
                         "fs.s3a.endpoint": self._s3_endpoint},
                     "volumes": [

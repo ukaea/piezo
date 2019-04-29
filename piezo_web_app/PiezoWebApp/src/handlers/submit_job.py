@@ -6,16 +6,13 @@ from PiezoWebApp.src.handlers.schema.schema_helpers import create_object_schema_
 # pylint: disable=abstract-method
 class SubmitJobHandler(BaseHandler):
     @schema.validate(
-        input_example={
-            'name': 'example_job_name',  # to be replaced by list of arguments we will allow the user to configure
-            'language': 'Python',
-            'path_to_main_app_file': '/path/to/main.file'
-
-        },
-        output_schema=create_object_schema_with_string_properties(['driver_name', 'message'], required=['message']),
+        # See https://github.com/ukaea/piezo/wiki/WebAppUserGuide#submit-a-job for input schema
+        output_schema=create_object_schema_with_string_properties(
+            ['job_name', 'message', 'spark_ui'], required=['message']),
         output_example={
             'message': 'Job driver created successfully',
-            'driver_name': 'example-driver'
+            'job_name': 'example-job-name-abc12',
+            'spark_ui': 'http://piezo.com/example-job-name-abc12-ui-svc'
         }
     )
     def post(self, *args, **kwargs):

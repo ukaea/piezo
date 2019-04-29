@@ -69,7 +69,7 @@ Submit Job With 29 Character Name Runs Successfully
     ${response}=    Submit SparkPi Job    abcdefghijklmnopqrstuvwxyzabc
     Confirm Ok Response  ${response}
     ${job_name}=    Get Response Job Name   ${response}
-    ${finished}=    Wait For Spark Job To Finish        ${job_name}     5 seconds
+    ${finished}=    Wait For Spark Job To Finish        ${job_name}
     Should Be True      ${finished}
 
 Submit Job With 30 Character Name Fails
@@ -85,7 +85,7 @@ Can Run Python3 Jobs
     Should Match Regexp   ${job_name}   spark-pi-py3-[a-z0-9]{5}
     ${message}=   Get Response Data Message   ${response}
     Should Be Equal As Strings    ${message}    Job driver created successfully
-    ${finished}=    Wait For Spark Job To Finish        ${job_name}     5 seconds
+    ${finished}=    Wait For Spark Job To Finish        ${job_name}
     Should Be True      ${finished}
 
 Submit Input Args Job With Arguments Returns Ok Response
@@ -100,7 +100,7 @@ Can Get Logs Of Submitted Spark Job
     ${job_name}=     Set Variable   spark-pi
     ${response}=    Submit SparkPi Job    ${job_name}
     ${job_name}=    Get Response Job Name   ${response}
-    ${finished}=    Wait For Spark Job To Finish        ${job_name}     5 seconds
+    ${finished}=    Wait For Spark Job To Finish        ${job_name}
     Should Be True      ${finished}
     ${response}=  Get Logs For Spark Job    ${job_name}
     ${joblog}=    Get Response Data Message   ${response}
@@ -113,7 +113,7 @@ Arguments Have Been Read And Appear In Logs
     ${response}=    Submit InputArgs Job With Arguments   ${job_name}
     ${job_name}=    Get Response Job Name   ${response}
     Confirm Ok Response  ${response}
-    ${finished}=    Wait For Spark Job To Finish        ${job_name}     5 seconds
+    ${finished}=    Wait For Spark Job To Finish        ${job_name}
     Should Be True      ${finished}
     ${logresponse}=  Get Logs For Spark Job    ${job_name}
     ${joblog}=  Get Response Data Message   ${logresponse}
@@ -126,7 +126,7 @@ Can Delete Submitted Spark Job
     ${job_name}=    Set Variable        spark-pi
     ${response}=    Submit SparkPi Job   ${job_name}
     ${job_name}=    Get Response Job Name   ${response}
-    ${finished}=    Wait For Spark Job To Finish        ${job_name}     5 seconds
+    ${finished}=    Wait For Spark Job To Finish        ${job_name}
     Should Be True    ${finished}
     ${response}=  Delete Spark Job    ${job_name}
     Confirm Ok Response   ${response}
@@ -169,6 +169,7 @@ Status Of Job Contains All Information
     Dictionary Should Contain Key   ${data}   submission_attempts
     Dictionary Should Contain Key   ${data}   last_submitted
     Dictionary Should Contain Key   ${data}   terminated
+    Dictionary Should Contain Key   ${data}   spark_ui
     Dictionary Should Contain Key   ${data}   error_messages
 
 Job Can Use Data And Code On S3 And Write Back Results
@@ -176,7 +177,7 @@ Job Can Use Data And Code On S3 And Write Back Results
     ${response}=    Submit Wordcount On Minio Job   ${job_name}
     Confirm Ok Response  ${response}
     ${job_name}=    Get Response Job Name   ${response}
-    ${finished}=    Wait For Spark Job To Finish        ${job_name}     15 seconds
+    ${finished}=    Wait For Spark Job To Finish        ${job_name}
     Should Be True    ${finished}
     Directory Should Exist In S3 Bucket   kubernetes    outputs/${job_name}
     Directory Should Not Be Empty In S3 bucket  kubernetes    outputs/${job_name}
@@ -223,7 +224,7 @@ Get List Of SparkApplications Filters By Label
 Write Logs Of Completed Jobs Appears In S3
     ${response}=    Submit SparkPi Job    spark-pi
     ${new_job_name}=    Get Response Job Name   ${response}
-    Wait For Spark Job To Finish        ${new_job_name}   24
+    Wait For Spark Job To Finish        ${new_job_name}
     Write Logs To Storage   ${new_job_name}
     File Should Exist In S3 Bucket    kubernetes      outputs/${new_job_name}/log.txt
     ${joblog}=    Get File In S3 Bucket    kubernetes      outputs/${new_job_name}/log.txt
@@ -238,7 +239,7 @@ Tidy Jobs Does Not Affect Unfinished Jobs
     Submit SparkPi Job    spark-pi-4
     Submit SparkPi Job    spark-pi-5
     ${new_job_name1}=    Get Response Job Name   ${response1}
-    Wait For Spark Job To Finish        ${new_job_name1}   24
+    Wait For Spark Job To Finish        ${new_job_name1}
     ${response2}=    Submit SparkPi Job    spark-pi-6
     ${new_job_name2}=    Get Response Job Name   ${response2}
     ${request_response}=    Tidy Jobs
@@ -260,8 +261,8 @@ Tidy Jobs Writes Logs And Deletes Completed Jobs
     ${new_job_name1}=    Get Response Job Name   ${response1}
     ${response2}=    Submit SparkPi Job    spark-pi-2
     ${new_job_name2}=    Get Response Job Name   ${response2}
-    Wait For Spark Job To Finish        ${new_job_name1}   24
-    Wait For Spark Job To Finish        ${new_job_name2}   24
+    Wait For Spark Job To Finish        ${new_job_name1}
+    Wait For Spark Job To Finish        ${new_job_name2}
     ${request_response}=    Tidy Jobs
     Confirm Ok Response     ${request_response}
     ${tidied_jobs}=    Get Response Tidied Jobs     ${request_response}
@@ -273,7 +274,7 @@ Output Files Provides Temporary URLs
     ${response}=    Submit Wordcount On Minio Job   ${job_name}
     Confirm Ok Response  ${response}
     ${job_name}=    Get Response Job Name   ${response}
-    ${finished}=    Wait For Spark Job To Finish        ${job_name}     15 seconds
+    ${finished}=    Wait For Spark Job To Finish        ${job_name}
     Should Be True    ${finished}
     Write Logs To Storage   ${job_name}
     ${output_files}=    Output Files Of Spark Job   ${job_name}
@@ -291,11 +292,22 @@ Output Files Provides Temporary URLs
     ${line_count}=    Get Line Count    ${log_file}
     Should Be True   ${line_count} > 0
 
-Spark UI Is Accessable While A Spark Job Is Running
+Spark UI From Submission Is Accessible While A Spark Job Is Running
     ${response}=    Submit Wordcount On Minio Job   wordcount-ui-job
     Confirm Ok Response  ${response}
     ${spark_ui}=    Get Response Spark UI   ${response}
     Sleep   20 seconds
+    Create Session    spark_ui    ${spark_ui}
+    ${ui_response}=   Get Request    spark_ui   /
+    Confirm Ok Response   ${ui_response}
+
+Spark UI From Status Is Accessible While A Spark Job Is Running
+    ${response}=    Submit Wordcount On Minio Job   wordcount-ui-job
+    Confirm Ok Response  ${response}
+    ${job_name}=    Get Response Job Name   ${response}
+    Sleep   20 seconds
+    ${response}=  Get Status Of Spark Job    ${job_name}
+    ${spark_ui}=    Get Response Spark UI   ${response}
     Create Session    spark_ui    ${spark_ui}
     ${ui_response}=   Get Request    spark_ui   /
     Confirm Ok Response   ${ui_response}
