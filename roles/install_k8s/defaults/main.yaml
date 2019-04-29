@@ -5,4 +5,3 @@ kubernetes_packages:
   - kubeadm=1.14.1-00
   - kubectl=1.14.1-00
   - kubernetes-cni=0.6.0-00
-  
