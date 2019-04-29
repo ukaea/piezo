@@ -37,7 +37,7 @@
   {
     "input_name": "restart_policy",
     "classification": "Fixed",
-    "default": "Never"
+    "default": "onFailure"
   },
   {
     "input_name": "on_failure_retries",

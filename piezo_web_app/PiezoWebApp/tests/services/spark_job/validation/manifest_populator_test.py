@@ -25,7 +25,7 @@ class TestTemplatePopulator(unittest.TestCase):
                 'image': 'gcr.io/spark-operator/spark:v2.4.0',
                 'image_pull_policy': 'Always',
                 'spark_version': '2.4.0',
-                'restart_policy': 'Never',
+                'restart_policy': 'onFailure',
                 'on_failure_retries': 3,
                 'on_failure_retry_interval': 10,
                 'on_submission_failure_retries': 5,
@@ -79,7 +79,7 @@ class TestTemplatePopulator(unittest.TestCase):
                 "mainApplicationFile": "/path/to/file",
                 "sparkVersion": "2.4.0",
                 "restartPolicy": {
-                    "type": "Never",
+                    "type": "onFailure",
                     'onFailureRetries': 3,
                     "onFailureRetryInterval": 10,
                     "onSubmissionFailureRetries": 5,
@@ -160,7 +160,7 @@ class TestTemplatePopulator(unittest.TestCase):
                 "mainClass": "testClass",
                 "sparkVersion": "2.4.0",
                 "restartPolicy": {
-                    "type": "Never",
+                    "type": "onFailure",
                     'onFailureRetries': 3,
                     "onFailureRetryInterval": 10,
                     "onSubmissionFailureRetries": 5,
@@ -235,7 +235,7 @@ class TestTemplatePopulator(unittest.TestCase):
                 "mainApplicationFile": None,
                 "sparkVersion": "2.4.0",
                 "restartPolicy": {
-                    "type": "Never",
+                    "type": "onFailure",
                     'onFailureRetries': 3,
                     "onFailureRetryInterval": 10,
                     "onSubmissionFailureRetries": 5,

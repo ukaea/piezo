@@ -72,7 +72,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                 'mainApplicationFile': '/path_to/file',
                 'sparkVersion': '2.4.0',
                 'restartPolicy': {
-                    'type': 'Never',
+                    'type': 'onFailure',
                     'onFailureRetries': 3,
                     'onFailureRetryInterval': 10,
                     'onSubmissionFailureRetries': 5,
@@ -181,7 +181,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                 'mainApplicationFile': '/path_to/file',
                 'sparkVersion': '2.4.0',
                 'restartPolicy': {
-                    'type': 'Never',
+                    'type': 'onFailure',
                     'onFailureRetries': 3,
                     'onFailureRetryInterval': 10,
                     'onSubmissionFailureRetries': 5,
@@ -319,7 +319,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                 'mainApplicationFile': '/path_to/file',
                 'sparkVersion': '2.4.0',
                 'restartPolicy': {
-                    'type': 'Never',
+                    'type': 'onFailure',
                     'onFailureRetries': 3,
                     'onFailureRetryInterval': 10,
                     'onSubmissionFailureRetries': 5,
