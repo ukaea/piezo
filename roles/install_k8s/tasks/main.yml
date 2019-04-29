@@ -8,17 +8,11 @@
     mode: 0444
   become: true
 
-- name: Install Kubernetes packages
+- name: Install Kubernetes Packages
   yum:
-    name: "{{ packages }}"
-    state: present
-  become: true
-  vars:
-    packages:
-    - kubelet
-    - kubeadm
-    - kubectl
-    - kubernetes-cni
+    update_cache: yes
+    name: "{{ item }}"
+  with_items: "{{ kubernetes_packages }}"
 
 - name: Turn swap off
   shell: "swapoff -a && sed -i '/ swap / s/^/#/' /etc/fstab"
