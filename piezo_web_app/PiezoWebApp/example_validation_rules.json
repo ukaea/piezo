@@ -65,6 +65,10 @@
     "default": "spark"
   },
   {
+    "input_name": "spark_ui",
+    "classification": "Optional"
+  },
+  {
     "input_name": "name",
     "classification": "Required"
   },

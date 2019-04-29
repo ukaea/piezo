@@ -3,6 +3,7 @@ import string
 
 from PiezoWebApp.src.models.spark_job_validation_result import ValidationResult
 from PiezoWebApp.src.utils.str_helper import is_str_empty
+from PiezoWebApp.src.utils.str_helper import str2bool
 
 
 def validate(key, value, validation_rule):
@@ -22,6 +23,8 @@ def validate(key, value, validation_rule):
         return _validate_byte_quantity(key, value, validation_rule)
     if key in ["arguments"]:
         return ValidationResult(True, None, value)
+    if key in ["spark_ui"]:
+        return _validate_bool(key, value)
     raise ValueError(f"Unexpected argument {key}")
 
 
@@ -143,3 +146,17 @@ def _validate_byte_quantity(key, value, validation_rule):
             f'"{key}" input must be in range [{validation_rule.minimum}m, {validation_rule.maximum}m]',
             None
         )
+
+
+def _validate_bool(key, value):
+    error_result = ValidationResult(False, f'"{key}" input must be "true" or "false"', None)
+    if isinstance(value, bool):
+        bool_value = value
+    elif isinstance(value, str):
+        try:
+            bool_value = str2bool(value)
+        except ValueError:
+            return error_result
+    else:
+        return error_result
+    return ValidationResult(True, None, bool_value)
