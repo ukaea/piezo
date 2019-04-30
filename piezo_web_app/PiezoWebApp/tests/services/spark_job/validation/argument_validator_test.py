@@ -499,3 +499,48 @@ def test_validate_label_rejects_empty_strings_and_non_strings(label):
     validation_result = argument_validator.validate("label", label, validation_rule)
     # Assert
     assert validation_result.is_valid is False
+
+
+@pytest.mark.parametrize("driver_core_limit", ["1", "2.5", "3.2", "4"])
+def test_validate_core_limit_accepts_numerical_values_within_valid_range(driver_core_limit):
+    # Arrange
+    validation_rule = ValidationRule({
+        'classification': 'Optional',
+        'default': 1,
+        'minimum': 1,
+        'maximum': 4
+    })
+    # Act
+    validation_result = argument_validator.validate("driver_core_limit", driver_core_limit, validation_rule)
+    # Assert
+    assert validation_result.is_valid is True
+
+
+def test_validate_core_limit_converts_floats_to_millicpu_values_for_manifest():
+    # Arrange
+    validation_rule = ValidationRule({
+        'classification': 'Optional',
+        'default': 1,
+        'minimum': 1,
+        'maximum': 4
+    })
+    # Act
+    validation_result = argument_validator.validate("driver_core_limit", "1.2", validation_rule)
+    # Assert
+    assert validation_result.is_valid is True
+    assert validation_result.validated_value == "1200m"
+
+
+@pytest.mark.parametrize("executor_core_limit", ["100", "0", " ", "", "1p", "5000m"])
+def test_validate_core_limit_rejects_values_outside_valid_range_or_with_bad_format(executor_core_limit):
+    # Arrange
+    validation_rule = ValidationRule({
+        'classification': 'Optional',
+        'default': 1,
+        'minimum': 1,
+        'maximum': 4
+    })
+    # Act
+    validation_result = argument_validator.validate("executor_core_limit", executor_core_limit, validation_rule)
+    # Assert
+    assert validation_result.is_valid is False

@@ -150,5 +150,5 @@ def _validate_byte_quantity(key, value, validation_rule):
 def _validate_core_limit(key, value, validation_rule):
     result_of_tenth = _validate_multiple_of_a_tenth(key, value, validation_rule)
     if result_of_tenth.is_valid is True:
-        return ValidationResult(True, None, str(value * 1000) + "m")
+        return ValidationResult(True, None, str(int(result_of_tenth.validated_value * 1000)) + "m")
     return result_of_tenth
