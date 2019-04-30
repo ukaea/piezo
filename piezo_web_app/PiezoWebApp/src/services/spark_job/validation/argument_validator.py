@@ -16,9 +16,9 @@ def validate(key, value, validation_rule):
         return _validate_string_from_list(key, value, validation_rule)
     if key in ["executors", "executor_cores"]:
         return _validate_integer(key, value, validation_rule)
-    if key in ["driver_cores", "driver_core_limit"]:
+    if key in ["driver_cores"]:
         return _validate_multiple_of_a_tenth(key, value, validation_rule)
-    if key in ["driver_memory", "executor_memory"]:
+    if key in ["driver_memory", "executor_memory", "driver_core_limit", "executor_core_limit"]:
         return _validate_byte_quantity(key, value, validation_rule)
     if key in ["arguments"]:
         return ValidationResult(True, None, value)
