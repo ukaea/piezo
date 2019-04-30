@@ -38,9 +38,11 @@ class TestTemplatePopulator(unittest.TestCase):
                 'main_class': None,
                 'arguments': None,
                 'driver_cores': 0.1,
+                'driver_core_limit': "1000m",
                 'driver_memory': "512m",
                 'executors': 1,
                 'executor_cores': 1,
+                'executor_core_limit': "4000m",
                 'executor_memory': "512m",
                 'label': None
             }[input_name]
@@ -50,6 +52,7 @@ class TestTemplatePopulator(unittest.TestCase):
                           "driver_cores": "0.1",
                           "driver_memory": "512m",
                           "executor_cores": "1",
+                          "executor_core_limit": "7000m",
                           "executors": "1",
                           "executor_memory": "512m",
                           "arguments": ["1000", "100"],
@@ -95,6 +98,7 @@ class TestTemplatePopulator(unittest.TestCase):
                 ],
                 "driver": {
                     "cores": "0.1",
+                    "coreLimit": "1000m",
                     "memory": "512m",
                     "labels": {"version": "2.4.0"},
                     "serviceAccount": "spark",
@@ -111,6 +115,7 @@ class TestTemplatePopulator(unittest.TestCase):
                 },
                 "executor": {
                     "cores": "1",
+                    "coreLimit": "7000m",
                     "instances": "1",
                     "memory": "512m",
                     "labels": {"version": "2.4.0"},
@@ -176,6 +181,7 @@ class TestTemplatePopulator(unittest.TestCase):
                 ],
                 "driver": {
                     "cores": "0.1",
+                    "coreLimit": "1000m",
                     "memory": "512m",
                     "labels": {"version": "2.4.0"},
                     "serviceAccount": "spark",
@@ -192,6 +198,7 @@ class TestTemplatePopulator(unittest.TestCase):
                 },
                 "executor": {
                     "cores": "1",
+                    "coreLimit": "7000m",
                     "instances": "1",
                     "memory": "512m",
                     "labels": {"version": "2.4.0"},
@@ -250,6 +257,7 @@ class TestTemplatePopulator(unittest.TestCase):
                 ],
                 "driver": {
                     "cores": 0.1,
+                    "coreLimit": "1000m",
                     "memory": "512m",
                     "labels": {"version": "2.4.0"},
                     "serviceAccount": "spark",
@@ -266,6 +274,7 @@ class TestTemplatePopulator(unittest.TestCase):
                 },
                 "executor": {
                     "cores": 1,
+                    "coreLimit": "4000m",
                     "instances": 1,
                     "memory": "512m",
                     "labels": {"version": "2.4.0"},
