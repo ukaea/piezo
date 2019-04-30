@@ -63,4 +63,5 @@ class SparkUiService:
             self._kubernetes_adapter.read_namespaced_pod_status(job_name, NAMESPACE)
             return True
         except Exception:
+            self._logger.debug(f'Spark UI not found for job "{job_name}"')
             return False

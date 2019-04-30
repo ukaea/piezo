@@ -95,3 +95,22 @@ class TestSparkUiService:
         self.mock_k8s_adapter.delete_namespaced_ingress.assert_called_once_with("None-ui-proxy-ingress",
                                                                                 NAMESPACE,
                                                                                 body)
+
+    def test_get_spark_ui_url_returns_url_for_ui_when_it_exist(self):
+        # Arrange
+        job_name = "test-job"
+        self.mock_k8s_adapter.read_namespaced_pod_status.return_value = True
+        # Act
+        url = self.test_ui_service.get_spark_ui_url(job_name)
+        # Assert
+        assert url == 'ui.url'
+
+    def test_get_spark_ui_url_returns_unavailable_if_ui_does_not_exist(self):
+        # Arrange
+        job_name = "test-job"
+        self.mock_k8s_adapter.read_namespaced_pod_status.side_effect = ApiException("UI not found")
+        # Act
+        url = self.test_ui_service.get_spark_ui_url(job_name)
+        # Assert
+        assert url == 'Unavailable'
+        self.mock_logger.debug.assert_any_call('Spark UI not found for job "test-job"')
