@@ -10,7 +10,7 @@ class SparkUiService:
         self._logger = logger
 
     def get_spark_ui_url(self, job_name):
-        url = self._spark_ui_adapter.create_ui_url(job_name)
+        url = self._spark_ui_adapter.create_ui_url(job_name) if self.does_spark_ui_exist(job_name) else "Unavailable"
         return url
 
     def expose_spark_ui(self, job_name):
