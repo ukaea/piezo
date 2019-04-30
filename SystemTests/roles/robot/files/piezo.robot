@@ -300,6 +300,11 @@ Spark UI From Submission Is Accessible While A Spark Job Is Running
     ${ui_response}=   Get Request    spark_ui   /
     Confirm Ok Response   ${ui_response}
 
+Spark UI From Submission Is Not Returned When Not Requested
+    ${response}=    Submit Wordcount On Minio Job   wordcount-ui-job
+    Confirm Ok Response  ${response}
+    Dictionary Should Not Contain Key   ${response}   spark_ui
+
 Spark UI From Status Is Accessible While A Spark Job Is Running
     ${response}=    Submit Wordcount On Minio Job With Spark UI   wordcount-ui-job
     Confirm Ok Response  ${response}
@@ -310,3 +315,12 @@ Spark UI From Status Is Accessible While A Spark Job Is Running
     Create Session    spark_ui    ${spark_ui}
     ${ui_response}=   Get Request    spark_ui   /
     Confirm Ok Response   ${ui_response}
+
+Spark UI From Status Is Not Available If Not Requested On Submission
+    ${response}=    Submit Wordcount On Minio Job   wordcount-ui-job
+    Confirm Ok Response  ${response}
+    ${job_name}=    Get Response Job Name   ${response}
+    Sleep   20 seconds
+    ${response}=  Get Status Of Spark Job    ${job_name}
+    ${spark_ui}=    Get Response Spark UI   ${response}
+    Should Be Equal As Strings    ${spark_ui}    Unavailable
