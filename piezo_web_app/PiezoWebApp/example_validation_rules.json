@@ -103,6 +103,13 @@
     "maximum": 1
   },
   {
+    "input_name": "driver_core_limit",
+    "classification": "Optional",
+    "default": "1000m",
+    "minimum": 1000,
+    "maximum": 3000
+  },
+  {
     "input_name": "driver_memory",
     "classification": "Optional",
     "default": "512m",
@@ -122,6 +129,13 @@
     "default": 1,
     "minimum": 1,
     "maximum": 4
+  },
+  {
+    "input_name": "executor_core_limit",
+    "classification": "Optional",
+    "default": "4000m",
+    "minimum": 4000,
+    "maximum": 8000
   },
   {
     "input_name": "executor_memory",
