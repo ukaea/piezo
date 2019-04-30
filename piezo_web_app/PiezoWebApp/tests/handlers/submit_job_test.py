@@ -94,7 +94,10 @@ class TestSubmitJobHandler(BaseHandlerTest):
             'language': 'test-language',
             'path_to_main_app_file': '/path/to/main/app.file',
             'driver_cores': '1',
+            'driver_core_limit': '1000m',
             'driver_memory': '1024m',
+            'executors': '5',
+            'executor_core_limit': '4000m',
             'arguments': ["arg1", "arg2", 10],
             'lable': 'my_label'
         }

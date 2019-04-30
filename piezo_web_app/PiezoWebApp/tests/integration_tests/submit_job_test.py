@@ -90,6 +90,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                 ],
                 'driver': {
                     'cores': 0.1,
+                    'coreLimit': '1000m',
                     'memory': '512m',
                     'labels': {'version': '2.4.0'},
                     'serviceAccount': 'spark',
@@ -103,6 +104,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                 },
                 'executor': {
                     'cores': 1,
+                    'coreLimit': '4000m',
                     'instances': 1,
                     'memory': '512m',
                     'labels': {'version': '2.4.0'},
@@ -199,6 +201,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                 ],
                 'driver': {
                     'cores': 0.1,
+                    'coreLimit': '1000m',
                     'memory': '512m',
                     'labels': {'version': '2.4.0'},
                     'serviceAccount': 'spark',
@@ -212,6 +215,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                 },
                 'executor': {
                     'cores': 1,
+                    'coreLimit': '4000m',
                     'instances': 1,
                     'memory': '512m',
                     'labels': {'version': '2.4.0'},
@@ -279,9 +283,11 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             'path_to_main_app_file': '/path_to/file',
             'python_version': '2',
             'driver_cores': '1',
+            'driver_core_limit': '3000m',
             'driver_memory': '2048m',
             'executors': '10',
             'executor_cores': '4',
+            'executor_core_limit': '8000m',
             'executor_memory': '4096m',
             'label': 'my-label'
         }
@@ -336,6 +342,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                 ],
                 'driver': {
                     'cores': 1.0,
+                    'coreLimit': '3000m',
                     'memory': '2048m',
                     'labels': {'version': '2.4.0'},
                     'serviceAccount': 'spark',
@@ -349,6 +356,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                 },
                 'executor': {
                     'cores': 4,
+                    'coreLimit': '8000m',
                     'instances': 10,
                     'memory': '4096m',
                     'labels': {'version': '2.4.0'},
@@ -396,9 +404,11 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             'path_to_main_app_file': '/path_to/file',
             'python_version': '2',
             'driver_cores': '1.1',
+            'driver_core_limit': '3001m',
             'driver_memory': '2049m',
             'executors': '11',
             'executor_cores': '5',
+            'executor_core_limit': '8001m',
             'executor_memory': '4097m'
         }
         # Act
@@ -411,9 +421,11 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
         msg = json.loads(error.value.response.body, encoding='utf-8')['data']
         assert msg == "The following errors were found:\n" \
                       '"driver_cores" input must be in range [0.1, 1]\n' \
+                      '"driver_core_limit" input must be in range [1000m, 3000m]\n' \
                       '"driver_memory" input must be in range [512m, 2048m]\n' \
                       '"executors" input must be in range [1, 10]\n' \
                       '"executor_cores" input must be in range [1, 4]\n' \
+                      '"executor_core_limit" input must be in range [4000m, 8000m]\n' \
                       '"executor_memory" input must be in range [512m, 4096m]\n'
 
     @gen_test
@@ -448,9 +460,11 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             'path_to_main_app_file': '/path_to/file',
             'python_version': '2.3',
             'driver_cores': '500m',
+            'driver_core_limit': '0.8',
             'driver_memory': '1024',
             'executors': 'Maximum',
             'executor_cores': '3.5',
+            'executor_core_limit': '4.2',
             'executor_memory': '2048'
         }
         # Act
@@ -464,6 +478,8 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
         assert msg == "The following errors were found:\n" \
                       '"python_version" input must be one of: "2", "3"\n' \
                       '"driver_cores" input must be a multiple of 0.1\n' \
+                      '"driver_core_limit" input must be a string integer value ending in "m" ' \
+                      '(e.g. "1050m" for 1050 millicpu)\n' \
                       '"driver_memory" input must be a string integer value ending in "m" ' \
                       '(e.g. "512m" for 512 megabytes)\n' \
                       '"executors" input must be an integer\n' \
