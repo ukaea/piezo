@@ -60,3 +60,7 @@ class IKubernetesAdapter(metaclass=ABCMeta):
     @abstractmethod
     def read_namespaced_pod_log(self, driver_name, namespace):
         pass
+
+    @abstractmethod
+    def read_namespaced_deployment(self, name, namespace):
+        pass

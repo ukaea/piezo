@@ -28,6 +28,11 @@ class SparkUiService:
         return url
 
     def delete_spark_ui_components(self, job_name, body):
+        if not self.does_spark_ui_exist(job_name):
+            msg = f'No need to delete Spark UI for "{job_name}": does not exist.'
+            self._logger.debug(msg)
+            return msg
+
         proxy_name = f'{job_name}-ui-proxy'
         ingress_name = f'{proxy_name}-ingress'
         error = False
@@ -52,3 +57,10 @@ class SparkUiService:
         msg = f'Spark ui deleted successfully for job "{job_name}"' if error is False \
             else f'Error deleting spark ui for job "{job_name}", please contact an administrator'
         return msg
+
+    def does_spark_ui_exist(self, job_name):
+        try:
+            self._kubernetes_adapter.read_namespaced_pod_status(job_name, NAMESPACE)
+            return True
+        except Exception:
+            return False
