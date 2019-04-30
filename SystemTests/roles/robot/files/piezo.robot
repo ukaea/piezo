@@ -88,6 +88,16 @@ Can Run Python3 Jobs
     ${finished}=    Wait For Spark Job To Finish        ${job_name}
     Should Be True      ${finished}
 
+Can Run Spark Job Specifying All Optional Arguments
+    ${response}=    Submit SparkPi Job With Optional Parameters   spark-pi-params
+    Confirm Ok Response  ${response}
+    ${job_name}=    Get Response Job Name   ${response}
+    Should Match Regexp   ${job_name}   spark-params-[a-z0-9]{5}
+    ${message}=   Get Response Data Message   ${response}
+    Should Be Equal As Strings    ${message}    Job driver created successfully
+    ${finished}=    Wait For Spark Job To Finish        ${job_name}
+    Should Be True      ${finished}
+
 Submit Input Args Job With Arguments Returns Ok Response
     ${response}=    Submit InputArgs Job With Arguments   input-args-test
     Confirm Ok Response  ${response}
