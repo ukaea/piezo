@@ -58,6 +58,7 @@ class TestSparkUiService:
         # Arrange
         job_name = "test_job"
         body = "body"
+        self.mock_k8s_adapter.read_namespaced_pod_status.return_value = True
         # Act
         self.test_ui_service.delete_spark_ui_components(job_name, body)
         # Assert
@@ -71,6 +72,7 @@ class TestSparkUiService:
         # Arrange
         job_name = None
         body = "body"
+        self.mock_k8s_adapter.read_namespaced_pod_status.return_value = True
         # Act
         self.test_ui_service.delete_spark_ui_components(job_name, body)
         # Assert

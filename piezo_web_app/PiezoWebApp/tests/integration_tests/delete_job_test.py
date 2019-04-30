@@ -35,6 +35,7 @@ class DeleteJobIntegrationTest(BaseIntegrationTest):
         kubernetes_response = {'status': 'Success'}
         self.mock_k8s_adapter.delete_namespaced_custom_object.return_value = kubernetes_response
         self.mock_k8s_adapter.delete_options.return_value = {"api_version": "version", "other_values": "values"}
+        self.mock_k8s_adapter.read_namespaced_pod_status.return_value = True
         # Act
         response_body, response_code = yield self.send_request(body)
         # Assert
@@ -63,6 +64,7 @@ class DeleteJobIntegrationTest(BaseIntegrationTest):
         kubernetes_response = {'status': 'Success'}
         self.mock_k8s_adapter.delete_namespaced_custom_object.return_value = kubernetes_response
         self.mock_k8s_adapter.delete_options.return_value = {"api_version": "version", "other_values": "values"}
+        self.mock_k8s_adapter.read_namespaced_pod_status.return_value = True
         # Act
         response_body, response_code = yield self.send_request(body)
         # Assert
@@ -87,6 +89,7 @@ class DeleteJobIntegrationTest(BaseIntegrationTest):
         kubernetes_response = {'status': 'Success'}
         self.mock_k8s_adapter.delete_namespaced_custom_object.return_value = kubernetes_response
         self.mock_k8s_adapter.delete_options.return_value = {"api_version": "version", "other_values": "values"}
+        self.mock_k8s_adapter.read_namespaced_pod_status.return_value = True
         self.mock_k8s_adapter.delete_namespaced_deployment.side_effect = ApiException('Failed to delete proxy')
         self.mock_k8s_adapter.delete_namespaced_service.side_effect = ApiException('Failed to delete service')
         self.mock_k8s_adapter.delete_namespaced_ingress.side_effect = ApiException('Failed to delete ingress')
