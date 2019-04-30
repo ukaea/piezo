@@ -119,7 +119,7 @@ Tidy jobs
 
 
 Wait For Spark Job To Finish
-    [Arguments]    ${job_name}    ${step_size}
+    [Arguments]    ${job_name}
     :For    ${i}    IN RANGE   0    ${JOB_FINISH_CHECK_STEPS}
     \   Sleep     ${JOB_FINISH_CHECK_INTERVAL}
     \   ${response}=   Get Status Of Spark Job   ${job_name}
