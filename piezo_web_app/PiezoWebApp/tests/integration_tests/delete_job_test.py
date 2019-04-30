@@ -129,7 +129,6 @@ class DeleteJobIntegrationTest(BaseIntegrationTest):
         self.mock_logger.error.assert_any_call('Trying to delete spark ui ingress resulted in exception: '
                                                '(Failed to delete ingress)\nReason: None\n')
 
-
     @gen_test
     def test_trying_to_delete_non_existent_job_returns_404_with_reason(self):
         # Arrange
