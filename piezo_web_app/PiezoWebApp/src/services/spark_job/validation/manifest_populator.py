@@ -99,6 +99,11 @@ class ManifestPopulator(IManifestPopulator):
                         "memory": self._spec_executor_memory,
                         "labels": {
                             "version": self._spec_executor_label_version},
+                        "tolerations": {
+                            "key": "piezoRestriction",
+                            "operator": "Equal",
+                            "value": "executors",
+                            "effect": "NoSchedule"},
                         "envSecretKeyRefs": {
                             "AWS_ACCESS_KEY_ID": {
                                 "name": self._secret_name,
