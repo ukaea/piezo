@@ -11,4 +11,4 @@ Kubernetes persistent volumes could be used to mount storage from the Kubernetes
 
 ### Secrets
 
-Kubernetes secrets provide a secure way to hold sensitive information on a Kubernetes cluster. We already use these in Piezo to store the keys required for access to S3 storage. For full information on secrets please see the [kubernetes documentation](https://kubernetes.io/docs/concepts/configuration/secret/)
+Kubernetes secrets provide a secure way to hold sensitive information on a Kubernetes cluster. We already use these in Piezo to store the keys required for access to S3 storage. To be used within a spark application the secret must either be mounted as a volume where it can be accessed as a file or it can be used to set environment variables that are in effect across a spark application's pods. For full information on secrets please see the [kubernetes documentation](https://kubernetes.io/docs/concepts/configuration/secret/)
