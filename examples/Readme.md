@@ -1,4 +1,4 @@
-Example manifests demonstrating how to create additional Kuberenetes features. These are designed as guides for features the Piezo web app  could evolve to make use of in the future but are functionally redundant by themselves.   
+Example manifests demonstrating how to create additional Kuberenetes features. These are designed as manifest guides for features the Piezo web app could evolve to make use of in the future.  
 
 ### Ingress
 
