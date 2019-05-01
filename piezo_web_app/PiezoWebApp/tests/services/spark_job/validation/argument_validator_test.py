@@ -531,8 +531,8 @@ def test_validate_core_limit_converts_floats_to_millicpu_values_for_manifest():
     assert validation_result.validated_value == "1200m"
 
 
-@pytest.mark.parametrize("executor_core_limit", ["100", "0", " ", "", "1p", "5000m"])
-def test_validate_core_limit_rejects_values_outside_valid_range_or_with_bad_format(executor_core_limit):
+@pytest.mark.parametrize("executor_core_limit", ["0.9", "0", "4.1", "5"])
+def test_validate_core_limit_rejects_values_outside_valid_range(executor_core_limit):
     # Arrange
     validation_rule = ValidationRule({
         'classification': 'Optional',
@@ -544,3 +544,20 @@ def test_validate_core_limit_rejects_values_outside_valid_range_or_with_bad_form
     validation_result = argument_validator.validate("executor_core_limit", executor_core_limit, validation_rule)
     # Assert
     assert validation_result.is_valid is False
+    assert validation_result.message == '"executor_core_limit" input must be in range [1, 4]'
+
+
+@pytest.mark.parametrize("executor_core_limit", ["1.01", "1p", "2000m", ""])
+def test_validate_core_limit_rejects_incorrectly_formatted_values(executor_core_limit):
+    # Arrange
+    validation_rule = ValidationRule({
+        'classification': 'Optional',
+        'default': 1,
+        'minimum': 1,
+        'maximum': 4
+    })
+    # Act
+    validation_result = argument_validator.validate("executor_core_limit", executor_core_limit, validation_rule)
+    # Assert
+    assert validation_result.is_valid is False
+    assert validation_result.message == '"executor_core_limit" input must be a multiple of 0.1'
