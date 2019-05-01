@@ -106,6 +106,12 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                     'instances': 1,
                     'memory': '512m',
                     'labels': {'version': '2.4.0'},
+                    'tolerations': {
+                        'key': 'piezoRestriction',
+                        'operator': 'Equal',
+                        'value': 'executors',
+                        'effect': 'NoSchedule'
+                    },
                     'envSecretKeyRefs': {
                         'AWS_ACCESS_KEY_ID': {
                             'name': 'secret',
@@ -215,6 +221,12 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                     'instances': 1,
                     'memory': '512m',
                     'labels': {'version': '2.4.0'},
+                    'tolerations': {
+                        'key': 'piezoRestriction',
+                        'operator': 'Equal',
+                        'value': 'executors',
+                        'effect': 'NoSchedule'
+                    },
                     'envSecretKeyRefs': {
                         'AWS_ACCESS_KEY_ID': {
                             'name': 'secret',
@@ -352,6 +364,12 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
                     'instances': 10,
                     'memory': '4096m',
                     'labels': {'version': '2.4.0'},
+                    'tolerations': {
+                        'key': 'piezoRestriction',
+                        'operator': 'Equal',
+                        'value': 'executors',
+                        'effect': 'NoSchedule'
+                    },
                     'envSecretKeyRefs': {
                         'AWS_ACCESS_KEY_ID': {
                             'name': 'secret',
