@@ -32,6 +32,13 @@ class ManifestPopulator(IManifestPopulator):
         self._spec_driver_label_version = self._validation_rules.get_default_value_for_key("spark_version")
         self._spec_driver_service_account = self._validation_rules.get_default_value_for_key("service_account")
         self._spec_executor_instances = self._validation_rules.get_default_value_for_key("executors")
+        self._spec_executor_toleration_key = self._validation_rules.get_default_value_for_key("executor_toleration_key")
+        self._spec_executor_toleration_operation = \
+            self._validation_rules.get_default_value_for_key("executor_toleration_operation")
+        self._spec_executor_toleration_value = \
+            self._validation_rules.get_default_value_for_key("executor_toleration_value")
+        self._spec_executor_toleration_effect = \
+            self._validation_rules.get_default_value_for_key("executor_toleration_effect")
         self._spec_executor_cores = self._validation_rules.get_default_value_for_key("executor_cores")
         self._spec_executor_memory = self._validation_rules.get_default_value_for_key("executor_memory")
         self._spec_executor_label_version = self._validation_rules.get_default_value_for_key("spark_version")
@@ -100,10 +107,10 @@ class ManifestPopulator(IManifestPopulator):
                         "labels": {
                             "version": self._spec_executor_label_version},
                         "tolerations": {
-                            "key": "piezoRestriction",
-                            "operator": "Equal",
-                            "value": "executors",
-                            "effect": "NoSchedule"},
+                            "key": self._spec_executor_toleration_key,
+                            "operator": self._spec_executor_toleration_operation,
+                            "value": self._spec_executor_toleration_value,
+                            "effect": self._spec_executor_toleration_effect},
                         "envSecretKeyRefs": {
                             "AWS_ACCESS_KEY_ID": {
                                 "name": self._secret_name,

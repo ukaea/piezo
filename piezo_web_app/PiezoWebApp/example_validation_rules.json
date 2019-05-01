@@ -65,6 +65,26 @@
     "default": "spark"
   },
   {
+    "input_name": "executor_toleration_key",
+    "classification": "Fixed",
+    "default": "piezoRestriction"
+  },
+  {
+    "input_name": "executor_toleration_operation",
+    "classification": "Fixed",
+    "default": "Equal"
+  },
+  {
+    "input_name": "executor_toleration_value",
+    "classification": "Fixed",
+    "default": "executors"
+  },
+  {
+    "input_name": "executor_toleration_effect",
+    "classification": "Fixed",
+    "default": "NoSchedule"
+  },
+  {
     "input_name": "name",
     "classification": "Required"
   },
