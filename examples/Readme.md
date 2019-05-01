@@ -1,4 +1,4 @@
-Example manifests demonstrating how to create additional Kuberenetes features. These are designed as manifest guides for features the Piezo web app could evolve to make use of in the future.  
+Example manifests demonstrating how to create additional Kuberenetes features. These are designed as manifest guides for features the Piezo web app could evolve to make use of in the future. Any of the feature can be created by running `kubectl apply -f {name of file}.yaml`
 
 ### Ingress
 
