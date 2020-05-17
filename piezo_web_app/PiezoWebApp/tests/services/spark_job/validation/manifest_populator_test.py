@@ -42,6 +42,10 @@ class TestTemplatePopulator(unittest.TestCase):
                 'executors': 1,
                 'executor_cores': 1,
                 'executor_memory': "512m",
+                'executor_toleration_key': 'piezoRestriction',
+                'executor_toleration_operation': 'Equal',
+                'executor_toleration_value': 'executors',
+                'executor_toleration_effect': 'NoSchedule',
                 'label': None
             }[input_name]
         self.test_populator = ManifestPopulator(mock_configuration, mock_validation_ruleset)
@@ -114,6 +118,12 @@ class TestTemplatePopulator(unittest.TestCase):
                     "instances": "1",
                     "memory": "512m",
                     "labels": {"version": "2.4.0"},
+                    'tolerations': {
+                        'key': 'piezoRestriction',
+                        'operator': 'Equal',
+                        'value': 'executors',
+                        'effect': 'NoSchedule'
+                    },
                     "envSecretKeyRefs": {
                         "AWS_ACCESS_KEY_ID": {
                             "name": "secret",
@@ -195,6 +205,12 @@ class TestTemplatePopulator(unittest.TestCase):
                     "instances": "1",
                     "memory": "512m",
                     "labels": {"version": "2.4.0"},
+                    'tolerations': {
+                        'key': 'piezoRestriction',
+                        'operator': 'Equal',
+                        'value': 'executors',
+                        'effect': 'NoSchedule'
+                    },
                     "envSecretKeyRefs": {
                         "AWS_ACCESS_KEY_ID": {
                             "name": "secret",
@@ -269,6 +285,12 @@ class TestTemplatePopulator(unittest.TestCase):
                     "instances": 1,
                     "memory": "512m",
                     "labels": {"version": "2.4.0"},
+                    'tolerations': {
+                        'key': 'piezoRestriction',
+                        'operator': 'Equal',
+                        'value': 'executors',
+                        'effect': 'NoSchedule'
+                    },
                     "envSecretKeyRefs": {
                         "AWS_ACCESS_KEY_ID": {
                             "name": "secret",
