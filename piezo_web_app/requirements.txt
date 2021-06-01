@@ -48,7 +48,7 @@ six==1.12.0
 tornado==4.5.3
 Tornado-JSON==1.3.3
 typed-ast==1.4.0
-urllib3==1.25
+urllib3==1.26.5
 uuid==1.30
 websocket-client==0.55.0
 wheel
