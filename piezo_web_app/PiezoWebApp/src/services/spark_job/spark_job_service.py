@@ -176,6 +176,13 @@ class SparkJobService(ISparkJobService):
                 'message': validated_body_values.message
             }
 
+        # Pull out the spark_ui input
+        if 'spark_ui' in validated_body_values.validated_value:
+            spark_ui = validated_body_values.validated_value['spark_ui']
+            del(validated_body_values.validated_value['spark_ui'])
+        else:
+            spark_ui = False
+
         # Make the job name unique
         job_name = self._spark_job_customiser.rename_job(body['name'])
         validated_body_values.validated_value['name'] = job_name
@@ -197,17 +204,6 @@ class SparkJobService(ISparkJobService):
                 CRD_PLURAL,
                 body
             )
-
-            # Expose the spark ui
-            ui_url = self._spark_ui_service.expose_spark_ui(job_name)
-
-            result = {
-                'status': StatusCodes.Okay.value,
-                'message': 'Job driver created successfully',
-                'job_name': job_name,
-                'spark_ui': ui_url
-            }
-            return result
         except ApiException as exception:
             message = f'Kubernetes error when trying to submit job: {exception.reason}'
             self._logger.error(message)
@@ -216,6 +212,17 @@ class SparkJobService(ISparkJobService):
                 'status': exception.status,
                 'message': message
             }
+
+        result = {
+            'status': StatusCodes.Okay.value,
+            'message': 'Job driver created successfully',
+            'job_name': job_name
+        }
+
+        if spark_ui:
+            result['spark_ui'] = self._spark_ui_service.expose_spark_ui(job_name)
+
+        return result
 
     def tidy_jobs(self):
         api_response = self.get_jobs(label=None)

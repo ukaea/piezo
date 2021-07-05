@@ -35,6 +35,7 @@ class DeleteJobIntegrationTest(BaseIntegrationTest):
         kubernetes_response = {'status': 'Success'}
         self.mock_k8s_adapter.delete_namespaced_custom_object.return_value = kubernetes_response
         self.mock_k8s_adapter.delete_options.return_value = {"api_version": "version", "other_values": "values"}
+        self.mock_k8s_adapter.read_namespaced_pod_status.return_value = True
         # Act
         response_body, response_code = yield self.send_request(body)
         # Assert
@@ -57,12 +58,13 @@ class DeleteJobIntegrationTest(BaseIntegrationTest):
         })
 
     @gen_test
-    def test_delete_requests_deletion_of_spark_ui_proxy_components(self):
+    def test_delete_requests_deletion_of_spark_ui_proxy_components_when_it_exists(self):
         # Arrange
         body = {"job_name": "test-spark-job"}
         kubernetes_response = {'status': 'Success'}
         self.mock_k8s_adapter.delete_namespaced_custom_object.return_value = kubernetes_response
         self.mock_k8s_adapter.delete_options.return_value = {"api_version": "version", "other_values": "values"}
+        self.mock_k8s_adapter.read_namespaced_pod_status.return_value = True
         # Act
         response_body, response_code = yield self.send_request(body)
         # Assert
@@ -81,12 +83,32 @@ class DeleteJobIntegrationTest(BaseIntegrationTest):
             "test-spark-job-ui-proxy-ingress", NAMESPACE, {"api_version": "version", "other_values": "values"})
 
     @gen_test
+    def test_delete_does_not_try_to_delete_proxy_when_it_does_not_exist(self):
+        # Arrange
+        body = {"job_name": "test-spark-job"}
+        kubernetes_response = {'status': 'Success'}
+        self.mock_k8s_adapter.delete_namespaced_custom_object.return_value = kubernetes_response
+        self.mock_k8s_adapter.delete_options.return_value = {"api_version": "version", "other_values": "values"}
+        self.mock_k8s_adapter.read_namespaced_pod_status.side_effect = ApiException("Pod not found")
+        # Act
+        response_body, response_code = yield self.send_request(body)
+        # Assert
+        assert response_code == 200
+        self.assertDictEqual(response_body, {
+            'status': 'success',
+            'data': {
+                'message': '"test-spark-job" deleted\nNo need to delete Spark UI for "test-spark-job": does not exist.'
+            }})
+        self.mock_logger.debug.assert_any_call('No need to delete Spark UI for "test-spark-job": does not exist.')
+
+    @gen_test
     def test_logging_records_failed_deletion_of_ui_components(self):
         # Arrange
         body = {'job_name': 'test-spark-job'}
         kubernetes_response = {'status': 'Success'}
         self.mock_k8s_adapter.delete_namespaced_custom_object.return_value = kubernetes_response
         self.mock_k8s_adapter.delete_options.return_value = {"api_version": "version", "other_values": "values"}
+        self.mock_k8s_adapter.read_namespaced_pod_status.return_value = True
         self.mock_k8s_adapter.delete_namespaced_deployment.side_effect = ApiException('Failed to delete proxy')
         self.mock_k8s_adapter.delete_namespaced_service.side_effect = ApiException('Failed to delete service')
         self.mock_k8s_adapter.delete_namespaced_ingress.side_effect = ApiException('Failed to delete ingress')

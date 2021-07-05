@@ -135,8 +135,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             'status': 'success',
             'data': {
                 'message': 'Job driver created successfully',
-                'job_name': 'test-python-job-abcd1',
-                'spark_ui': 'http://1.1.1.1:1/proxy:test-python-job-abcd1-ui-svc:4040'
+                'job_name': 'test-python-job-abcd1'
             }
         })
 
@@ -244,6 +243,32 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             'status': 'success',
             'data': {
                 'message': 'Job driver created successfully',
+                'job_name': 'test-scala-job-abcd1'
+            }
+        })
+
+    @gen_test
+    def test_spark_ui_is_returned_when_requested(self):
+        # Arrange
+        body = {
+            'name': 'test-scala-job',
+            'language': 'Scala',
+            'path_to_main_app_file': '/path_to/file',
+            'main_class': 'main.class',
+            'spark_ui': 'true'
+        }
+        self.mock_k8s_adapter.get_namespaced_custom_object.side_effect = ApiException(status=999)
+        kubernetes_response = {'metadata': {'name': 'test_scala_job'}}
+        self.mock_k8s_adapter.create_namespaced_custom_object.return_value = kubernetes_response
+        self.mock_storage_adapter.access_protocol.return_value = 's3a'
+        # Act
+        with patch('uuid.uuid4', return_value='abcd1234-ef56-gh78-ij90'):
+            response_body, response_code = yield self.send_request(body)
+        # Assert
+        self.assertDictEqual(response_body, {
+            'status': 'success',
+            'data': {
+                'message': 'Job driver created successfully',
                 'job_name': 'test-scala-job-abcd1',
                 'spark_ui': 'http://1.1.1.1:1/proxy:test-scala-job-abcd1-ui-svc:4040'
             }
@@ -257,7 +282,8 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             'language': 'Scala',
             'path_to_main_app_file': '/path_to/file',
             'main_class': 'main.class',
-            'arguments': ["1000"]
+            'arguments': ["1000"],
+            'spark_ui': 'true'
         }
         self.mock_k8s_adapter.get_namespaced_custom_object.side_effect = ApiException(status=999)
         kubernetes_response = {'metadata': {'name': 'test_scala_job'}}
@@ -382,8 +408,7 @@ class TestSubmitJobIntegration(BaseIntegrationTest):
             'status': 'success',
             'data': {
                 'message': 'Job driver created successfully',
-                'job_name': 'test-python-job-abcd1',
-                'spark_ui': 'http://1.1.1.1:1/proxy:test-python-job-abcd1-ui-svc:4040'
+                'job_name': 'test-python-job-abcd1'
             }
         })
 

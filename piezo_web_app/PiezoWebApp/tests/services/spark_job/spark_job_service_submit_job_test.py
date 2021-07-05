@@ -25,7 +25,8 @@ class SparkJobServiceSubmitJobTest(TestSparkJobService):
             'metadata': {
                 'namespace': NAMESPACE,
                 'name': 'test-spark-job-abcd1234',
-                'language': 'example-language'
+                'language': 'example-language',
+                'spark_ui': 'false'
             }
         }
         self.mock_manifest_populator.build_manifest.return_value = manifest
@@ -50,15 +51,15 @@ class SparkJobServiceSubmitJobTest(TestSparkJobService):
         self.assertDictEqual(result, {
             'status': StatusCodes.Okay.value,
             'message': 'Job driver created successfully',
-            'job_name': 'test-spark-job-abcd1234',
-            'spark_ui': 'some_url'
+            'job_name': 'test-spark-job-abcd1234'
         })
 
     def test_submit_job_calls_spark_ui_service_correctly_to_expose_ui(self):
         # Arrange
         body = {
             'name': 'test-spark-job',
-            'language': 'example-language'
+            'language': 'example-language',
+            'spark_ui': 'true'
         }
         self.mock_validation_service.validate_request_keys.return_value = ValidationResult(True, "", None)
         self.mock_validation_service.validate_request_values.return_value = ValidationResult(True, "", body)
@@ -74,7 +75,8 @@ class SparkJobServiceSubmitJobTest(TestSparkJobService):
         # Arrange
         body = {
             'name': 'test-spark-job',
-            'language': 'example-language'
+            'language': 'example-language',
+            'spark_ui': 'true'
         }
         self.mock_validation_service.validate_request_keys.return_value = ValidationResult(True, "", None)
         self.mock_validation_service.validate_request_values.return_value = ValidationResult(True, "", body)

@@ -57,8 +57,11 @@ class KubernetesAdapter(IKubernetesAdapter):
     def get_namespaced_custom_object(self, group, version, namespace, plural, name):
         return self._custom_connection.get_namespaced_custom_object(group, version, namespace, plural, name)
 
+    def list_namespaced_custom_object(self, group, version, namespace, plural, **kwargs):
+        return self._custom_connection.list_namespaced_custom_object(group, version, namespace, plural, **kwargs)
+
     def read_namespaced_pod_log(self, driver_name, namespace):
         return self._core_connection.read_namespaced_pod_log(driver_name, namespace)
 
-    def list_namespaced_custom_object(self, group, version, namespace, plural, **kwargs):
-        return self._custom_connection.list_namespaced_custom_object(group, version, namespace, plural, **kwargs)
+    def read_namespaced_pod_status(self, name, namespace):
+        return self._core_connection.read_namespaced_pod_status(name, namespace)
