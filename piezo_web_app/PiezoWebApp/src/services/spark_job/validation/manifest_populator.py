@@ -28,11 +28,13 @@ class ManifestPopulator(IManifestPopulator):
         self._spec_restart_submission_failure_retry_interval = \
             self._validation_rules.get_default_value_for_key("on_submission_failure_retry_interval")
         self._spec_driver_cores = self._validation_rules.get_default_value_for_key("driver_cores")
+        self._spec_driver_core_limit = self._validation_rules.get_default_value_for_key("driver_core_limit")
         self._spec_driver_memory = self._validation_rules.get_default_value_for_key("driver_memory")
         self._spec_driver_label_version = self._validation_rules.get_default_value_for_key("spark_version")
         self._spec_driver_service_account = self._validation_rules.get_default_value_for_key("service_account")
         self._spec_executor_instances = self._validation_rules.get_default_value_for_key("executors")
         self._spec_executor_cores = self._validation_rules.get_default_value_for_key("executor_cores")
+        self._spec_executor_core_limit = self._validation_rules.get_default_value_for_key("executor_core_limit")
         self._spec_executor_memory = self._validation_rules.get_default_value_for_key("executor_memory")
         self._spec_executor_label_version = self._validation_rules.get_default_value_for_key("spark_version")
         self._monitoring_java_agent = self._validation_rules.get_default_value_for_key("java_agent")
@@ -81,6 +83,7 @@ class ManifestPopulator(IManifestPopulator):
                     ],
                     "driver": {
                         "cores": self._spec_driver_cores,
+                        "coreLimit": self._spec_driver_core_limit,
                         "memory": self._spec_driver_memory,
                         "labels": {
                             "version": self._spec_driver_label_version},
@@ -95,6 +98,7 @@ class ManifestPopulator(IManifestPopulator):
                     },
                     "executor": {
                         "cores": self._spec_executor_cores,
+                        "coreLimit": self._spec_executor_core_limit,
                         "instances": self._spec_executor_instances,
                         "memory": self._spec_executor_memory,
                         "labels": {
@@ -125,9 +129,11 @@ class ManifestPopulator(IManifestPopulator):
                             "main_class": ["spec", "mainClass"],
                             "path_to_main_app_file": ["spec", "mainApplicationFile"],
                             "driver_cores": ["spec", "driver", "cores"],
+                            "driver_core_limit": ["spec", "driver", "coreLimit"],
                             "driver_memory": ["spec", "driver", "memory"],
                             "executors": ["spec", "executor", "instances"],
                             "executor_cores": ["spec", "executor", "cores"],
+                            "executor_core_limit": ["spec", "executor", "coreLimit"],
                             "executor_memory": ["spec", "executor", "memory"]
                             }
         return var_to_path_dict[var]

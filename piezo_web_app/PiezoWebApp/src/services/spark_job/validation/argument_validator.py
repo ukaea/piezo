@@ -16,10 +16,12 @@ def validate(key, value, validation_rule):
         return _validate_string_from_list(key, value, validation_rule)
     if key in ["executors", "executor_cores"]:
         return _validate_integer(key, value, validation_rule)
-    if key in ["driver_cores", "driver_core_limit"]:
+    if key in ["driver_cores"]:
         return _validate_multiple_of_a_tenth(key, value, validation_rule)
     if key in ["driver_memory", "executor_memory"]:
         return _validate_byte_quantity(key, value, validation_rule)
+    if key in ["driver_core_limit", "executor_core_limit"]:
+        return _validate_core_limit(key, value, validation_rule)
     if key in ["arguments"]:
         return ValidationResult(True, None, value)
     raise ValueError(f"Unexpected argument {key}")
@@ -143,3 +145,11 @@ def _validate_byte_quantity(key, value, validation_rule):
             f'"{key}" input must be in range [{validation_rule.minimum}m, {validation_rule.maximum}m]',
             None
         )
+
+
+def _validate_core_limit(key, value, validation_rule):
+    result_of_tenth = _validate_multiple_of_a_tenth(key, value, validation_rule)
+    if result_of_tenth.is_valid is True:
+        millicores = int(result_of_tenth.validated_value * 1000)
+        return ValidationResult(True, None, f'{millicores}m')
+    return result_of_tenth

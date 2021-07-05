@@ -79,6 +79,12 @@ Submit SparkPi Job
     ${response}=    Post Request With Json Body   /piezo/submitjob    ${submitbody}
     [return]  ${response}
 
+Submit SparkPi Job With Optional Parameters
+    [Arguments]   ${job_name}
+    ${submitbody}=    Create Dictionary   name=${job_name}   language=Python   python_version=2    path_to_main_app_file=s3a://kubernetes/inputs/pi.py    driver_cores=0.2    driver_core_limit=1.4     driver_memory=1024m     executors=2      executor_cores=1     executor_core_limit=4.5     executor_memory=1024m      label=systemTest
+    ${response}=    Post Request With Json Body   /piezo/submitjob    ${submitbody}
+    [return]  ${response}
+
 Submit SparkPi Python3 Job
     [Arguments]   ${job_name}
     ${submitbody}=    Create Dictionary   name=${job_name}   language=Python   python_version=3    path_to_main_app_file=s3a://kubernetes/inputs/pi.py    label=systemTest
@@ -113,7 +119,7 @@ Tidy jobs
 
 
 Wait For Spark Job To Finish
-    [Arguments]    ${job_name}    ${step_size}
+    [Arguments]    ${job_name}
     :For    ${i}    IN RANGE   0    ${JOB_FINISH_CHECK_STEPS}
     \   Sleep     ${JOB_FINISH_CHECK_INTERVAL}
     \   ${response}=   Get Status Of Spark Job   ${job_name}
